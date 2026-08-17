@@ -1,0 +1,2693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>California Grocery Store Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<style>
+  /* ---- Original processor-map CSS, ported verbatim ----
+     Preserves: floating .filters card, ring-style retailer swatches,
+     brand-logo filter rows, scrollable state list. The visual target
+     is oldmap.png, which is what the .filter-* class set produces.
+     Layout differs from the original in two ways only:
+       (1) no top header bar — stats moved into the floating card
+       (2) optional info-card panel on the right for the Maola/TDA
+           data note, dismissible
+     Everything else matches the original. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: transparent; }
+
+  /* ---- Password gate ---- */
+  #pw-gate {
+    position: fixed; inset: 0; z-index: 99999;
+    background: #1a2535;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #pw-gate.hidden { display: none; }
+  .pw-card {
+    background: #fff; border-radius: 14px;
+    padding: 40px 44px; text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    width: 320px;
+  }
+  .pw-card img { height: 48px; margin-bottom: 20px; }
+  .pw-card h2 { font-size: 18px; color: #1a2535; margin-bottom: 6px; }
+  .pw-card p { font-size: 13px; color: #888; margin-bottom: 22px; }
+  .pw-card input {
+    width: 100%; padding: 10px 14px; font-size: 14px;
+    border: 1.5px solid #d0d5dd; border-radius: 8px;
+    outline: none; margin-bottom: 12px;
+  }
+  .pw-card input:focus { border-color: #1a7bc4; }
+  .pw-card button {
+    width: 100%; padding: 10px; font-size: 14px; font-weight: 600;
+    background: #1a7bc4; color: #fff; border: none;
+    border-radius: 8px; cursor: pointer;
+  }
+  .pw-card button:hover { background: #155fa0; }
+  .pw-error { font-size: 12px; color: #c0392b; margin-top: 8px; min-height: 18px; }
+  #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: transparent !important; }
+  .leaflet-container { background: #f5f7fa !important; }
+
+  /* Floating filter card — pinned top-left, scrolls if content
+     overflows the viewport. Width matches the original (260px-ish). */
+  .filters {
+    position: absolute; top: 14px; left: 14px;
+    background: white; padding: 14px 18px; border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    z-index: 1000; font-size: 12px; max-width: 280px;
+    max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  .filters h3 {
+    margin: 0 0 10px 0; font-size: 13px; color: #333;
+    border-bottom: 1px solid #eee; padding-bottom: 6px;
+  }
+  .filters .filter-stats {
+    font-size: 11px; color: #888; margin: -4px 0 10px;
+  }
+  .filter-section { margin-bottom: 16px; }
+  .filter-section:last-child { margin-bottom: 0; }
+  .filter-section h4 {
+    margin: 0 0 8px 0; font-size: 12px; color: #555; font-weight: 600;
+  }
+  .filter-section h4 .section-actions {
+    float: right; font-weight: normal; font-size: 10px;
+  }
+  .filter-section h4 .section-actions a {
+    color: #888; text-decoration: none; margin-left: 6px; cursor: pointer;
+  }
+  .filter-section h4 .section-actions a:hover { color: #1F4E79; }
+
+  .filter-item {
+    display: flex; align-items: center; margin: 6px 0;
+    cursor: pointer; padding: 3px 4px; border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .filter-item:hover { background: #f5f5f5; }
+  .filter-item.disabled { opacity: 0.3; }
+
+  /* Ring swatch — retailer brand color as border, white interior.
+     This is the visual signature of the legend in the original. */
+  .retailer-border-sample {
+    width: 32px; height: 32px; border-radius: 50%;
+    margin-right: 10px; flex-shrink: 0;
+    background: white;
+  }
+
+  /* Brand logo in filter rows (processors, organizations). */
+  .filter-logo {
+    width: 32px; height: 32px; margin-right: 10px;
+    object-fit: contain; flex-shrink: 0; border-radius: 3px;
+  }
+  .filter-label { color: #333; font-weight: 500; flex: 1; }
+  .filter-count {
+    margin-left: auto; padding-left: 10px; color: #888;
+    font-size: 11px; font-weight: 600;
+  }
+
+  .scroll-list { max-height: 180px; overflow-y: auto; }
+
+  /* Reset button — shows at top of sidebar when ANY filter dimension
+     is non-default (i.e., user has made a selection). Click returns
+     all dimensions to all-on and re-fits the map to the default
+     country-wide view. Hidden by default via .hidden. */
+  .reset-btn {
+    display: block; width: 100%; margin: 0 0 12px 0;
+    padding: 8px 10px; border: 1px solid #c9d4e0;
+    background: #f5f8fb; color: #1F4E79;
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+    font-weight: 600; text-align: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .reset-btn:hover { background: #e7eef6; border-color: #1F4E79; }
+  .reset-btn.hidden { display: none; }
+
+  /* Action button row — Reset + Export sit side by side. Reset still
+     collapses to hidden when no filters are active; Export is always
+     visible. Flex with gap keeps both buttons sized to content. */
+  .action-row { display: flex; gap: 6px; margin: 0 0 12px 0; }
+  .action-row .reset-btn { margin: 0; flex: 1; }
+  .action-row .export-btn {
+    flex: 0 0 auto; padding: 8px 12px;
+    border: 1px solid #c9d4e0; background: #f5f8fb; color: #1F4E79;
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+    font-weight: 600; transition: background 0.15s, border-color 0.15s;
+  }
+  .action-row .export-btn:hover { background: #e7eef6; border-color: #1F4E79; }
+  .action-row .reset-btn.hidden + .export-btn,
+  .action-row .export-btn:only-child { flex: 1; }
+
+  /* Search box — top of the filter card. Searches store number,
+     banner, holding company, city, zip, address. Shows up to 8
+     autocomplete results; click a result to fly the map to that
+     store and open its popup. */
+  .search-wrap { position: relative; margin: 0 0 12px 0; }
+  .search-input {
+    width: 100%; padding: 7px 10px; font-size: 12px;
+    border: 1px solid #c9d4e0; border-radius: 6px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: #1F4E79; }
+  .search-results {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border: 1px solid #c9d4e0; border-top: none;
+    border-radius: 0 0 6px 6px; max-height: 240px; overflow-y: auto;
+    z-index: 1100; box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    display: none;
+  }
+  .search-results.open { display: block; }
+  .search-result-item {
+    padding: 7px 10px; cursor: pointer; font-size: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover, .search-result-item.active { background: #f5f8fb; }
+  .search-result-item .sr-banner { font-weight: 600; color: #1F4E79; }
+  .search-result-item .sr-meta { color: #888; font-size: 11px; }
+  .search-empty { padding: 10px; text-align: center; color: #888; font-size: 12px; }
+
+  /* Coverage dot — green for store-match results, transparent
+     spacer of the same width for general-geocode results so the
+     two visually align. Mirrors the Gopuff coverage-dot pattern. */
+  .search-result-item .sr-row { display: flex; align-items: center; gap: 8px; }
+  .coverage-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2e9966; flex-shrink: 0;
+  }
+  .coverage-dot.empty { background: transparent; }
+  .search-result-item.geocode .sr-banner { color: #555; font-weight: 500; }
+  .search-result-item.geocode .sr-type {
+    font-size: 10px; text-transform: uppercase;
+    color: #999; letter-spacing: 0.04em; margin-left: 4px;
+  }
+
+  /* Status banner under the search box — appears after the user
+     picks a general (non-store) location. Green = stores nearby,
+     red = no stores within ~25 miles. */
+  .search-status {
+    margin-top: 6px; padding: 8px 10px; border-radius: 6px;
+    font-size: 11px; line-height: 1.4; display: none;
+    border-left: 3px solid #888; background: #f5f8fb; color: #333;
+  }
+  .search-status.open { display: block; }
+  .search-status.covered { border-left-color: #2e9966; background: #effaf3; color: #1f5e3a; }
+  .search-status.not-covered { border-left-color: #d04545; background: #fdf2f2; color: #8a2222; }
+  .search-status .ss-title { font-weight: 700; }
+  .search-status .ss-close {
+    float: right; cursor: pointer; color: inherit; opacity: 0.6;
+    font-weight: 700; padding-left: 8px;
+  }
+  .search-status .ss-close:hover { opacity: 1; }
+
+  /* Search marker — orange pin used to mark a geocoded location
+     the user navigated to via the search box. */
+  .search-marker {
+    background: #ff6b3d; color: white; border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700;
+    box-shadow: 0 3px 10px rgba(255,107,61,0.5);
+    border: 3px solid white;
+  }
+
+  /* Mobile collapse — on narrow screens the filter card would cover
+     most of the map. We replace it with a compact toggle bar; tapping
+     it slides the full panel up from the bottom as a sheet. The
+     toggle is hidden on desktop (>700px). */
+  .filter-toggle {
+    display: none;
+    position: absolute; top: 10px; left: 10px; right: 10px;
+    z-index: 1001;
+    background: white; border: none; padding: 10px 14px;
+    border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 13px; font-weight: 600; color: #1F4E79;
+    text-align: left; cursor: pointer;
+  }
+  .filter-toggle::after { content: '▾'; float: right; }
+  body.filters-open .filter-toggle::after { content: '▴'; }
+
+  @media (max-width: 700px) {
+    .filter-toggle { display: block; }
+    .filters {
+      top: 56px; left: 10px; right: 10px; max-width: none;
+      max-height: calc(100vh - 70px);
+      transform: translateY(calc(-100% - 70px));
+      transition: transform 0.25s ease;
+    }
+    body.filters-open .filters { transform: translateY(0); }
+  }
+
+  /* Logo-based store pin. White circular plate with a 2px ring that
+     gets tinted by the store's org color (MilkPEP blue / TDA green /
+     Both purple). The logo image fills the plate via object-fit. */
+  .store-pin {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #ffffff; border: 2px solid #1f78b4;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .store-pin img {
+    width: 22px; height: 22px; object-fit: contain;
+    display: block; pointer-events: none;
+  }
+  /* Cluster variant: same logo plate sized dynamically (38/44/52px)
+     so denser clusters render visibly larger. Logo fills 78% of the
+     plate so the colored ring stays prominent. */
+  .store-pin--cluster {
+    border-width: 2.5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+  }
+  .store-pin--cluster img { width: 78%; height: 78%; }
+
+  /* Popup styling matches the original's clean look. */
+  .popup-content { font-size: 13px; line-height: 1.6; }
+  .popup-content .store-num { font-weight: 700; font-size: 15px; color: #1F4E79; }
+  .popup-content .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; margin: 2px 3px 0 0;
+    background: #f0f0f0; color: #333;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .popup-content .sv-wrap {
+    margin-top: 8px; border-radius: 6px; overflow: hidden;
+    border: 1px solid #ddd; position: relative;
+  }
+  .popup-content .sv-wrap iframe {
+    display: block; width: 100%; height: 160px; border: 0;
+  }
+  .popup-content .sv-link {
+    display: inline-block; margin-top: 6px;
+    font-size: 12px; color: #1a73e8; text-decoration: none;
+  }
+  .popup-content .sv-link:hover { text-decoration: underline; }
+
+  /* Leaflet attribution, made unobtrusive like the original. */
+  .leaflet-control-attribution {
+    background: rgba(255,255,255,0.6) !important;
+    font-size: 10px;
+  }
+
+  /* ---- Tract overlay ---- */
+  .tract-toggle {
+    position: absolute; top: 50px; right: 10px; z-index: 1000;
+    background: #fff; border: 1px solid #ccc; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 6px 10px;
+    font-size: 13px; cursor: pointer; display: flex; align-items: center;
+    gap: 8px; user-select: none; transition: background 0.15s;
+  }
+  .tract-toggle:hover { background: #f5f5f5; }
+  .tract-toggle .tt-label { font-weight: 600; color: #333; }
+  .tract-toggle .tt-metric { font-size: 11px; color: #666; }
+  .tract-toggle select {
+    border: 1px solid #ddd; border-radius: 4px; font-size: 11px;
+    padding: 2px 4px; background: #fff; color: #333; cursor: pointer;
+  }
+  .tract-toggle .tt-switch {
+    width: 36px; height: 20px; border-radius: 10px; background: #ccc;
+    position: relative; transition: background 0.2s; flex-shrink: 0;
+  }
+  .tract-toggle .tt-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%; background: #fff;
+    transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .tract-toggle.active .tt-switch { background: #1a73e8; }
+  .tract-toggle.active .tt-switch::after { transform: translateX(16px); }
+  .visibility-toggle {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 0 6px; font-size: 12px; color: #555; cursor: pointer;
+    user-select: none; border-bottom: 1px solid #eee; margin-bottom: 4px;
+  }
+  .visibility-toggle .vt-switch {
+    width: 30px; height: 16px; border-radius: 8px; background: #1a73e8;
+    position: relative; transition: background 0.2s; flex-shrink: 0;
+  }
+  .visibility-toggle .vt-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 12px; height: 12px; border-radius: 50%; background: #fff;
+    transition: transform 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .visibility-toggle.off .vt-switch { background: #ccc; }
+  .visibility-toggle.off .vt-switch::after { transform: translateX(0); }
+  /* Bivariate legend — replicated from Grocery Gap Atlas */
+  .tract-legend {
+    position: absolute; bottom: 2rem; right: 1rem; z-index: 1000;
+    background: #fff; border: 1px solid #ccc; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 14px 24px 16px;
+    display: none; font-size: 12px;
+  }
+  .tract-legend.visible { display: block; }
+  .tract-legend h3 {
+    margin: 0 0 16px; font-size: 13px; font-weight: 700; color: #333;
+  }
+  .legend-wrap {
+    position: relative; width: 200px;
+    padding: 4px 0 64px;
+    margin: 0 auto 24px;
+  }
+  .legend-grid {
+    display: flex; flex-direction: row;
+    width: 96px; height: 96px;
+    margin: 0 auto;
+    transform: translate(0px, 16px) rotate(-135deg);
+    border: 2px solid #000; border-width: 2px 0 0 2px;
+    position: relative;
+  }
+  .legend-col { display: flex; flex-direction: column; }
+  .legend-cell { width: 32px; height: 32px; }
+  .legend-arrow-d, .legend-arrow-r {
+    position: absolute; z-index: 10;
+    font-weight: 900; color: #000; font-size: 18px; line-height: 1;
+    pointer-events: none;
+  }
+  .legend-label-y {
+    position: absolute; white-space: nowrap;
+    font-size: 12px; color: #555;
+    transform: rotate(-45deg);
+    transform-origin: 0 50%;
+  }
+  .legend-label-x {
+    position: absolute; white-space: nowrap;
+    font-size: 12px; color: #555;
+    transform: rotate(45deg);
+    transform-origin: 100% 50%;
+  }
+  .legend-foot {
+    font-size: 10px; color: #888; text-align: right;
+    max-width: 144px; padding-top: 16px; margin-left: auto;
+  }
+  /* Legend cell hover tooltip (deck.gl-style dark) */
+  .legend-tooltip {
+    position: fixed; z-index: 2000; pointer-events: none;
+    background: rgb(41, 50, 60); color: rgb(160, 167, 180);
+    padding: 10px 12px; border-radius: 4px; font-size: 11px;
+    line-height: 1.4; display: none; max-width: 220px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .legend-tooltip strong { color: #fff; }
+  .legend-cell { cursor: pointer; }
+  .legend-cell:hover { opacity: 0.8; }
+  .legend-cell.selected {
+    outline: 3px solid #333;
+    outline-offset: -1px;
+    z-index: 5;
+  }
+
+  /* Tract shapes — distinguish from store circle marker paths */
+  .leaflet-tract-pane path.leaflet-interactive { cursor: pointer; }
+  .leaflet-overlay-pane path.leaflet-interactive { cursor: pointer; }
+
+  /* Tract selection tally */
+  .tract-tally {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid #ddd;
+  }
+  .tract-tally h4 { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: #333; }
+  .tally-row {
+    display: flex; justify-content: space-between; padding: 3px 0;
+    font-size: 12px; color: #555;
+  }
+  .tally-row span:last-child { font-weight: 600; color: #1F4E79; }
+  .tally-export {
+    margin-top: 10px; padding: 5px 12px; font-size: 11px; font-weight: 600;
+    background: #1F4E79; color: #fff; border: none; border-radius: 4px;
+    cursor: pointer; width: 100%;
+  }
+  .tally-export:hover { background: #163a5a; }
+  .tally-save-group {
+    margin-top: 6px; padding: 5px 12px; font-size: 11px; font-weight: 600;
+    background: #fff; color: #1F4E79; border: 1px solid #1F4E79; border-radius: 4px;
+    cursor: pointer; width: 100%;
+  }
+  .tally-save-group:hover { background: #eef3f8; }
+  .tally-city-list {
+    margin-top: 6px; max-height: 150px; overflow-y: auto;
+  }
+  .tally-city-item {
+    display: flex; justify-content: space-between; padding: 2px 0;
+    font-size: 11px; color: #666;
+  }
+  .tally-city-item span:last-child { color: #1F4E79; font-weight: 600; }
+
+  /* Tract popup */
+  .tract-popup { font-size: 12px; line-height: 1.5; min-width: 220px; }
+  .tract-popup .tp-title { font-weight: 700; font-size: 13px; color: #1F4E79; margin-bottom: 4px; }
+  .tract-popup .tp-score-row { display: flex; justify-content: space-between; padding: 2px 0; }
+  .tract-popup .tp-score-label { color: #555; }
+  .tract-popup .tp-score-val { font-weight: 600; }
+  .tract-popup .tp-bar {
+    height: 6px; border-radius: 3px; background: #eee; margin: 2px 0 6px; overflow: hidden;
+  }
+  .tract-popup .tp-bar-fill { height: 100%; border-radius: 3px; }
+  .tract-popup .tp-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; }
+  .tract-popup .tp-link {
+    display: inline-block; margin-top: 6px; font-size: 11px;
+    color: #1a73e8; text-decoration: none;
+  }
+  .tract-popup .tp-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div id="pw-gate">
+  <div class="pw-card">
+    <img src="milkpep_logo.svg" alt="MilkPEP">
+    <h2>CMAB California Grocery Store Map</h2>
+    <p>Enter the password to continue.</p>
+    <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+    <button id="pw-submit">Enter</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div id="map"></div>
+<div class="tract-toggle active" id="tractToggle">
+  <span class="tt-label">Tract Overlay</span>
+  <select id="tractMetricX" title="X-axis metric">
+    <option value="hp">Market Concentration</option>
+    <option value="gp">Food Access</option>
+    <option value="sp">Segregation</option>
+    <option value="adi">Disadvantage</option>
+    <option value="snap">SNAP %</option>
+    <option value="pov">Poverty</option>
+    <option value="mi">Median Income</option>
+    <option value="ph">% Hispanic</option>
+    <option value="pw">% White</option>
+    <option value="pb">% Black</option>
+    <option value="pa">% Asian</option>
+    <option value="popd" selected>Pop Density</option>
+  </select>
+  <span style="color:#999;font-size:11px">×</span>
+  <select id="tractMetricY" title="Y-axis metric">
+    <option value="gp">Food Access</option>
+    <option value="hp">Market Concentration</option>
+    <option value="sp">Segregation</option>
+    <option value="adi">Disadvantage</option>
+    <option value="snap">SNAP %</option>
+    <option value="pov">Poverty</option>
+    <option value="mi">Median Income</option>
+    <option value="ph" selected>% Hispanic</option>
+    <option value="pw">% White</option>
+    <option value="pb">% Black</option>
+    <option value="pa">% Asian</option>
+    <option value="popd">Pop Density</option>
+  </select>
+  <div class="tt-switch"></div>
+</div>
+<div class="tract-legend" id="tractLegend">
+  <h3 id="legendTitle">Concentration & Food Access</h3>
+  <div class="legend-wrap" id="legendWrap">
+    <div class="legend-grid" id="legendGrid"></div>
+    <span class="legend-arrow-d" id="legendArrowD">↓</span>
+    <span class="legend-arrow-r" id="legendArrowR">→</span>
+    <p class="legend-label-y" id="legendLabelY">Poor Food Access</p>
+    <p class="legend-label-x" id="legendLabelX">Market Concentration</p>
+  </div>
+  <p class="legend-foot">National Data</p>
+  <div class="tract-tally" id="tractTally" style="display:none">
+    <h4>Selection Tally</h4>
+    <div class="tally-row"><span>People selected</span><span id="tallyPop">0</span></div>
+    <div class="tally-row"><span>% of CA population</span><span id="tallyPopPct">—</span></div>
+    <div class="tally-row"><span>% Hispanic (selected)</span><span id="tallyPct">—</span></div>
+    <div class="tally-row"><span>% of CA Hispanic pop</span><span id="tallyHispPct">—</span></div>
+    <div class="tally-row"><span>Cities selected</span><span id="tallyCities">0</span></div>
+    <div class="tally-city-list" id="tallyCityList"></div>
+    <button class="tally-export" id="tallyExport">Export Excel</button>
+    <button class="tally-save-group" id="tallySaveGroup">Save Group</button>
+  </div>
+</div>
+<div class="legend-tooltip" id="legendTooltip"></div>
+<button class="filter-toggle" id="filterToggle" aria-label="Toggle filters">Filters &amp; Search</button>
+<div class="filters" id="filters"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  // ====================================================================
+  // Configuration
+  // ====================================================================
+
+  // Retailer brand colors — drives the ring on each Retailer filter row
+  // (and, eventually, the ring around each pin). Sourced from each
+  // brand's primary color where known. Albertsons gets a split-gradient
+  // border to match the original — the rest get a single solid color.
+  const RETAILER_BORDER = {
+    Walmart:           'border:4px solid #ffc220;',
+    Safeway:           'border:4px solid #E31837;',
+    Albertsons:        'border:4px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(135deg,#00529F 50%,#009FE0 50%) border-box;',
+    Vons:              'border:4px solid #E31837;',
+    Pavilions:         'border:4px solid #4d7fb8;',
+    Acme:              'border:4px solid #0d6cb9;',
+    'Jewel-Osco':      'border:4px solid #cf2030;',
+    "Shaw's":          'border:4px solid #0e5eaf;',
+    'Star Markets':    'border:4px solid #E31837;',
+    'Tom Thumb':       'border:4px solid #E31837;',
+    Randalls:          'border:4px solid #cf2030;',
+    Carrs:             'border:4px solid #00529F;',
+    "Andronico's":     'border:4px solid #107c41;',
+    "Pak 'N Save":     'border:4px solid #fbb040;',
+    'United Supermarkets': 'border:4px solid #cf2030;',
+    Tops:              'border:4px solid #E31837;',
+    'Giant Eagle':     'border:4px solid #E31837;',
+    Weis:              'border:4px solid #cf2030;',
+    Ingles:            'border:4px solid #0e5eaf;',
+    'Food City':       'border:4px solid #E31837;',
+    'Food Giant':      'border:4px solid #E31837;',
+    'Piggly Wiggly':   'border:4px solid #cf2030;',
+    'Lowes Foods':     'border:4px solid #0e5eaf;',
+    'Winn-Dixie':      'border:4px solid #E31837;',
+    Kroger:            'border:4px solid #0067b6;',
+    'Smart & Final':       'border:4px solid #E31837;',
+    'Sprouts Farmers Market': 'border:4px solid #4CAF50;',
+    'Costco Wholesale':    'border:4px solid #00529F;',
+    "Trader Joe's":        'border:4px solid #cf2030;',
+    'Aldi':                'border:4px solid #0067b6;',
+    'Food 4 Less':         'border:4px solid #E31837;',
+    'Stater Bros. Market': 'border:4px solid #cf2030;',
+    'Whole Foods Market':  'border:4px solid #0067b6;',
+    "Mother's Nutritional Center": 'border:4px solid #0e5eaf;',
+    'Superior Grocers':    'border:4px solid #cf2030;',
+    'Lucky':               'border:4px solid #E31837;',
+    "Raley's":             'border:4px solid #cf2030;',
+    'Ralphs':              'border:4px solid #cf2030;',
+    'Food Maxx':           'border:4px solid #E31837;',
+    'Primetime Nutrition': 'border:4px solid #0e5eaf;',
+    'Save Mart':           'border:4px solid #cf2030;',
+    "Sam's Club":          'border:4px solid #00529F;',
+    'Winco Foods':         'border:4px solid #cf2030;',
+    'Bel Air':             'border:4px solid #cf2030;',
+    'Jacksons Food Stores': 'border:4px solid #0e5eaf;',
+    'Redwood Market':      'border:4px solid #cf2030;',
+    'Foods Co':            'border:4px solid #E31837;',
+    'Cardenas':            'border:4px solid #cf2030;',
+    'Nob Hill Foods':      'border:4px solid #cf2030;',
+    'Seafood City Supermarket': 'border:4px solid #0067b6;',
+    'Target':              'border:4px solid #cf0000;',
+    'Family Market':       'border:4px solid #0e5eaf;',
+    'Grocery Outlet':      'border:4px solid #E31837;',
+    'Island Pacific Supermarket': 'border:4px solid #0067b6;',
+    'Village Market':      'border:4px solid #0e5eaf;',
+    'Bristol Farms':       'border:4px solid #4d7fb8;',
+    'El Super':            'border:4px solid #cf2030;',
+    'Vallarta Supermarket': 'border:4px solid #E31837;',
+    'Northgate Market':    'border:4px solid #cf2030;',
+    'Gelson\'s Market':    'border:4px solid #0e5eaf;',
+    'Bonfare Market':      'border:4px solid #0e5eaf;',
+    'Holiday Market':      'border:4px solid #0e5eaf;',
+    'Chavez Supermarket':  'border:4px solid #cf2030;',
+    'Nugget Market':       'border:4px solid #0e5eaf;',
+    'Ray\'s Food Place':   'border:4px solid #cf2030;',
+    'Sam\'s Market':       'border:4px solid #0e5eaf;',
+    'Verdugo Market':      'border:4px solid #cf2030;',
+    'City Market':         'border:4px solid #0e5eaf;',
+    '99 Ranch Market':     'border:4px solid #0067b6;',
+    'SF Supermarket':      'border:4px solid #0067b6;',
+    'Pavilions':           'border:4px solid #4d7fb8;',
+    'Jons Market':         'border:4px solid #cf2030;',
+    'Super King Market':   'border:4px solid #0067b6;',
+    'Mother\'s Market':    'border:4px solid #0e5eaf;',
+    'Mother Earth Nutrition': 'border:4px solid #0e5eaf;',
+    'Sav Mor Foods':       'border:4px solid #cf2030;',
+    'Big Saver Foods':     'border:4px solid #cf2030;',
+    'Barons Market':       'border:4px solid #0e5eaf;',
+    'New Leaf Community Market': 'border:4px solid #0e5eaf;',
+    '168 Market':          'border:4px solid #0067b6;',
+    'Lunardi\'s Market':   'border:4px solid #0e5eaf;',
+    'Mollie Stone\'s Market': 'border:4px solid #0e5eaf;',
+    'Andronico\'s':        'border:4px solid #107c41;',
+    'Pak \'N Save':       'border:4px solid #fbb040;',
+    'Rancho San Miguel Market': 'border:4px solid #cf2030;',
+    'Quickeroo':           'border:4px solid #0e5eaf;',
+    'Baby Nutrition':      'border:4px solid #0e5eaf;',
+    'Basic Nutrition':     'border:4px solid #0e5eaf;',
+    'First Step Nutrition': 'border:4px solid #0e5eaf;',
+    'Kids Nutricare':      'border:4px solid #0e5eaf;',
+    'Misc.':           'border:4px solid #94a3b8;',
+  };
+
+  // Marker color (used until pin redesign): one color per organization,
+  // independent of retailer. Cluster icons use the same palette.
+  const ORG_COLORS = {
+    MilkPEP: '#1f78b4',
+    TDA:     '#2e8b57',
+    Both:    '#7b5cd6',
+    SNAP:    '#e67e22',
+  };
+
+  // Logos for each organization (used in the Organization filter rows).
+  // PNG files ship with the static site (built from each brand's
+  // own favicon at deploy time — see prior commit message).
+  // MilkPEP — official favicon is an SVG hosted on milkpep.org. We
+  // serve a local copy to keep the page fully self-contained. Dairy
+  // Alliance — PNG favicon pulled from their site, also local.
+  const ORG_LOGOS = {
+    MilkPEP: 'milkpep_logo.svg',
+    TDA:     'dairyalliance_logo.png',
+  };
+
+  // Logos for processors. Each file is the brand's actual logo,
+  // pulled from each processor's website favicon and bundled locally
+  // under `logos/` so the page stays self-contained on Vercel.
+  const PROCESSOR_LOGOS = {
+    Lucerne:            'logos/lucerne.png',
+    Maola:              'logos/maola.png',
+    'Crystal Creamery': 'logos/crystal_creamery.png',
+    Hollandia:          'logos/hollandia.png',
+    'Sarah Farms':      'logos/sarah_farms.png',
+  };
+
+  // Logos for retailers. Same source pattern as PROCESSOR_LOGOS —
+  // each is the brand's own favicon, fetched once and bundled.
+  // Misc. (catch-all) intentionally has no logo and falls back to
+  // the brand-color ring swatch.
+  const RETAILER_LOGOS = {
+    Walmart:               'logos/walmart.png',
+    Safeway:               'logos/safeway.png',
+    Albertsons:            'logos/albertsons.png',
+    Vons:                  'logos/vons.png',
+    Acme:                  'logos/acme.png',
+    'Jewel-Osco':          'logos/jewel-osco.png',
+    Ingles:                'logos/ingles.png',
+    "Shaw's":              'logos/shaws.png',
+    'Food City':           'logos/food-city.png',
+    'Piggly Wiggly':       'logos/piggly-wiggly.png',
+    Tops:                  'logos/tops.png',
+    'Tom Thumb':           'logos/tom-thumb.png',
+    Kroger:                'logos/kroger.png',
+    'Food Giant':          'logos/food-giant.jpg',
+    'Star Markets':        'logos/star-markets.png',
+    'United Supermarkets': 'logos/united-supermarkets.png',
+    Randalls:              'logos/randalls.png',
+    Weis:                  'logos/weis.png',
+    'Giant Eagle':         'logos/giant-eagle.png',
+    'Lowes Foods':         'logos/lowes-foods.svg',
+    'Winn-Dixie':          'logos/winn-dixie.png',
+    IGA:                   'logos/iga.png',
+    'Harris Teeter':       'logos/harris-teeter.png',
+    'Dollar General Market': 'logos/dollar-general.png',
+    Carrs:                 'logos/carrs.jpg',
+    ShopRite:              'logos/shoprite.png',
+    'Smart & Final':       'logos/smart-final.png',
+    'Sprouts Farmers Market': 'logos/sprouts.png',
+    'Costco Wholesale':    'logos/costco.png',
+    "Trader Joe's":        'logos/trader-joes.png',
+    'Aldi':                'logos/aldi.png',
+    'Food 4 Less':         'logos/food-4-less.png',
+    'Stater Bros. Market': 'logos/stater-bros.png',
+    'Whole Foods Market':  'logos/whole-foods.png',
+    "Mother's Nutritional Center": 'logos/mothers-nutritional.png',
+    'Superior Grocers':    'logos/superior-grocers.png',
+    'Lucky':               'logos/lucky.png',
+    "Raley's":             'logos/raleys.png',
+    'Ralphs':              'logos/ralphs.png',
+    'Food Maxx':           'logos/food-maxx.png',
+    'Primetime Nutrition': 'logos/primetime-nutrition.png',
+    'Save Mart':           'logos/save-mart.png',
+    "Sam's Club":          'logos/sams-club.png',
+    'Winco Foods':         'logos/winco.png',
+    'Bel Air':             'logos/bel-air.png',
+    'Jacksons Food Stores': 'logos/jacksons.png',
+    'Redwood Market':      'logos/redwood-market.png',
+    'Foods Co':            'logos/foods-co.png',
+    'Cardenas':            'logos/cardenas.png',
+    'Nob Hill Foods':      'logos/nob-hill.png',
+    'Seafood City Supermarket': 'logos/seafood-city.png',
+    'Target':              'logos/target-2.png',
+    'Family Market':       'logos/family-market.png',
+    'Grocery Outlet':      'logos/grocery-outlet.png',
+    'Island Pacific Supermarket': 'logos/island-pacific.png',
+    'Village Market':      'logos/village-market.png',
+    'Bristol Farms':       'logos/bristol-farms.png',
+    'El Super':            'logos/el-super.png',
+    'Vallarta Supermarket': 'logos/vallarta.png',
+    'Northgate Market':    'logos/northgate.png',
+    'Gelson\'s Market':    'logos/gelsons.png',
+    'Holiday Market':      'logos/holiday-market.png',
+    'Chavez Supermarket':  'logos/chavez.png',
+    'Nugget Market':       'logos/nugget.png',
+    'Verdugo Market':      'logos/verdugo.png',
+    '99 Ranch Market':     'logos/ranch-99.png',
+    'SF Supermarket':      'logos/sf-supermarket.png',
+    'Pavilions':           'logos/pavilions.png',
+    'Super King Market':   'logos/super-king.png',
+    'Mother\'s Market':    'logos/mothers-market.png',
+    'Mother Earth Nutrition': 'logos/mother-earth.png',
+    'Sav Mor Foods':       'logos/sav-mor.png',
+    'Big Saver Foods':     'logos/big-saver.png',
+    'Barons Market':       'logos/barons.png',
+    'New Leaf Community Market': 'logos/new-leaf.png',
+    '168 Market':          'logos/168-market.png',
+    'Mollie Stone\'s Market': 'logos/mollie-stones.png',
+    'Andronico\'s':        'logos/andronicos.png',
+    'Rancho San Miguel Market': 'logos/rancho-san-miguel.png',
+    'Baby Nutrition':      'logos/baby-nutrition.png',
+    'Basic Nutrition':     'logos/basic-nutrition.png',
+    'First Step Nutrition': 'logos/first-step.png',
+  };
+
+  // Display order for the Dairy Processors section. Order matches the
+  // original. Processors not in this list go after, alphabetically.
+  // `(unspecified)` always goes last because it's a catch-all.
+  const PROCESSOR_ORDER = ['Lucerne', 'Maola', 'Crystal Creamery', 'Hollandia', 'Sarah Farms'];
+
+  // ====================================================================
+  // State
+  // ====================================================================
+
+  let map, stateLayer, clusterGroup;
+  let allStores = [];
+  // Tract overlay state
+  let tractGeo = null;       // GeoJSON FeatureCollection with boundaries
+  let tractLayer = null;
+  let tractActive = true;
+  let tractMetricX = 'popd';   // horizontal axis (→ arrow)
+  let tractMetricY = 'ph';     // vertical axis (↓ arrow)
+  let tractFilter = new Set(); // Set of "x,y" strings for selected legend cells
+  let tractStoreFilter = null;  // Set of GEOIDs when a tract is clicked for store filtering, null = none
+  let retailersVisible = true;
+  // Search state — debounce timer and currently-highlighted result
+  // index for keyboard navigation. Reset to -1 on every re-render
+  // so Arrow Down always lands on the first result.
+  let searchDebounce = null;
+  let searchActiveIdx = -1;
+  // Monotonic token so out-of-order async geocode responses can't
+  // overwrite a fresher result set (classic stale-promise bug).
+  let searchRequestToken = 0;
+  // Active search marker (the orange pin dropped on geocode hits).
+  let searchMarker = null;
+
+  // State-name → USPS abbr lookup, used to dedupe internal city hits
+  // against Nominatim suggestions for the same place. Nominatim
+  // returns full names ("North Carolina"); our store rows carry
+  // abbreviations ("NC").
+  const US_STATE_ABBR = {
+    'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+    'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+    'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+    'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+    'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+    'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+    'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+    'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+    'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+    'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY',
+    'District of Columbia':'DC'
+  };
+  let summary = {};
+  let tdaGrocery = {};
+  // Filter dimensions: organizations + retailers (banner_group) +
+  // processors + regions + states. Each maps key→bool.
+  let filters = {
+    retailers: {},
+    storeTypes: {},
+    states: {},
+  };
+  // Per-dimension filter mode — ports the original map's behavior:
+  // 'all' means "no manual selection yet" (clicking a row isolates
+  // that one item); 'single' means the user has already made manual
+  // selections (clicking a row toggles it within the current set).
+  // The mode flips to 'single' on first click, back to 'all' when
+  // the user hits the section's "all" link. Without this, selecting
+  // a single processor / banner / region requires N-1 deselects —
+  // the original's defining UX detail.
+  let filterMode = {
+    retailers: 'all',
+    storeTypes: 'all',
+    states: 'all',
+  };
+  let filteredStores = [];
+
+  // ====================================================================
+  // Pure helpers
+  // ====================================================================
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, ch =>
+      ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[ch]));
+  }
+
+  function markerColor(store) {
+    return ORG_COLORS.MilkPEP;
+  }
+
+  /** Five-dimensional AND filter. A store is visible only if every
+   *  dimension that has any rows enabled accepts it. The org check
+   *  uses .some() because organizations is an array per store. */
+  function passesFilters(store) {
+    const r = store.banner_group || 'Misc.';
+    if (!filters.retailers[r]) return false;
+    const st = store.store_type || '(unspecified)';
+    if (!filters.storeTypes[st]) return false;
+    if (tractStoreFilter && !tractStoreFilter.has(store._tractGeoid)) return false;
+    return true;
+  }
+
+  function buildPopup(store) {
+    const proc = store.processor ? `<div><strong>Processor:</strong> ${escapeHtml(store.processor)}</div>` : '';
+    const owner = store.holding_co ? `<div><strong>Holding co.:</strong> ${escapeHtml(store.holding_co)}</div>` : '';
+    const stType = store.store_type ? `<div><strong>Store type:</strong> ${escapeHtml(store.store_type)}</div>` : '';
+    const storeName = store.banner && store.sn ? `${escapeHtml(store.banner)} #${escapeHtml(store.sn)}` : escapeHtml(store.banner || store.store_name || '');
+    const svEmbed = `https://maps.google.com/maps?q=${store.lat},${store.lon}&z=16&output=embed`;
+    const svLink = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${store.lat},${store.lon}`;
+    return `
+      <div class="popup-content">
+        <div class="store-num">${storeName}</div>
+        <div>${escapeHtml(store.addr || '')}</div>
+        <div>${escapeHtml(store.city || '')}, ${escapeHtml(store.state || '')} ${escapeHtml(store.zip || '')}</div>
+        ${owner}
+        ${proc}
+        ${stType}
+        <div class="sv-wrap">
+          <iframe src="${svEmbed}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <a class="sv-link" href="${svLink}" target="_blank" rel="noopener">Google Street View &nearr;</a>
+      </div>
+    `;
+  }
+
+  function buildMarker(store) {
+    // When the retailer has a logo on file, render the pin AS the
+    // logo — a small white-bordered circle containing the brand mark
+    // tinted with the org color along its rim. This makes individual
+    // pins recognizable at a glance without sacrificing the cluster
+    // (count) summary view at lower zooms.
+    const banner = store.banner_group || store.banner;
+    const logoSrc = RETAILER_LOGOS[banner];
+    if (logoSrc) {
+      const ringColor = markerColor(store);
+      const html = `<div class="store-pin" style="border-color:${ringColor}">`
+                 + `<img src="${logoSrc}" alt="" draggable="false">`
+                 + `</div>`;
+      return L.marker([store.lat, store.lon], {
+        icon: L.divIcon({ html, className: '', iconSize: [28, 28], iconAnchor: [14, 14] })
+      }).bindPopup(buildPopup(store), { maxWidth: 320 });
+    }
+    // Fallback for Misc. and any banner without a logo: the original
+    // colored circle marker. Same look as before.
+    const cm = L.circleMarker([store.lat, store.lon], {
+      radius: 6, color: '#ffffff', weight: 1.5,
+      fillColor: markerColor(store), fillOpacity: 0.9
+    }).bindPopup(buildPopup(store), { maxWidth: 320 });
+    return cm;
+  }
+
+  function clusterColor(markers) {
+    return ORG_COLORS.MilkPEP;
+  }
+
+  // ====================================================================
+  // Filter mutations + render pipeline
+  // ====================================================================
+
+  function recomputeAndRender(opts = {}) {
+    filteredStores = allStores.filter(passesFilters);
+    clusterGroup.clearLayers();
+    filteredStores.forEach(store => {
+      const m = buildMarker(store);
+      m.storeData = store;
+      clusterGroup.addLayer(m);
+    });
+    renderSidebar();
+    renderStateStyles();
+    updateTractStoreStatus();
+    // Auto-fit bounds is OPT-IN per call — we trigger it on isolate
+    // transitions (first click in a section) but NOT on every toggle.
+    // Fitting on every click would yank the viewport unpredictably.
+    if (opts.fitBounds && filteredStores.length > 0) {
+      const bounds = clusterGroup.getBounds();
+      if (bounds.isValid()) {
+        // Intersect with the current viewport so selecting a retailer
+        // only fits to the stores visible in the area the user is
+        // already looking at, rather than flying out to the whole state.
+        const vp = map.getBounds();
+        const fit = L.latLngBounds(
+          [Math.max(bounds.getSouth(), vp.getSouth()),
+           Math.max(bounds.getWest(),  vp.getWest())],
+          [Math.min(bounds.getNorth(), vp.getNorth()),
+           Math.min(bounds.getEast(),  vp.getEast())]
+        );
+        map.flyToBounds(fit.isValid() ? fit : bounds,
+          { maxZoom: 12, padding: [40, 40], duration: 0.6 });
+      }
+    }
+  }
+
+  /** Original-map behavior: first click in a section ISOLATES that
+   *  item (deselects everything else in the section). Subsequent
+   *  clicks toggle within the now-active subset. The section's
+   *  "all" link resets back to isolate-mode. */
+  function toggleFilter(group, key) {
+    if (filterMode[group] === 'all') {
+      // Isolate this single value, then transition to single-select mode.
+      Object.keys(filters[group]).forEach(k => { filters[group][k] = false; });
+      filters[group][key] = true;
+      filterMode[group] = 'single';
+      recomputeAndRender({ fitBounds: true });
+    } else {
+      filters[group][key] = !filters[group][key];
+      // Refit on every toggle in single-select mode. Re-enabling a
+      // retailer / state / etc. would otherwise leave the viewport
+      // wherever the user last left it, which can hide the pins they
+      // just brought back. Fitting to the new active set makes the
+      // change visible.
+      recomputeAndRender({ fitBounds: true });
+    }
+  }
+
+  function setAllInGroup(group, value) {
+    Object.keys(filters[group]).forEach(k => { filters[group][k] = value; });
+    // "all" returns the section to isolate-mode (any subsequent click
+    // will solo that one item). "none" stays in 'single' mode.
+    filterMode[group] = value ? 'all' : 'single';
+    recomputeAndRender();
+  }
+
+  // ====================================================================
+  // Sidebar rendering
+  // ====================================================================
+
+  /** Compute counts for ONE filter dimension while honoring the OTHER
+   *  dimensions' current state. This is what makes "show me only
+   *  Maola pins" produce sensible "13 retailers" / "8 states"
+   *  numbers in the sidebar without inflating them with filtered-out
+   *  stores. O(N * dimensions) per render — fine at our scale. */
+  function countsForDimension(excludeDim) {
+    const counts = {};
+    Object.keys(filters[excludeDim]).forEach(k => counts[k] = 0);
+    const bounds = map.getBounds();
+    allStores.forEach(s => {
+      // Only count stores within the current map viewport.
+      if (!bounds.contains([s.lat, s.lon])) return;
+      // Honor tract store filter (legend cell or tract click).
+      if (tractStoreFilter && !tractStoreFilter.has(s._tractGeoid)) return;
+      // Re-implement passesFilters but skip the excluded dimension.
+      const r = s.banner_group || 'Misc.';
+      if (excludeDim !== 'retailers' && !filters.retailers[r]) return;
+      const st = s.store_type || '(unspecified)';
+      if (excludeDim !== 'storeTypes' && !filters.storeTypes[st]) return;
+
+      // Increment the count for whichever value of the excluded dim
+      // this store carries.
+      switch (excludeDim) {
+        case 'retailers':     if (r in counts) counts[r]++; break;
+        case 'storeTypes':    if (st in counts) counts[st]++; break;
+      }
+    });
+    return counts;
+  }
+
+  function rowOrgHtml(key, count) {
+    const enabled = filters.organizations[key];
+    const logo = ORG_LOGOS[key]
+      ? `<img class="filter-logo" src="${ORG_LOGOS[key]}" alt="">`
+      : '';
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="organizations" data-key="${escapeHtml(key)}">
+      ${logo}
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function rowRetailerHtml(key, count) {
+    const enabled = filters.retailers[key];
+    // Prefer the brand logo when we have one; fall back to the
+    // ring-style brand-color swatch otherwise (Misc. + any banner
+    // we haven't sourced a logo for).
+    const mark = RETAILER_LOGOS[key]
+      ? `<img class="filter-logo" src="${RETAILER_LOGOS[key]}" alt="">`
+      : `<div class="retailer-border-sample" style="${RETAILER_BORDER[key] || RETAILER_BORDER['Misc.']}"></div>`;
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="retailers" data-key="${escapeHtml(key)}">
+      ${mark}
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function rowProcessorHtml(key, count) {
+    const enabled = filters.processors[key];
+    const logo = PROCESSOR_LOGOS[key]
+      ? `<img class="filter-logo" src="${PROCESSOR_LOGOS[key]}" alt="">`
+      // No logo on file — use an invisible spacer of the same width so
+      // labels align with logo'd rows. Avoids the gray-circle look
+      // that read as "broken image" to users.
+      : `<div class="filter-logo" style="visibility:hidden"></div>`;
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="processors" data-key="${escapeHtml(key)}">
+      ${logo}
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function rowSimpleHtml(group, key, count) {
+    const enabled = filters[group][key];
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="${group}" data-key="${escapeHtml(key)}">
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function sectionHeader(label, group) {
+    return `<h4>${label}<span class="section-actions">
+      <a data-action="all" data-group="${group}">all</a>
+      <a data-action="none" data-group="${group}">none</a>
+    </span></h4>`;
+  }
+
+  function renderSidebar() {
+    const retCounts = countsForDimension('retailers');
+    // Retailers — only show rows with stores in the current viewport.
+    // Sort by cross-filtered count (descending) so the most-populous
+    // brand sits at top. Misc. always last.
+    const retKeys = Object.keys(filters.retailers)
+      .filter(k => k !== 'Misc.' && (retCounts[k] || 0) > 0);
+    retKeys.sort((a, b) => (retCounts[b] || 0) - (retCounts[a] || 0)
+                       || a.localeCompare(b));
+    const retOrder = [...retKeys];
+    if ('Misc.' in filters.retailers && (retCounts['Misc.'] || 0) > 0) retOrder.push('Misc.');
+    const retRows = retOrder.map(r => rowRetailerHtml(r, retCounts[r] || 0)).join('');
+
+    const stTypeCounts = countsForDimension('storeTypes');
+    const stTypeKeys = Object.keys(filters.storeTypes).sort();
+    const stTypeRows = stTypeKeys.map(st => rowSimpleHtml('storeTypes', st, stTypeCounts[st] || 0)).join('');
+
+    // Preserve search state across re-renders (moveend triggers
+    // renderSidebar which would otherwise wipe the input and dropdown).
+    const oldInput = document.getElementById('searchInput');
+    const oldResults = document.getElementById('searchResults');
+    const savedQuery = oldInput ? oldInput.value : '';
+    const savedResultsHtml = oldResults ? oldResults.innerHTML : '';
+    const savedResultsOpen = oldResults ? oldResults.classList.contains('open') : false;
+
+    document.getElementById('filters').innerHTML = `
+      <h3>Filters</h3>
+      <div class="filter-stats">
+        ${filteredStores.length.toLocaleString()} of ${allStores.length.toLocaleString()} pinned stores visible
+      </div>
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="searchInput"
+               placeholder="Search store #, city, zip, or address…"
+               autocomplete="off">
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      <div class="search-status" id="searchStatus"></div>
+      <div class="action-row">
+        <button class="reset-btn ${hasActiveFilters() ? '' : 'hidden'}" id="resetAll">↻ Reset filters</button>
+        <button class="export-btn" id="exportCsv" title="Download visible stores as CSV">⬇ Export CSV</button>
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('Store Type', 'storeTypes')}
+        ${stTypeRows}
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('Retailers', 'retailers')}
+        <div class="visibility-toggle${retailersVisible ? '' : ' off'}" id="retailerVisibility">
+          <span>Show pins on map</span>
+          <div class="vt-switch"></div>
+        </div>
+        ${retRows}
+      </div>
+
+      ${customGroups.length > 0 ? `
+      <div class="filter-section">
+        <div class="section-header"><span>Custom Groups</span></div>
+        ${customGroups.map((g, i) => `
+          <div class="filter-item ${g.active ? '' : 'disabled'}" data-group-idx="${i}">
+            <span class="filter-label">${escapeHtml(g.name)}</span>
+            <span class="filter-count">${g.active ? 'excluded' : g.geoids.size}</span>
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+    `;
+    // Restore search state so moveend re-renders don't wipe it.
+    if (savedQuery) {
+      const newInput = document.getElementById('searchInput');
+      if (newInput) newInput.value = savedQuery;
+    }
+    if (savedResultsOpen) {
+      const newResults = document.getElementById('searchResults');
+      if (newResults) {
+        newResults.innerHTML = savedResultsHtml;
+        newResults.classList.add('open');
+      }
+    }
+  }
+
+  function renderStateStyles() {
+    if (!stateLayer) return;
+    const visibleStates = new Set(filteredStores.map(s => s.state));
+    const stateMap = {
+      Alabama:'AL', Alaska:'AK', Arizona:'AZ', Arkansas:'AR', California:'CA', Colorado:'CO', Connecticut:'CT', Delaware:'DE',
+      Florida:'FL', Georgia:'GA', Hawaii:'HI', Idaho:'ID', Illinois:'IL', Indiana:'IN', Iowa:'IA', Kansas:'KS', Kentucky:'KY',
+      Louisiana:'LA', Maine:'ME', Maryland:'MD', Massachusetts:'MA', Michigan:'MI', Minnesota:'MN', Mississippi:'MS',
+      Missouri:'MO', Montana:'MT', Nebraska:'NE', Nevada:'NV', 'New Hampshire':'NH', 'New Jersey':'NJ', 'New Mexico':'NM', 'New York':'NY',
+      'North Carolina':'NC', 'North Dakota':'ND', Ohio:'OH', Oklahoma:'OK', Oregon:'OR', Pennsylvania:'PA', 'Rhode Island':'RI',
+      'South Carolina':'SC', 'South Dakota':'SD', Tennessee:'TN', Texas:'TX', Utah:'UT', Vermont:'VT', Virginia:'VA', Washington:'WA',
+      'West Virginia':'WV', Wisconsin:'WI', Wyoming:'WY', 'District of Columbia':'DC'
+    };
+    // Original visual cue: inactive states have NO fill, just a faint
+    // outline. Active states get a barely-there blue tint. The pins
+    // are the focus, not the choropleth.
+    stateLayer.eachLayer(layer => {
+      const abbr = stateMap[layer.feature.properties.name];
+      const active = visibleStates.has(abbr);
+      layer.setStyle({
+        fillColor: '#bcd3e8',
+        fillOpacity: active ? 0.18 : 0,
+        color: active ? '#7fa7d1' : '#cdd6df',
+        weight: 0.7
+      });
+    });
+  }
+
+  function exportVisibleStores() {
+    const normCity = c => (c || '').trim().toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase());
+    const headers = ['Store #','Retailer','Store Type','Address','City','State','Zip',
+      'County','Tract GEOID','Lat','Lon','Processor','Holding Co.'];
+    const lines = [headers.join(',')];
+    filteredStores.forEach(s => {
+      const row = [
+        s.sn, s.banner_group || 'Misc.', s.store_type, s.addr, normCity(s.city), s.state, s.zip,
+        s.county || '', s._tractGeoid || '', s.lat, s.lon, s.processor || '', s.holding_co
+      ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`);
+      lines.push(row.join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ca_grocery_stores.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Single delegated listener for the entire sidebar. Live clicks
+  // hit either a row (toggle the filter) or a section action link
+  // (all/none). No re-attaching needed when sidebar HTML re-renders.
+  function attachSidebarHandlers() {
+    const root = document.getElementById('filters');
+    root.addEventListener('click', e => {
+      // Global reset has highest precedence — wipe everything and
+      // recenter the map.
+      if (e.target.closest('#resetAll')) {
+        resetAllFilters();
+        return;
+      }
+      // Export visible stores to CSV.
+      if (e.target.closest('#exportCsv')) {
+        exportVisibleStores();
+        return;
+      }
+      // Retailer pin visibility toggle.
+      if (e.target.closest('#retailerVisibility')) {
+        retailersVisible = !retailersVisible;
+        if (retailersVisible) {
+          map.addLayer(clusterGroup);
+        } else {
+          map.removeLayer(clusterGroup);
+        }
+        const vt = document.getElementById('retailerVisibility');
+        if (vt) vt.classList.toggle('off', !retailersVisible);
+        return;
+      }
+      // Search status banner close button.
+      if (e.target.closest('.ss-close')) {
+        const ss = document.getElementById('searchStatus');
+        if (ss) ss.classList.remove('open');
+        clearSearchMarker();
+        return;
+      }
+      // Search result selection — store hits fly+popup, geocode hits
+      // fly to lat/lon and check coverage.
+      const sr = e.target.closest('.search-result-item');
+      if (sr) {
+        const dropdown = document.getElementById('searchResults');
+        const input = document.getElementById('searchInput');
+        if (sr.classList.contains('geocode')) {
+          const lat = parseFloat(sr.dataset.lat);
+          const lon = parseFloat(sr.dataset.lon);
+          const label = sr.dataset.label || '';
+          flyToLocation(lat, lon, label);
+        } else {
+          const idx = +sr.dataset.idx;
+          flyToStore(allStores[idx]);
+        }
+        dropdown.classList.remove('open');
+        if (input) input.value = '';
+        return;
+      }
+      const action = e.target.closest('a[data-action]');
+      if (action) {
+        e.preventDefault();
+        setAllInGroup(action.dataset.group, action.dataset.action === 'all');
+        return;
+      }
+      const groupRow = e.target.closest('[data-group-idx]');
+      if (groupRow) {
+        const idx = parseInt(groupRow.dataset.groupIdx, 10);
+        if (customGroups[idx]) {
+          customGroups[idx].active = !customGroups[idx].active;
+          rebuildGroupExclusions();
+          persistGroups();
+          tractStoreFilter = effectiveTractGeoids();
+          renderSidebar();
+          updateTally();
+          recomputeAndRender();
+        }
+        return;
+      }
+      const item = e.target.closest('.filter-item');
+      if (item) toggleFilter(item.dataset.group, item.dataset.key);
+    });
+
+    // Delegated input listener — survives sidebar re-renders.
+    // Debounced 200ms so we don't re-score 12k stores on every
+    // keystroke (the Gopuff map shipped this same fix). The timer
+    // is module-scoped so successive keystrokes coalesce.
+    root.addEventListener('input', e => {
+      if (e.target.id !== 'searchInput') return;
+      const value = e.target.value;
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => runSearch(value), 200);
+    });
+
+    // Keyboard navigation in the search box: Arrow up/down moves
+    // through results, Enter selects the highlighted one (or the
+    // first if none highlighted), Escape closes the dropdown.
+    root.addEventListener('keydown', e => {
+      if (e.target.id !== 'searchInput') return;
+      const dropdown = document.getElementById('searchResults');
+      const items = dropdown.querySelectorAll('.search-result-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!items.length) return;
+        searchActiveIdx = Math.min(searchActiveIdx + 1, items.length - 1);
+        updateSearchHighlight(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!items.length) return;
+        searchActiveIdx = Math.max(searchActiveIdx - 1, -1);
+        updateSearchHighlight(items);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const target = items[searchActiveIdx >= 0 ? searchActiveIdx : 0];
+        if (target) target.click();
+      } else if (e.key === 'Escape') {
+        dropdown.classList.remove('open');
+        searchActiveIdx = -1;
+      }
+    });
+
+    // Hide dropdown on focus loss, but with a 200ms delay so a click
+    // on a result registers before the dropdown disappears (the
+    // mousedown→blur→click sequence otherwise eats the click). Same
+    // workaround the Gopuff map uses.
+    root.addEventListener('focusout', e => {
+      if (e.target.id !== 'searchInput') return;
+      setTimeout(() => {
+        const dd = document.getElementById('searchResults');
+        if (dd) dd.classList.remove('open');
+      }, 200);
+    });
+    root.addEventListener('focusin', e => {
+      if (e.target.id !== 'searchInput' && !e.target.closest('.search-results')) return;
+      const dd = document.getElementById('searchResults');
+      if (dd && dd.innerHTML.trim()) dd.classList.add('open');
+    });
+
+    // Mobile toggle: open/close the slide-up filter sheet.
+    document.getElementById('filterToggle').addEventListener('click', () => {
+      document.body.classList.toggle('filters-open');
+    });
+
+    // Tap outside the panel on mobile closes the sheet (but not when
+    // tapping inside .filters itself).
+    document.addEventListener('click', e => {
+      if (!document.body.classList.contains('filters-open')) return;
+      if (e.target.closest('.filters') || e.target.closest('#filterToggle')) return;
+      document.body.classList.remove('filters-open');
+    });
+  }
+
+  /** Two-tier search: first ranks our internal store rows (store#,
+   *  banner, city, zip, address); then, if there's headroom, calls
+   *  Nominatim for general US geocoding suggestions so the user can
+   *  jump to a non-store location and see whether it's covered.
+   *
+   *  Internal hits get a green coverage dot. Geocode hits get a
+   *  transparent spacer of the same width so the two lists align.
+   *  This is the same pattern shipped on the Gopuff coverage map. */
+  async function runSearch(rawQuery) {
+    const dropdown = document.getElementById('searchResults');
+    if (!dropdown) return; // sidebar may have re-rendered between debounce fire and now
+    searchActiveIdx = -1; // reset keyboard cursor on every fresh result set
+    const q = (rawQuery || '').trim().toLowerCase();
+    if (q.length < 2) { dropdown.classList.remove('open'); dropdown.innerHTML = ''; return; }
+
+    // ---- Internal hits: cities first, then stores (CA only) ----
+    const cityMap = new Map(); // cityKey -> { name, state, lat, lon, count, score }
+    const storeScored = [];
+    for (let i = 0; i < allStores.length; i++) {
+      const s = allStores[i];
+      // Only California locations are searchable.
+      if (s.state !== 'CA') continue;
+      const sn = String(s.sn || '').toLowerCase();
+      const banner = String(s.banner || '').toLowerCase();
+      const city = String(s.city || '').toLowerCase();
+      const zip = String(s.zip || '').toLowerCase();
+      const addr = String(s.addr || '').toLowerCase();
+      let storeScore = 0;
+      if (sn === q) storeScore = 100;
+      else if (sn.startsWith(q)) storeScore = 80;
+      else if (banner.startsWith(q)) storeScore = 70;
+      else if (zip.startsWith(q)) storeScore = 65;
+      else if (banner.includes(q)) storeScore = 50;
+      else if (addr.includes(q)) storeScore = 30;
+      if (storeScore) storeScored.push({ idx: i, score: storeScore });
+
+      // Collect city matches separately so they can be shown on top.
+      let cityScore = 0;
+      if (city === q) cityScore = 90;
+      else if (city.startsWith(q)) cityScore = 75;
+      else if (city.includes(q)) cityScore = 45;
+      if (cityScore) {
+        const key = city;
+        const existing = cityMap.get(key);
+        if (!existing || cityScore > existing.score) {
+          cityMap.set(key, {
+            name: s.city, state: s.state,
+            lat: s.lat, lon: s.lon,
+            count: (existing?.count || 0) + 1,
+            score: cityScore
+          });
+        } else {
+          existing.count++;
+        }
+      }
+    }
+    storeScored.sort((a, b) => b.score - a.score);
+    const storeHits = storeScored.slice(0, 6);
+    const cityHits = [...cityMap.values()]
+      .sort((a, b) => b.score - a.score || b.count - a.count)
+      .slice(0, 4);
+
+    // Render internal hits immediately so the dropdown feels snappy
+    // even before Nominatim responds.
+    renderSearchResults(dropdown, q, cityHits, storeHits, []);
+
+    // ---- General geocode suggestions (Nominatim) ----
+    // Skip the network call for pure store-number queries — they're
+    // never going to geocode usefully and we'd just hit rate limits.
+    if (/^\d{1,5}$/.test(q) && !/\d{5}/.test(q)) {
+      // partial numeric (likely store#) — no geocode
+      return;
+    }
+    // Token-stamp this request so a slower in-flight response from a
+    // previous query can't overwrite a newer dropdown.
+    const myToken = ++searchRequestToken;
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rawQuery + ', California')}&limit=5&countrycodes=us&addressdetails=1`;
+      const resp = await fetch(url, { headers: { 'Accept-Language': 'en-US' } });
+      if (!resp.ok || myToken !== searchRequestToken) return;
+      const data = await resp.json();
+      if (myToken !== searchRequestToken) return;
+      // Filter out duplicates of internal city hits so the same city
+      // doesn't appear twice (once with a dot, once without).
+      const internalCityKeys = new Set(
+        cityHits.map(c => `${c.name.toLowerCase()}|${c.state.toLowerCase()}`)
+      );
+      const geocodes = [];
+      for (const r of data) {
+        const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+        if (!isFinite(lat) || !isFinite(lon)) continue;
+        const a = r.address || {};
+        const city = a.city || a.town || a.village || a.municipality || a.county || '';
+        const state = a.state || '';
+        const cityKey = `${city.toLowerCase()}|${(US_STATE_ABBR[state] || state).toLowerCase()}`;
+        if (internalCityKeys.has(cityKey)) continue;
+        const label = r.display_name;
+        const short = city && state
+          ? `${city}, ${state}`
+          : (label.split(',').slice(0, 2).join(',').trim() || label);
+        geocodes.push({
+          lat, lon, label, short,
+          type: r.type || (r.class === 'place' ? 'place' : '')
+        });
+        if (geocodes.length >= 5) break;
+      }
+      renderSearchResults(dropdown, q, cityHits, storeHits, geocodes);
+    } catch (err) {
+      // Network failure is non-fatal — internal results already
+      // rendered, just log for diagnostics.
+      console.warn('Geocode autocomplete failed:', err);
+    }
+  }
+
+  /** Render both result groups into the dropdown. Called twice per
+   *  query: once with just store hits (instant) and once again
+   *  after the geocode response lands. */
+  function renderSearchResults(dropdown, q, cityHits, storeHits, geocodes) {
+    if (!cityHits.length && !storeHits.length && !geocodes.length) {
+      dropdown.innerHTML = '<div class="search-empty">No matches</div>';
+      dropdown.classList.add('open');
+      return;
+    }
+    // City hits render first (on top), with a location-pin icon.
+    const cityRows = cityHits.map(c => {
+      return `<div class="search-result-item geocode"
+                   data-lat="${c.lat}" data-lon="${c.lon}"
+                   data-label="${escapeHtml(c.name + ', ' + c.state)}">
+        <div class="sr-row">
+          <span class="coverage-dot empty"></span>
+          <div style="flex:1;min-width:0;">
+            <div><span class="sr-banner">${escapeHtml(c.name)}</span><span class="sr-type">city · ${c.count} stores</span></div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    const storeRows = storeHits.map(({ idx }) => {
+      const s = allStores[idx];
+      const num = s.sn ? `#${escapeHtml(String(s.sn))} · ` : '';
+      return `<div class="search-result-item" data-idx="${idx}">
+        <div class="sr-row">
+          <span class="coverage-dot"></span>
+          <div style="flex:1;min-width:0;">
+            <div><span class="sr-banner">${escapeHtml(s.banner || '')}</span> ${num}${escapeHtml(s.city || '')}, ${escapeHtml(s.state || '')}</div>
+            <div class="sr-meta">${escapeHtml(s.addr || '')} ${escapeHtml(s.zip || '')}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    const geoRows = geocodes.map(g => {
+      return `<div class="search-result-item geocode"
+                   data-lat="${g.lat}" data-lon="${g.lon}"
+                   data-label="${escapeHtml(g.short)}">
+        <div class="sr-row">
+          <span class="coverage-dot empty"></span>
+          <div style="flex:1;min-width:0;">
+            <div><span class="sr-banner">${escapeHtml(g.short)}</span><span class="sr-type">${escapeHtml(g.type || 'place')}</span></div>
+            <div class="sr-meta">${escapeHtml(g.label)}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    dropdown.innerHTML = cityRows + storeRows + geoRows;
+    dropdown.classList.add('open');
+  }
+
+  /** Visually mark the keyboard-selected search result and scroll
+   *  it into view if needed. Called from keydown Arrow handlers. */
+  function updateSearchHighlight(items) {
+    items.forEach((el, i) => {
+      if (i === searchActiveIdx) {
+        el.classList.add('active');
+        el.scrollIntoView({ block: 'nearest' });
+      } else {
+        el.classList.remove('active');
+      }
+    });
+  }
+
+  /** Fly to a geocoded location (a Nominatim suggestion the user
+   *  picked). Drops an orange search marker, evaluates coverage by
+   *  finding the nearest store within ~25mi, and renders a status
+   *  banner under the search box (covered / not covered). The user
+   *  navigates to non-covered locations all the same — same UX
+   *  promise as the Gopuff coverage map.
+   *
+   *  We DON'T mutate filters here — the user is investigating a
+   *  geographic question, not a brand question. Their filter state
+   *  is preserved. The status banner reports coverage relative to
+   *  *currently visible* stores so it answers the question they
+   *  actually care about. */
+  function flyToLocation(lat, lon, label) {
+    if (!isFinite(lat) || !isFinite(lon)) return;
+    clearSearchMarker();
+    searchMarker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: '<div class="search-marker">📍</div>',
+        className: '', iconSize: [36, 36], iconAnchor: [18, 18]
+      })
+    }).addTo(map);
+    map.flyTo([lat, lon], 11, { duration: 0.7 });
+
+    // Coverage check against currently-filtered stores.
+    const RADIUS_MI = 25;
+    const nearest = nearestVisibleStore(lat, lon);
+    const ss = document.getElementById('searchStatus');
+    if (!ss) return;
+    if (nearest && nearest.distMi <= RADIUS_MI) {
+      const s = nearest.store;
+      ss.className = 'search-status covered open';
+      ss.innerHTML = `<span class="ss-close">✕</span>
+        <div class="ss-title">✓ ${escapeHtml(label || 'Location')} is covered</div>
+        <div>Nearest visible store: <b>${escapeHtml(s.banner || '')}</b>
+          ${s.sn ? `#${escapeHtml(String(s.sn))}` : ''} in
+          ${escapeHtml(s.city || '')}, ${escapeHtml(s.state || '')}
+          (~${nearest.distMi.toFixed(1)} mi)</div>`;
+    } else if (nearest) {
+      ss.className = 'search-status not-covered open';
+      ss.innerHTML = `<span class="ss-close">✕</span>
+        <div class="ss-title">✗ No stores within ${RADIUS_MI} mi of ${escapeHtml(label || 'this location')}</div>
+        <div>Nearest visible: <b>${escapeHtml(nearest.store.banner || '')}</b>
+          in ${escapeHtml(nearest.store.city || '')},
+          ${escapeHtml(nearest.store.state || '')}
+          (~${nearest.distMi.toFixed(0)} mi away)</div>`;
+    } else {
+      ss.className = 'search-status not-covered open';
+      ss.innerHTML = `<span class="ss-close">✕</span>
+        <div class="ss-title">✗ No visible stores</div>
+        <div>Try resetting filters to see all coverage.</div>`;
+    }
+  }
+
+  function clearSearchMarker() {
+    if (searchMarker) { map.removeLayer(searchMarker); searchMarker = null; }
+  }
+
+  /** Haversine nearest-store search across the currently filtered set.
+   *  Linear scan is fine at our scale (~12k pins, single-digit ms). */
+  function nearestVisibleStore(lat, lon) {
+    let best = null;
+    for (const s of filteredStores) {
+      if (s.lat == null || s.lon == null) continue;
+      const d = haversineMi(lat, lon, s.lat, s.lon);
+      if (!best || d < best.distMi) best = { store: s, distMi: d };
+    }
+    return best;
+  }
+
+  function haversineMi(lat1, lon1, lat2, lon2) {
+    const R = 3958.8; // miles
+    const toRad = x => x * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2) ** 2 +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon/2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+
+  /** Fly to a store and open its popup. If the store is currently
+   *  filtered out, we temporarily reset filters so the pin is
+   *  visible — searching for a hidden store and getting nothing
+   *  would be confusing. */
+  function flyToStore(s) {
+    if (!s || s.lat == null || s.lon == null) return;
+    if (!passesFilters(s)) {
+      resetAllFilters();
+    }
+    map.flyTo([s.lat, s.lon], 14, { duration: 0.7 });
+    // After the cluster un-spiderfies at zoom 10+, find the marker
+    // and open its popup. Slight delay to let flyTo settle.
+    setTimeout(() => {
+      clusterGroup.eachLayer(m => {
+        if (m.storeData && m.storeData === s) {
+          clusterGroup.zoomToShowLayer(m, () => m.openPopup());
+        }
+      });
+      // Auto-close mobile sheet so the user sees the map.
+      document.body.classList.remove('filters-open');
+    }, 750);
+  }
+
+  /** Test whether any filter dimension is non-default (i.e., any
+   *  value within it is unselected, or its mode is single). Used to
+   *  decide if the global Reset button should be visible. */
+  function hasActiveFilters() {
+    for (const dim of Object.keys(filters)) {
+      if (filterMode[dim] !== 'all') return true;
+      for (const k of Object.keys(filters[dim])) {
+        if (!filters[dim][k]) return true;
+      }
+    }
+    return false;
+  }
+
+  /** Global reset — returns every dimension to all-on, every mode to
+   *  'all', and re-centers the map on the default US-wide view. */
+  function resetAllFilters() {
+    for (const dim of Object.keys(filters)) {
+      Object.keys(filters[dim]).forEach(k => { filters[dim][k] = true; });
+      filterMode[dim] = 'all';
+    }
+    recomputeAndRender();
+    map.flyTo([36.7783, -119.4179], 6, { duration: 0.6 });
+  }
+
+  // ====================================================================
+  // Tract Overlay — Bivariate Choropleth
+  // ====================================================================
+
+  /** Metric metadata: label, whether high is "good", and how to
+   *  normalize raw values into a 0-1 range for tertile binning. */
+  const TRACT_METRICS = {
+    gp:   { label: 'Food Access',            good: true,  norm: v => v / 100 },
+    hp:   { label: 'Market Concentration',   good: false, norm: v => v / 100 },
+    sp:   { label: 'Segregation',            good: false, norm: v => v / 100 },
+    adi:  { label: 'Disadvantage',           good: false, norm: v => v / 100 },
+    snap: { label: 'SNAP %',                 good: false, norm: v => Math.min(v, 0.5) / 0.5 },
+    pov:  { label: 'Poverty',                good: false, norm: v => Math.min(v, 0.5) / 0.5 },
+    mi:   { label: 'Median Income',          good: true,  norm: v => Math.max(0, Math.min(1, (v - 20000) / 130000)) },
+    ph:   { label: '% Hispanic',             good: null,  norm: v => v },
+    pw:   { label: '% White',                good: null,  norm: v => v },
+    pb:   { label: '% Black',                good: null,  norm: v => v },
+    pa:   { label: '% Asian',                good: null,  norm: v => v },
+    popd: { label: 'Pop Density',             good: null,  norm: v => Math.min(v, 5000) / 5000 },
+  };
+
+  /** 3×3 bivariate color palette matching the Grocery Gap Atlas style.
+   *  grid[y][x] where y and x are 0=low, 1=mid, 2=high.
+   *  X-axis (horizontal →): teal ramp.  Y-axis (vertical ↓): magenta ramp.
+   *  Low-low = light grey, high-high = dark blue-purple. */
+  const BIVAR_COLORS = [
+    // y=0 (low Y)
+    ['rgb(232,232,232)', 'rgb(172,228,228)', 'rgb(90,200,200)'],
+    // y=1 (mid Y)
+    ['rgb(223,176,214)', 'rgb(165,173,211)', 'rgb(86,152,185)'],
+    // y=2 (high Y)
+    ['rgb(190,100,172)', 'rgb(140,98,170)',  'rgb(59,73,148)'],
+  ];
+
+  /** Precomputed tertile thresholds per metric: { metricKey: [t1, t2] }.
+   *  Computed from actual data distribution so each tertile contains
+   *  roughly 33% of tracts, instead of using fixed 0.333/0.667. */
+  let tertileThresholds = {};
+
+  /** Compute data-driven tertile thresholds for all metrics. */
+  function computeTertileThresholds() {
+    if (!tractGeo || !tractGeo.features) return;
+    Object.keys(TRACT_METRICS).forEach(key => {
+      const cfg = TRACT_METRICS[key];
+      const vals = tractGeo.features
+        .map(f => f.properties[key])
+        .filter(v => v != null && !isNaN(v))
+        .map(v => cfg.norm(v))
+        .sort((a, b) => a - b);
+      if (vals.length < 3) { tertileThresholds[key] = [0.333, 0.667]; return; }
+      tertileThresholds[key] = [
+        vals[Math.floor(vals.length / 3)],
+        vals[Math.floor(2 * vals.length / 3)]
+      ];
+    });
+  }
+
+  /** Bin a normalized 0-1 value into tertile index 0, 1, or 2
+   *  using the precomputed data-driven thresholds for the given metric. */
+  function tertile(v, metricKey) {
+    if (v == null || isNaN(v)) return null;
+    const t = tertileThresholds[metricKey];
+    if (!t) { if (v < 0.333) return 0; if (v < 0.667) return 1; return 2; }
+    if (v < t[0]) return 0;
+    if (v < t[1]) return 1;
+    return 2;
+  }
+
+  /** Get bivariate color for a feature given x and y metric keys. */
+  function bivarColor(props, mx, my) {
+    const row = TRACT_METRICS[my] ? tertile(TRACT_METRICS[my].norm(props[my]), my) : null;
+    const col = TRACT_METRICS[mx] ? tertile(TRACT_METRICS[mx].norm(props[mx]), mx) : null;
+    if (row == null || col == null) return '#ccc';
+    return BIVAR_COLORS[row][col];
+  }
+
+  /** Build the legend grid HTML and update labels. */
+  function updateLegend() {
+    const grid = document.getElementById('legendGrid');
+    if (!grid) return;
+    // GGA structure: 3 flex-col divs (x=0,1,2), each with 3 cells (y=2,1,0 top-to-bottom)
+    // After rotate(-135deg), this produces the diamond with:
+    //   bottom-left = high y, low x  →  top-right = low y, high x
+    let html = '';
+    for (let x = 0; x <= 2; x++) {
+      html += '<div class="legend-col">';
+      for (let y = 2; y >= 0; y--) {
+        html += `<div class="legend-cell" data-x="${x}" data-y="${y}" style="background:${BIVAR_COLORS[y][x]}"></div>`;
+      }
+      html += '</div>';
+    }
+    grid.innerHTML = html;
+
+    // Restore selected state on cells
+    tractFilter.forEach(key => {
+      const [x, y] = key.split(',');
+      const cell = grid.querySelector(`.legend-cell[data-x="${x}"][data-y="${y}"]`);
+      if (cell) cell.classList.add('selected');
+    });
+
+    // Update title and labels
+    const mxCfg = TRACT_METRICS[tractMetricX];
+    const myCfg = TRACT_METRICS[tractMetricY];
+    document.getElementById('legendTitle').textContent =
+      `${mxCfg.label} & ${myCfg.label}`;
+    document.getElementById('legendLabelX').textContent = mxCfg.label;
+    document.getElementById('legendLabelY').textContent =
+      myCfg.good === true ? `Low ${myCfg.label}` : `High ${myCfg.label}`;
+
+    // Attach hover tooltips to each cell
+    const tooltip = document.getElementById('legendTooltip');
+    const tLabels = ['Low', 'Mid', 'High'];
+    grid.querySelectorAll('.legend-cell').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const key = cell.dataset.x + ',' + cell.dataset.y;
+        if (tractFilter.has(key)) {
+          tractFilter.delete(key);
+        } else {
+          tractFilter.add(key);
+        }
+        cell.classList.toggle('selected');
+        refreshTractLayer();
+        tractStoreFilter = effectiveTractGeoids();
+        updateTally();
+        recomputeAndRender();
+      });
+      cell.addEventListener('mouseenter', (e) => {
+        const yVal = cell.dataset.y;
+        const xVal = cell.dataset.x;
+        const yLabel = myCfg.good === true
+          ? (yVal == 0 ? 'High' : yVal == 2 ? 'Low' : 'Mid')
+          : tLabels[yVal];
+        const xLabel = mxCfg.good === true
+          ? (xVal == 0 ? 'Low' : xVal == 2 ? 'High' : 'Mid')
+          : tLabels[xVal];
+        tooltip.innerHTML =
+          `<strong>${mxCfg.label}</strong>: ${xLabel}<br>` +
+          `<strong>${myCfg.label}</strong>: ${yLabel}`;
+        tooltip.style.display = 'block';
+      });
+      cell.addEventListener('mousemove', (e) => {
+        tooltip.style.left = (e.clientX + 12) + 'px';
+        tooltip.style.top = (e.clientY + 12) + 'px';
+      });
+      cell.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+    });
+
+    // Position arrows and labels relative to diamond tips
+    // Use rAF to ensure legend is rendered before measuring
+    requestAnimationFrame(() => {
+      const wrap = document.getElementById('legendWrap');
+      const gridRect = grid.getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+      const gcx = gridRect.left + gridRect.width / 2;
+      const gcy = gridRect.top + gridRect.height / 2;
+      const halfDiag = gridRect.width / 2 * Math.SQRT2;
+
+      // Diamond tips in screen coords
+      const rightTip = { x: gcx + halfDiag, y: gcy };
+      const leftTip  = { x: gcx - halfDiag, y: gcy };
+      const botTip   = { x: gcx, y: gcy + halfDiag };
+
+      // Position ↓ arrow at the right tip
+      const arrowD = document.getElementById('legendArrowD');
+      arrowD.style.left = (rightTip.x - wrapRect.left - 6) + 'px';
+      arrowD.style.top  = (rightTip.y - wrapRect.top - 9) + 'px';
+
+      // Position → arrow at the left tip
+      const arrowR = document.getElementById('legendArrowR');
+      arrowR.style.left = (leftTip.x - wrapRect.left - 9) + 'px';
+      arrowR.style.top  = (leftTip.y - wrapRect.top - 9) + 'px';
+
+      // Position Y label starting at bottom tip, offset outward from right edge
+      const labelY = document.getElementById('legendLabelY');
+      const offY = 24 * Math.SQRT1_2; // ~17px perpendicular offset
+      labelY.style.left = (botTip.x - wrapRect.left + offY) + 'px';
+      labelY.style.top  = (botTip.y - wrapRect.top + offY - 6) + 'px';
+
+      // Position X label ending at bottom tip, offset outward from left edge
+      const labelX = document.getElementById('legendLabelX');
+      labelX.style.left = (botTip.x - wrapRect.left - labelX.offsetWidth - offY) + 'px';
+      labelX.style.top  = (botTip.y - wrapRect.top + offY - 6) + 'px';
+    });
+  }
+
+  function buildTractPopup(t) {
+    const fmtPct = v => v != null ? v + '%' : '—';
+    const fmtMoney = v => v != null ? '$' + v.toLocaleString() : '—';
+    const fmtRate = v => v != null ? (v * 100).toFixed(1) + '%' : '—';
+    const fmtNum = v => v != null ? v.toLocaleString() : '—';
+
+    const bar = (pct, invert) => {
+      if (pct == null) return '';
+      const t = Math.max(0, Math.min(100, pct)) / 100;
+      const ti = invert ? 1 - t : t;
+      let r, g, b;
+      if (ti < 0.5) {
+        const f = ti * 2;
+        r = 214; g = Math.round(48 + f * (237 - 48)); b = 48;
+      } else {
+        const f = (ti - 0.5) * 2;
+        r = Math.round(237 - f * (237 - 39)); g = Math.round(237 - f * (237 - 174)); b = Math.round(48 + f * (96 - 48));
+      }
+      return `<div class="tp-bar"><div class="tp-bar-fill" style="width:${pct}%;background:rgb(${r},${g},${b})"></div></div>`;
+    };
+
+    return `<div class="tract-popup">
+      <div class="tp-title">${escapeHtml(t.name || t.geoid)}</div>
+      <div class="tp-score-row"><span class="tp-score-label">Population</span><span class="tp-score-val">${fmtNum(t.pop)}</span></div>
+      <div class="tp-score-row"><span class="tp-score-label">Stores in tract</span><span class="tp-score-val">${t.sc}</span></div>
+      <div class="tp-section">
+        <div class="tp-score-row"><span class="tp-score-label">Food Access</span><span class="tp-score-val">${fmtPct(t.gp)}</span></div>
+        ${bar(t.gp, false)}
+        <div class="tp-score-row"><span class="tp-score-label">Market Concentration</span><span class="tp-score-val">${fmtPct(t.hp)}</span></div>
+        ${bar(t.hp, true)}
+        <div class="tp-score-row"><span class="tp-score-label">Segregation</span><span class="tp-score-val">${fmtPct(t.sp)}</span></div>
+        ${bar(t.sp, true)}
+        <div class="tp-score-row"><span class="tp-score-label">Disadvantage</span><span class="tp-score-val">${fmtPct(t.adi)}</span></div>
+        ${bar(t.adi, true)}
+      </div>
+      <div class="tp-section">
+        <div class="tp-score-row"><span class="tp-score-label">Median Income</span><span class="tp-score-val">${fmtMoney(t.mi)}</span></div>
+        <div class="tp-score-row"><span class="tp-score-label">Poverty Rate</span><span class="tp-score-val">${fmtRate(t.pov)}</span></div>
+        <div class="tp-score-row"><span class="tp-score-label">SNAP Recipients</span><span class="tp-score-val">${fmtRate(t.snap)}</span></div>
+        <div class="tp-score-row"><span class="tp-score-label">Median Age</span><span class="tp-score-val">${t.age != null ? t.age.toFixed(1) : '—'}</span></div>
+      </div>
+      <div class="tp-section">
+        <div class="tp-score-row"><span class="tp-score-label">% Hispanic</span><span class="tp-score-val">${fmtRate(t.ph)}</span></div>
+        <div class="tp-score-row"><span class="tp-score-label">% White (NH)</span><span class="tp-score-val">${fmtRate(t.pw)}</span></div>
+        <div class="tp-score-row"><span class="tp-score-label">% Black (NH)</span><span class="tp-score-val">${fmtRate(t.pb)}</span></div>
+        <div class="tp-score-row"><span class="tp-score-label">% Asian (NH)</span><span class="tp-score-val">${fmtRate(t.pa)}</span></div>
+      </div>
+      <a class="tp-link" href="https://grocerygapatlas.rafiusa.org/tract/${t.geoid}" target="_blank" rel="noopener">Full report on Grocery Gap Atlas &nearr;</a>
+    </div>`;
+  }
+
+  // --- Tract store filtering helpers ---
+
+  /** Point-in-polygon test (ray casting). coords is an array of [lng,lat] pairs. */
+  function pointInPolygon(lat, lon, coords) {
+    if (!coords || coords.length < 3) return false;
+    let inside = false;
+    for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
+      const xi = coords[i][0], yi = coords[i][1];
+      const xj = coords[j][0], yj = coords[j][1];
+      if (((yi > lat) !== (yj > lat)) &&
+          (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi)) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
+  /** Extract all polygon coordinate rings from a GeoJSON geometry. */
+  function getPolygonRings(geom) {
+    const rings = [];
+    if (geom.type === 'Polygon') {
+      geom.coordinates.forEach(r => rings.push(r));
+    } else if (geom.type === 'MultiPolygon') {
+      geom.coordinates.forEach(poly => poly.forEach(r => rings.push(r)));
+    }
+    return rings;
+  }
+
+  /** Assign _tractGeoid to each store by point-in-polygon against tract boundaries.
+   *  Runs once after tract data loads. Uses bounding box pre-filter for speed. */
+  let tractBBoxIndex = null;
+  function mapStoresToTracts() {
+    if (!tractGeo || !tractGeo.features) return;
+    // Build bounding box index: [{ geoid, minLat, maxLat, minLon, maxLon, rings }]
+    tractBBoxIndex = tractGeo.features.map(f => {
+      const rings = getPolygonRings(f.geometry);
+      if (!rings.length) return null;
+      let minLat = Infinity, maxLat = -Infinity, minLon = Infinity, maxLon = -Infinity;
+      rings.forEach(r => r.forEach(pt => {
+        if (pt[1] < minLat) minLat = pt[1];
+        if (pt[1] > maxLat) maxLat = pt[1];
+        if (pt[0] < minLon) minLon = pt[0];
+        if (pt[0] > maxLon) maxLon = pt[0];
+      }));
+      return { geoid: f.properties.geoid, minLat, maxLat, minLon, maxLon, rings };
+    }).filter(Boolean);
+
+    allStores.forEach(s => {
+      if (s.lat == null || s.lon == null) { s._tractGeoid = null; return; }
+      s._tractGeoid = null;
+      for (const t of tractBBoxIndex) {
+        if (s.lat < t.minLat || s.lat > t.maxLat || s.lon < t.minLon || s.lon > t.maxLon) continue;
+        for (const ring of t.rings) {
+          if (pointInPolygon(s.lat, s.lon, ring)) {
+            s._tractGeoid = t.geoid;
+            break;
+          }
+        }
+        if (s._tractGeoid) break;
+      }
+    });
+  }
+
+  /** Tract GEOID → city lookup, built from store data. Maps each tract
+   *  to the most common city among its stores. */
+  let tractCity = {};
+  function buildTractCityLookup() {
+    const counts = {};
+    allStores.forEach(s => {
+      if (!s._tractGeoid || !s.city) return;
+      const c = s.city.trim().toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase());
+      if (!c) return;
+      if (!counts[s._tractGeoid]) counts[s._tractGeoid] = {};
+      counts[s._tractGeoid][c] = (counts[s._tractGeoid][c] || 0) + 1;
+    });
+    tractCity = {};
+    Object.keys(counts).forEach(geoid => {
+      const c = counts[geoid];
+      tractCity[geoid] = Object.keys(c).reduce((a, b) => c[a] > c[b] ? a : b);
+    });
+  }
+
+  /** Find the GEOIDs of the clicked tract and all tracts whose bounding boxes
+   *  overlap (or nearly overlap) it. A small buffer is added because tract
+   *  shapes are irregular — two tracts can share a border without their
+   *  bounding boxes actually overlapping. */
+  function findNeighborGeoids(clickedGeoid) {
+    const result = new Set();
+    const clicked = tractBBoxIndex.find(t => t.geoid === clickedGeoid);
+    if (!clicked) return result;
+    result.add(clickedGeoid);
+    const buf = 0.015; // ~1.5km buffer in degrees
+    for (const t of tractBBoxIndex) {
+      if (t.geoid === clickedGeoid) continue;
+      // Buffered bounding box overlap test
+      if (t.minLat <= clicked.maxLat + buf && t.maxLat + buf >= clicked.minLat &&
+          t.minLon <= clicked.maxLon + buf && t.maxLon + buf >= clicked.minLon) {
+        result.add(t.geoid);
+      }
+    }
+    return result;
+  }
+
+  /** Update the tract store filter status banner in the sidebar. */
+  function updateTractStoreStatus() {
+    let banner = document.getElementById('tractStoreBanner');
+    if (!tractStoreFilter) {
+      if (banner) banner.remove();
+      return;
+    }
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'tractStoreBanner';
+      banner.style.cssText = 'padding:6px 10px;margin:0 0 8px;background:#e8f0fe;border-radius:6px;font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;';
+      const filtersEl = document.getElementById('filters');
+      const searchWrap = filtersEl.querySelector('.search-wrap');
+      searchWrap.parentNode.insertBefore(banner, searchWrap);
+    }
+    const count = filteredStores.length;
+    banner.innerHTML = `<span>📍 Filtered to selected tracts (${count} stores)</span>` +
+      `<a style="color:#1a73e8;cursor:pointer;font-weight:600;text-decoration:none" id="clearTractFilter">Clear</a>`;
+    document.getElementById('clearTractFilter').addEventListener('click', (e) => {
+      e.stopPropagation();
+      tractStoreFilter = null;
+      tractFilter.clear();
+      excludedCities.clear();
+      refreshTractLayer();
+      updateTally();
+      recomputeAndRender();
+    });
+  }
+
+  function buildTractLayer() {
+    if (!tractGeo || !tractGeo.features) return null;
+    const z = map.getZoom();
+    // At low zoom, white borders between thousands of tiny tracts
+    // create a visual fog that washes out fill colors. Suppress them
+    // until the user zooms in enough for borders to be meaningful.
+    const strokeWeight = z < 9 ? 0 : (z < 11 ? 0.3 : 0.5);
+    return L.geoJSON(tractGeo, {
+      pane: 'tractPane',
+      className: 'tract-shape',
+      style(feature) {
+        const p = feature.properties || {};
+        const color = bivarColor(p, tractMetricX, tractMetricY);
+        let fillOpacity = 0.65;
+        if (tractFilter.size > 0) {
+          const row = TRACT_METRICS[tractMetricY] ? tertile(TRACT_METRICS[tractMetricY].norm(p[tractMetricY]), tractMetricY) : null;
+          const col = TRACT_METRICS[tractMetricX] ? tertile(TRACT_METRICS[tractMetricX].norm(p[tractMetricX]), tractMetricX) : null;
+          if (row == null || col == null || !tractFilter.has(col + ',' + row)) {
+            fillOpacity = 0.05;
+          }
+        }
+        return {
+          fillColor: color,
+          fillOpacity: fillOpacity,
+          color: strokeWeight > 0 ? '#fff' : 'transparent',
+          weight: strokeWeight,
+          opacity: 0.8,
+        };
+      },
+      onEachFeature(feature, layer) {
+        const p = feature.properties || {};
+        // Add distinguishing class to tract paths so they can be
+        // styled separately from store circle markers.
+        if (layer._path) layer._path.classList.add('tract-shape');
+        layer.on({
+          click(e) {
+            // Use a standalone popup (not bound to the layer) so it
+            // survives tract layer rebuilds during zoom changes.
+            const popupContent = buildTractPopup(p);
+            const latlng = e.latlng;
+            const openTractPopup = () => {
+              L.popup({ maxWidth: 280, autoPan: true, autoPanPadding: [50, 50] })
+                .setLatLng(latlng)
+                .setContent(popupContent)
+                .openOn(map);
+            };
+            // Open immediately so user sees feedback.
+            openTractPopup();
+            const bounds = e.target.getBounds();
+            if (bounds.isValid()) {
+              map.flyToBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+              // After fly settles, close and reopen so autoPan
+              // repositions relative to the final viewport.
+              const readjust = () => {
+                map.closePopup();
+                openTractPopup();
+                map.off('moveend', readjust);
+              };
+              map.on('moveend', readjust);
+            }
+            // Filter stores to this tract + neighbors
+            const geoid = feature.properties.geoid;
+            if (tractStoreFilter && tractStoreFilter.has(geoid) && tractStoreFilter.size === 1) {
+              tractStoreFilter = null;
+            } else {
+              tractStoreFilter = findNeighborGeoids(geoid);
+            }
+            recomputeAndRender();
+          },
+          mouseover(e) {
+            // Only highlight if this tract matches the active legend filter.
+            if (tractFilter.size === 0) return;
+            const p = feature.properties || {};
+            const row = TRACT_METRICS[tractMetricY] ? tertile(TRACT_METRICS[tractMetricY].norm(p[tractMetricY]), tractMetricY) : null;
+            const col = TRACT_METRICS[tractMetricX] ? tertile(TRACT_METRICS[tractMetricX].norm(p[tractMetricX]), tractMetricX) : null;
+            if (row == null || col == null || !tractFilter.has(col + ',' + row)) return;
+            e.target.setStyle({ weight: 2, color: '#333', fillOpacity: 0.75 });
+          },
+          mouseout(e) {
+            const p = feature.properties || {};
+            let op = 0.65;
+            if (tractFilter.size > 0) {
+              const row = TRACT_METRICS[tractMetricY] ? tertile(TRACT_METRICS[tractMetricY].norm(p[tractMetricY]), tractMetricY) : null;
+              const col = TRACT_METRICS[tractMetricX] ? tertile(TRACT_METRICS[tractMetricX].norm(p[tractMetricX]), tractMetricX) : null;
+              if (row == null || col == null || !tractFilter.has(col + ',' + row)) op = 0.05;
+            }
+            const z2 = map.getZoom();
+            const sw = z2 < 9 ? 0 : (z2 < 11 ? 0.3 : 0.5);
+            e.target.setStyle({ weight: sw, color: sw > 0 ? '#fff' : 'transparent', fillOpacity: op });
+          },
+        });
+      },
+    });
+  }
+
+  function refreshTractLayer() {
+    if (tractLayer) {
+      map.removeLayer(tractLayer);
+      tractLayer = null;
+    }
+    if (tractActive && tractGeo) {
+      tractLayer = buildTractLayer();
+      if (tractLayer) {
+        tractLayer.addTo(map);
+      }
+      updateLegend();
+      document.getElementById('tractLegend').classList.add('visible');
+    } else {
+      document.getElementById('tractLegend').classList.remove('visible');
+    }
+  }
+
+  /** Build a Set of tract GEOIDs matching the currently selected legend cells.
+   *  Returns null if tractFilter is empty (no legend selection). */
+  function geoidsFromLegendFilter() {
+    if (tractFilter.size === 0) return null;
+    const result = new Set();
+    tractGeo.features.forEach(f => {
+      const p = f.properties || {};
+      const row = TRACT_METRICS[tractMetricY] ? tertile(TRACT_METRICS[tractMetricY].norm(p[tractMetricY]), tractMetricY) : null;
+      const col = TRACT_METRICS[tractMetricX] ? tertile(TRACT_METRICS[tractMetricX].norm(p[tractMetricX]), tractMetricX) : null;
+      if (row != null && col != null && tractFilter.has(col + ',' + row)) {
+        result.add(p.geoid);
+      }
+    });
+    return result;
+  }
+
+  /** Cities excluded from the selection by user click. When non-empty,
+   *  tracts in these cities are filtered out of the selection. */
+  let excludedCities = new Set();
+
+  /** Custom saved groups: [{ name, geoids: Set, active: bool }] */
+  let customGroups = [];
+
+  /** Union of geoids from all active custom groups (for de-dupe exclusion). */
+  let groupExcludedGeoids = new Set();
+
+  /** Rebuild groupExcludedGeoids from active groups. */
+  function rebuildGroupExclusions() {
+    groupExcludedGeoids = new Set();
+    customGroups.forEach(g => {
+      if (g.active) g.geoids.forEach(id => groupExcludedGeoids.add(id));
+    });
+  }
+
+  /** Returns geoidsFromLegendFilter() minus tracts in excluded cities
+   *  and minus tracts in active custom groups. Returns null if no
+   *  legend selection is active. */
+  function effectiveTractGeoids() {
+    const geoids = geoidsFromLegendFilter();
+    if (!geoids) return geoids;
+    if (excludedCities.size === 0 && groupExcludedGeoids.size === 0) return geoids;
+    const filtered = new Set();
+    geoids.forEach(geoid => {
+      if (groupExcludedGeoids.has(geoid)) return;
+      const city = tractCity[geoid];
+      if (city && excludedCities.has(city)) return;
+      filtered.add(geoid);
+    });
+    return filtered;
+  }
+
+  /** Get the array of tract feature objects matching the current legend
+   *  selection, minus excluded cities. Returns [] if no filter is active. */
+  function getSelectedTracts() {
+    if (tractFilter.size === 0 || !tractGeo || !tractGeo.features) return [];
+    const geoids = effectiveTractGeoids();
+    if (!geoids) return [];
+    return tractGeo.features
+      .filter(f => geoids.has((f.properties || {}).geoid))
+      .map(f => f.properties || {});
+  }
+
+  /** Update the tally panel with population and Hispanic totals for
+   *  the currently selected legend tracts. */
+  function updateTally() {
+    const tallyEl = document.getElementById('tractTally');
+    if (!tallyEl) return;
+    const tracts = getSelectedTracts();
+    if (tracts.length === 0) {
+      tallyEl.style.display = 'none';
+      return;
+    }
+    tallyEl.style.display = 'block';
+
+    // Compute totals for selected tracts
+    let selPop = 0, selHisp = 0;
+    tracts.forEach(p => {
+      const pop = p.pop || 0;
+      selPop += pop;
+      selHisp += Math.round(pop * (p.ph || 0));
+    });
+
+    // Compute CA-wide totals from all tracts
+    let caPop = 0, caHisp = 0;
+    if (tractGeo && tractGeo.features) {
+      tractGeo.features.forEach(f => {
+        const p = f.properties || {};
+        const pop = p.pop || 0;
+        caPop += pop;
+        caHisp += Math.round(pop * (p.ph || 0));
+      });
+    }
+
+    const popPct = caPop > 0 ? ((selPop / caPop) * 100).toFixed(1) + '%' : '—';
+    const hispPct = selPop > 0 ? ((selHisp / selPop) * 100).toFixed(1) + '%' : '—';
+    const caHispPct = caHisp > 0 ? ((selHisp / caHisp) * 100).toFixed(1) + '%' : '—';
+
+    // Aggregate population by city using tractCity lookup
+    // Use the full legend selection (not filtered by excludedCities)
+    // so excluded cities still appear in the list, greyed out.
+    const allLegendGeoids = geoidsFromLegendFilter();
+    const cityPops = {};
+    if (allLegendGeoids && tractGeo && tractGeo.features) {
+      tractGeo.features.forEach(f => {
+        const p = f.properties || {};
+        if (!allLegendGeoids.has(p.geoid)) return;
+        const city = tractCity[p.geoid];
+        if (!city) return;
+        cityPops[city] = (cityPops[city] || 0) + (p.pop || 0);
+      });
+    }
+
+    // Compute total population per city across ALL tracts
+    const cityTotalPops = {};
+    if (tractGeo && tractGeo.features) {
+      tractGeo.features.forEach(f => {
+        const p = f.properties || {};
+        const city = tractCity[p.geoid];
+        if (!city) return;
+        cityTotalPops[city] = (cityTotalPops[city] || 0) + (p.pop || 0);
+      });
+    }
+
+    const cityList = Object.keys(cityPops)
+      .sort((a, b) => cityPops[b] - cityPops[a]);
+
+    document.getElementById('tallyPop').textContent = selPop.toLocaleString();
+    document.getElementById('tallyPopPct').textContent = popPct;
+    document.getElementById('tallyPct').textContent = hispPct;
+    document.getElementById('tallyHispPct').textContent = caHispPct;
+    document.getElementById('tallyCities').textContent = cityList.length.toLocaleString();
+
+    const cityListEl = document.getElementById('tallyCityList');
+    if (cityListEl) {
+      const top10 = cityList.slice(0, 10);
+      const rest = cityList.slice(10);
+      let restPop = 0, restTotalPop = 0;
+      rest.forEach(c => {
+        restPop += cityPops[c];
+        restTotalPop += (cityTotalPops[c] || cityPops[c]);
+      });
+
+      const fmtCity = c => {
+        const sel = cityPops[c];
+        const total = cityTotalPops[c] || sel;
+        const pct = total > 0 ? ((sel / total) * 100).toFixed(1) + '%' : '—';
+        const selFmt = sel >= 1000000 ? (sel / 1000000).toFixed(2) + 'M' : sel.toLocaleString();
+        const excluded = excludedCities.has(c);
+        const style = excluded ? ' style="opacity:0.35"' : '';
+        return `<div class="tally-city-item" data-city="${c}"${style} data-excluded="${excluded}"><span>${c}</span><span>${selFmt} (${pct})</span></div>`;
+      };
+
+      let html = top10.map(fmtCity).join('');
+      if (rest.length > 0) {
+        const pct = restTotalPop > 0 ? ((restPop / restTotalPop) * 100).toFixed(1) + '%' : '—';
+        const selFmt = restPop >= 1000000 ? (restPop / 1000000).toFixed(2) + 'M' : restPop.toLocaleString();
+        const allExcluded = rest.every(c => excludedCities.has(c));
+        const exCss = allExcluded ? 'opacity:0.35;' : '';
+        html += `<div class="tally-city-item" style="border-top:1px solid #ddd;margin-top:4px;padding-top:4px;${exCss}"><span><span id="tallyOthersArrow" style="cursor:pointer;display:inline-block;width:16px">&#9654;</span><span id="tallyOthersLabel" style="cursor:pointer">All Others (${rest.length})</span></span><span>${selFmt} (${pct})</span></div>`;
+        html += `<div class="tally-others-list" id="tallyOthersList" style="display:none">${rest.map(fmtCity).join('')}</div>`;
+      }
+      cityListEl.innerHTML = html;
+
+      // Attach click handlers to all city items
+      cityListEl.querySelectorAll('.tally-city-item').forEach(item => {
+        const city = item.dataset.city;
+        if (!city) return;
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => {
+          if (excludedCities.has(city)) excludedCities.delete(city);
+          else excludedCities.add(city);
+          tractStoreFilter = effectiveTractGeoids();
+          updateTally();
+          recomputeAndRender();
+        });
+      });
+
+      // All Others: arrow expands/collapses, label toggles exclude/include all
+      const arrow = document.getElementById('tallyOthersArrow');
+      const label = document.getElementById('tallyOthersLabel');
+      const othersList = document.getElementById('tallyOthersList');
+      if (arrow && othersList) {
+        arrow.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const expanded = othersList.style.display !== 'none';
+          othersList.style.display = expanded ? 'none' : 'block';
+          arrow.innerHTML = expanded ? '&#9654;' : '&#9660;';
+        });
+      }
+      if (label && rest.length > 0) {
+        label.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const allExcluded = rest.every(c => excludedCities.has(c));
+          if (allExcluded) {
+            rest.forEach(c => excludedCities.delete(c));
+          } else {
+            rest.forEach(c => excludedCities.add(c));
+          }
+          tractStoreFilter = effectiveTractGeoids();
+          updateTally();
+          recomputeAndRender();
+        });
+      }
+    }
+  }
+
+  /** Export selected tracts and filtered stores to a multi-tab Excel file. */
+  function exportSelectedTracts() {
+    const tracts = getSelectedTracts();
+    if (tracts.length === 0) return;
+
+    // --- Sheet 1: Selected Tracts ---
+    const tractHeaders = ['GEOID', 'Name', 'City', 'County', 'State', 'Population', '% Hispanic', '% White', '% Black', '% Asian',
+      'Food Access', 'Market Concentration', 'Segregation', 'Disadvantage',
+      'SNAP Rate', 'Poverty Rate', 'Median Income', 'Median Age', 'Pop Density', 'Store Count'];
+    const tractCols = ['geoid', 'name', 'pop', 'ph', 'pw', 'pb', 'pa', 'gp', 'hp', 'sp', 'adi', 'snap', 'pov', 'mi', 'age', 'popd', 'sc'];
+    const pctCols = ['ph','pw','pb','pa','gp','hp','sp','adi','snap','pov'];
+
+    const tractData = [tractHeaders];
+    tracts.forEach(p => {
+      let county = '', state = '';
+      const parts = (p.name || '').split(',').map(s => s.trim());
+      if (parts.length >= 3) {
+        county = parts[1].replace(/\s+County$/, '');
+        state = parts[2];
+      } else if (parts.length === 2) {
+        county = parts[1].replace(/\s+County$/, '');
+      }
+      const vals = tractCols.map(c => {
+        const v = p[c];
+        if (v == null) return '';
+        if (typeof v === 'number' && pctCols.includes(c)) {
+          return (v * 100).toFixed(1) + '%';
+        }
+        return v;
+      });
+      vals.splice(2, 0, tractCity[p.geoid] || '', county, state);
+      tractData.push(vals);
+    });
+
+    // --- Sheet 2: Filtered Stores ---
+    const normCity = c => (c || '').trim().toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase());
+    const storeHeaders = ['Store #', 'Retailer', 'Store Type', 'Address', 'City', 'State', 'Zip',
+      'County', 'Tract GEOID', 'Lat', 'Lon', 'Processor', 'Holding Co.'];
+    const storeData = [storeHeaders];
+    filteredStores.forEach(s => {
+      storeData.push([
+        s.sn, s.banner_group || 'Misc.', s.store_type, s.addr, normCity(s.city), s.state, s.zip,
+        s.county || '', s._tractGeoid || '', s.lat, s.lon, s.processor || '', s.holding_co
+      ]);
+    });
+
+    // Build workbook with two sheets
+    const wb = XLSX.utils.book_new();
+    const ws1 = XLSX.utils.aoa_to_sheet(tractData);
+    XLSX.utils.book_append_sheet(wb, ws1, 'Selected Tracts');
+    const ws2 = XLSX.utils.aoa_to_sheet(storeData);
+    XLSX.utils.book_append_sheet(wb, ws2, 'Filtered Stores');
+
+    XLSX.writeFile(wb, `tract_export_${Date.now()}.xlsx`);
+  }
+
+  function attachTallyExport() {
+    const btn = document.getElementById('tallyExport');
+    if (btn) btn.addEventListener('click', exportSelectedTracts);
+    const saveBtn = document.getElementById('tallySaveGroup');
+    if (saveBtn) saveBtn.addEventListener('click', saveCurrentGroup);
+  }
+
+  /** Save custom groups to localStorage. */
+  function persistGroups() {
+    try {
+      localStorage.setItem('customGroups', JSON.stringify(
+        customGroups.map(g => ({ name: g.name, geoids: Array.from(g.geoids), active: g.active }))
+      ));
+    } catch (e) {}
+  }
+
+  /** Load custom groups from localStorage. */
+  function loadGroups() {
+    try {
+      const raw = localStorage.getItem('customGroups');
+      if (!raw) return;
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return;
+      customGroups = arr.map(g => ({
+        name: g.name,
+        geoids: new Set(g.geoids),
+        active: g.active !== false
+      }));
+      rebuildGroupExclusions();
+    } catch (e) {}
+  }
+
+  /** Save the current effective selection as a named custom group. */
+  function saveCurrentGroup() {
+    const geoids = effectiveTractGeoids();
+    if (!geoids || geoids.size === 0) return;
+    const name = prompt('Name this group:');
+    if (!name || !name.trim()) return;
+    customGroups.push({
+      name: name.trim(),
+      geoids: new Set(geoids),
+      active: true
+    });
+    rebuildGroupExclusions();
+    persistGroups();
+    renderSidebar();
+  }
+
+  function attachTractToggle() {
+    const toggle = document.getElementById('tractToggle');
+    const mxSelect = document.getElementById('tractMetricX');
+    const mySelect = document.getElementById('tractMetricY');
+    if (!toggle) return;
+
+    toggle.addEventListener('click', (e) => {
+      if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
+      tractActive = !tractActive;
+      toggle.classList.toggle('active', tractActive);
+      if (!tractActive) { tractFilter.clear(); tractStoreFilter = null; excludedCities.clear(); }
+      refreshTractLayer();
+      updateTally();
+      recomputeAndRender();
+    });
+
+    mxSelect.addEventListener('change', () => {
+      tractMetricX = mxSelect.value;
+      tractFilter.clear();
+      tractStoreFilter = null;
+      excludedCities.clear();
+      if (tractActive) refreshTractLayer();
+      updateTally();
+      recomputeAndRender();
+    });
+    mySelect.addEventListener('change', () => {
+      tractMetricY = mySelect.value;
+      tractFilter.clear();
+      tractStoreFilter = null;
+      excludedCities.clear();
+      if (tractActive) refreshTractLayer();
+      updateTally();
+      recomputeAndRender();
+    });
+  }
+
+  // ====================================================================
+  // Boot
+  // ====================================================================
+
+  async function init() {
+    const [dataResp, statesResp, tractResp] = await Promise.all([
+      fetch('./data/ca_grocer_map_data.json'),
+      fetch('./us_states_complete.json'),
+      fetch('./data/ca_tract_boundaries.json')
+    ]);
+    const data = await dataResp.json();
+    const statesGeo = await statesResp.json();
+    tractGeo = await tractResp.json();
+
+    allStores = data.stores;
+    summary = (data.meta && data.meta.summary) || {};
+    tdaGrocery = (data.meta && data.meta.tda_grocery_summary) || {};
+
+    // Map each store to its census tract GEOID for tract-based filtering
+    mapStoresToTracts();
+    // Build tract → city lookup from store data
+    buildTractCityLookup();
+    // Compute data-driven tertile thresholds for all metrics
+    computeTertileThresholds();
+
+    // Reclassify MilkPEP/TDA store types to actual store types.
+    const SUPERSTORE_BANNERS = new Set(['Walmart', 'Supercenter', 'Walmart Supercenter']);
+    allStores.forEach(s => {
+      if (s.store_type === 'MilkPEP/TDA' || s.store_type === 'MilkPEP/TDA + SNAP') {
+        s.store_type = SUPERSTORE_BANNERS.has(s.banner) ? 'Super Store' : 'Supermarket';
+      }
+    });
+
+    // Initialize filter state — every value present in data starts ON.
+    new Set(allStores.map(s => s.banner_group || 'Misc.')).forEach(b =>
+      filters.retailers[b] = true);
+    new Set(allStores.map(s => s.store_type || '(unspecified)')).forEach(st =>
+      filters.storeTypes[st] = true);
+    new Set(allStores.map(s => s.state)).forEach(s =>
+      filters.states[s] = true);
+
+    map = L.map('map', { minZoom: 5, maxZoom: 18, zoomControl: false })
+            .setView([36.7783, -119.4179], 6);
+
+    // Custom pane for tract overlay so it sits below store pins.
+    // Default panes: tilePane=200, overlayPane=400, markerPane=600.
+    // We put tracts at 350 so they're above tile labels but below
+    // overlayPane (circle marker pins) and markerPane (div icon pins).
+    map.createPane('tractPane');
+    map.getPane('tractPane').style.zIndex = 350;
+    map.getPane('tractPane').style.pointerEvents = 'auto';
+    // Ensure markerPane (pins) is explicitly above tractPane.
+    map.getPane('markerPane').style.zIndex = 600;
+    // Leaflet sets SVG z-index to 200 inside panes by default, which
+    // overrides the pane's z-index. Fix it after each layer render.
+    const fixTractSVGZ = () => {
+      const svg = map.getPane('tractPane').querySelector('svg');
+      if (svg) svg.style.zIndex = 450;
+    };
+    // Two-layer basemap to match the original behavior: a clean
+    // no-labels tile is always on, and a labels-only overlay fades in
+    // at zoom ≥ 5 so city names appear when the user zooms in but
+    // don't crowd the country-wide view. minZoom on the labels layer
+    // is the gate — Leaflet automatically hides the layer below it.
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd', maxZoom: 20
+    }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd', minZoom: 5, maxZoom: 20, pane: 'overlayPane'
+    }).addTo(map);
+
+    stateLayer = L.geoJSON(statesGeo, {
+      style: { fillColor: '#bcd3e8', fillOpacity: 0, color: '#cdd6df', weight: 0.7 }
+    }).addTo(map);
+
+    // Cluster radius is zoom-dependent so the country-wide view stays
+    // readable (heavy clustering, count circles dominate) while the
+    // city-level view exposes individual brand-logo pins. A constant
+    // small radius made the East Coast pile of 800+ stores unreadable
+    // at zoom 4, and a constant large radius hid logos people zoomed
+    // in to see. The function below tapers from 80px at country zoom
+    // down to 12px when the user is essentially looking at one block.
+    clusterGroup = L.markerClusterGroup({
+      maxClusterRadius(zoom) {
+        if (zoom <= 6) return 80;
+        if (zoom === 7) return 60;
+        if (zoom === 8) return 40;
+        if (zoom === 9) return 25;
+        return 12;
+      },
+      spiderfyOnMaxZoom: false,
+      zoomToBoundsOnClick: false,
+      showCoverageOnHover: false,
+      disableClusteringAtZoom: 10,
+      iconCreateFunction(cluster) {
+        const markers = cluster.getAllChildMarkers();
+        const color = clusterColor(markers);
+        const count = cluster.getChildCount();
+        const size = count > 20 ? 52 : count > 5 ? 44 : 38;
+
+        // At country/region zooms (≤5) every cluster renders as a
+        // count circle regardless of banner uniformity. A lone
+        // Jewel-Osco logo amid 9 numbered blobs reads as a glitch;
+        // the count-only treatment keeps the overview consistent.
+        // Once the user zooms into a state, single-banner clusters
+        // get to keep their brand logo.
+        const mapZoom = map.getZoom();
+        const banners = new Set(
+          markers.map(m => m.storeData ? (m.storeData.banner_group || m.storeData.banner) : null)
+        );
+        if (mapZoom > 7 && banners.size === 1) {
+          const banner = banners.values().next().value;
+          const logoSrc = banner && RETAILER_LOGOS[banner];
+          if (logoSrc) {
+            // Single-banner cluster: just the logo, no number. The
+            // count is implicit in the visual size (38/44/52 scale
+            // already conveys density).
+            const html =
+              `<div class="store-pin store-pin--cluster" style="width:${size}px;height:${size}px;border-color:${color}">` +
+                `<img src="${logoSrc}" alt="" draggable="false">` +
+              `</div>`;
+            return L.divIcon({ html, className: '', iconSize: [size, size] });
+          }
+        }
+
+        return L.divIcon({
+          html: `<div style="width:${size}px;height:${size}px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:${size>44?14:12}px;font-weight:700;border:2.5px solid rgba(255,255,255,0.92);box-shadow:0 2px 6px rgba(0,0,0,0.22);background:${color}">${count}</div>`,
+          className: '', iconSize: [size, size]
+        });
+      }
+    }).addTo(map);
+
+    // Custom cluster click: zoom to the actual bounds of the child
+    // markers, zooming in tighter than Leaflet's default so the user
+    // gets close enough to see individual pins or smaller sub-clusters.
+    clusterGroup.on('clusterclick', (e) => {
+      const cluster = e.layer;
+      const markers = cluster.getAllChildMarkers();
+      if (markers.length === 0) return;
+      const bounds = L.latLngBounds(markers.map(m => [m.storeData.lat, m.storeData.lon]));
+      if (bounds.isValid()) {
+        map.flyToBounds(bounds, {
+          padding: [40, 40],
+          maxZoom: 16
+        });
+      }
+    });
+
+    attachSidebarHandlers();
+    attachTractToggle();
+    attachTallyExport();
+    loadGroups();
+    if (customGroups.length > 0) renderSidebar();
+    recomputeAndRender();
+    refreshTractLayer();
+
+    // Re-render sidebar when the map viewport changes so the
+    // retailer list only shows chains with stores in view.
+    let moveDebounce = null;
+    map.on('moveend', () => {
+      // Don't re-render sidebar while the user is actively searching
+      // — renderSidebar replaces innerHTML and would wipe the input
+      // and dropdown mid-debounce.
+      const input = document.getElementById('searchInput');
+      const dd = document.getElementById('searchResults');
+      if ((input && input.value.trim()) || (dd && dd.classList.contains('open'))) return;
+      if (moveDebounce) clearTimeout(moveDebounce);
+      moveDebounce = setTimeout(() => renderSidebar(), 150);
+    });
+
+    // Re-render tract layer on zoom to update border styling
+    let lastTractZoomTier = -1;
+    map.on('zoomend', () => {
+      if (!tractActive) return;
+      const z = map.getZoom();
+      const tier = z < 9 ? 0 : (z < 11 ? 1 : 2);
+      if (tier !== lastTractZoomTier) {
+        lastTractZoomTier = tier;
+        refreshTractLayer();
+      }
+    });
+  }
+
+  init().catch(err => {
+    console.error(err);
+    document.getElementById('filters').innerHTML =
+      '<div style="padding:14px;color:#a00;">Failed to load map data.</div>';
+  });
+</script>
+
+<script>
+  (function () {
+    const CORRECT = 'cmab';
+    const gate = document.getElementById('pw-gate');
+    const input = document.getElementById('pw-input');
+    const btn = document.getElementById('pw-submit');
+    const err = document.getElementById('pw-error');
+
+    if (sessionStorage.getItem('pw_ok') === '1') {
+      gate.classList.add('hidden');
+      return;
+    }
+
+    function attempt() {
+      if (input.value === CORRECT) {
+        sessionStorage.setItem('pw_ok', '1');
+        gate.classList.add('hidden');
+      } else {
+        err.textContent = 'Incorrect password. Please try again.';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    btn.addEventListener('click', attempt);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') attempt();
+    });
+  })();
+</script>
+</body>
+</html>

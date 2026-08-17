@@ -1,0 +1,63 @@
+.vercel
+
+# OS / editor artifacts
+.DS_Store
+__pycache__/
+*.pyc
+.~lock.*
+*.lock
+~$*
+
+# Gopuff map files (separate project)
+Gopuff_*.html
+gopuff_*.json
+gopuff_*.py
+gopuff_delivery_zip_boundaries_simplified.json
+populate_gopuff_map.py
+create_gopuff_map_data.py
+analyze_gopuff_data.py
+
+# MilkPEP processor map (separate project)
+index.html
+milkpep_logo.svg
+dairyalliance_logo.png
+Processor_Map.html
+processor_map_data.json
+data/processor_map_data.json
+data/processor_map_summary.json
+data/legacy_seed_stores.json
+build_processor_map_data.py
+milkpep_stores_export*
+original\ MilkPEP*
+Conagra_brands_logo17.png
+Lucerne.png
+Safeway-Logo-700x394.png
+Vons_logo.svg.png
+
+# Excel source files (not needed for map app)
+*.xlsx
+*.xls
+final store lists/
+
+# Large source data not needed for the map app
+data/grocery-gap-atlas-data-august-2024.csv.zip
+data/tl_2020_06_tract.zip
+data/gga_full_tract.parquet
+data/gga_concentration.parquet
+data/gga_tract_stores.csv
+data/gga_tract_metrics.csv
+data/gga_tract_centroids.csv
+data/census_geocode_input.csv
+data/census_geocode_results.csv
+data/fallback_geocode_results.json
+
+# Misc dev artifacts
+*.txt
+mempalace.yaml
+wmt.code-workspace
+oldmap.png
+egglife.png
+*.png
+!logos/*.png
+!logos/*.jpg
+!logos/*.svg

@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 CMAB Processor Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<style>
+  /* ---- Original processor-map CSS, ported verbatim ----
+     Preserves: floating .filters card, ring-style retailer swatches,
+     brand-logo filter rows, scrollable state list. The visual target
+     is oldmap.png, which is what the .filter-* class set produces.
+     Layout differs from the original in two ways only:
+       (1) no top header bar — stats moved into the floating card
+       (2) optional info-card panel on the right for the Maola/TDA
+           data note, dismissible
+     Everything else matches the original. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: transparent; }
+
+  /* ---- Password gate ---- */
+  #pw-gate {
+    position: fixed; inset: 0; z-index: 99999;
+    background: #1a2535;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #pw-gate.hidden { display: none; }
+  .pw-card {
+    background: #fff; border-radius: 14px;
+    padding: 40px 44px; text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    width: 320px;
+  }
+  .pw-card img { height: 48px; margin-bottom: 20px; }
+  .pw-card h2 { font-size: 18px; color: #1a2535; margin-bottom: 6px; }
+  .pw-card p { font-size: 13px; color: #888; margin-bottom: 22px; }
+  .pw-card input {
+    width: 100%; padding: 10px 14px; font-size: 14px;
+    border: 1.5px solid #d0d5dd; border-radius: 8px;
+    outline: none; margin-bottom: 12px;
+  }
+  .pw-card input:focus { border-color: #1a7bc4; }
+  .pw-card button {
+    width: 100%; padding: 10px; font-size: 14px; font-weight: 600;
+    background: #1a7bc4; color: #fff; border: none;
+    border-radius: 8px; cursor: pointer;
+  }
+  .pw-card button:hover { background: #155fa0; }
+  .pw-error { font-size: 12px; color: #c0392b; margin-top: 8px; min-height: 18px; }
+  #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: transparent !important; }
+  .leaflet-container { background: #f5f7fa !important; }
+
+  /* Floating filter card — pinned top-left, scrolls if content
+     overflows the viewport. Width matches the original (260px-ish). */
+  .filters {
+    position: absolute; top: 14px; left: 14px;
+    background: white; padding: 14px 18px; border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    z-index: 1000; font-size: 12px; max-width: 280px;
+    max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  .filters h3 {
+    margin: 0 0 10px 0; font-size: 13px; color: #333;
+    border-bottom: 1px solid #eee; padding-bottom: 6px;
+  }
+  .filters .filter-stats {
+    font-size: 11px; color: #888; margin: -4px 0 10px;
+  }
+  .filter-section { margin-bottom: 16px; }
+  .filter-section:last-child { margin-bottom: 0; }
+  .filter-section h4 {
+    margin: 0 0 8px 0; font-size: 12px; color: #555; font-weight: 600;
+  }
+  .filter-section h4 .section-actions {
+    float: right; font-weight: normal; font-size: 10px;
+  }
+  .filter-section h4 .section-actions a {
+    color: #888; text-decoration: none; margin-left: 6px; cursor: pointer;
+  }
+  .filter-section h4 .section-actions a:hover { color: #1F4E79; }
+
+  .filter-item {
+    display: flex; align-items: center; margin: 6px 0;
+    cursor: pointer; padding: 3px 4px; border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .filter-item:hover { background: #f5f5f5; }
+  .filter-item.disabled { opacity: 0.3; }
+
+  /* Ring swatch — retailer brand color as border, white interior.
+     This is the visual signature of the legend in the original. */
+  .retailer-border-sample {
+    width: 32px; height: 32px; border-radius: 50%;
+    margin-right: 10px; flex-shrink: 0;
+    background: white;
+  }
+
+  /* Brand logo in filter rows (processors, organizations). */
+  .filter-logo {
+    width: 32px; height: 32px; margin-right: 10px;
+    object-fit: contain; flex-shrink: 0; border-radius: 3px;
+  }
+  .filter-label { color: #333; font-weight: 500; flex: 1; }
+  .filter-count {
+    margin-left: auto; padding-left: 10px; color: #888;
+    font-size: 11px; font-weight: 600;
+  }
+
+  .scroll-list { max-height: 180px; overflow-y: auto; }
+
+  /* Reset button — shows at top of sidebar when ANY filter dimension
+     is non-default (i.e., user has made a selection). Click returns
+     all dimensions to all-on and re-fits the map to the default
+     country-wide view. Hidden by default via .hidden. */
+  .reset-btn {
+    display: block; width: 100%; margin: 0 0 12px 0;
+    padding: 8px 10px; border: 1px solid #c9d4e0;
+    background: #f5f8fb; color: #1F4E79;
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+    font-weight: 600; text-align: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .reset-btn:hover { background: #e7eef6; border-color: #1F4E79; }
+  .reset-btn.hidden { display: none; }
+
+  /* Action button row — Reset + Export sit side by side. Reset still
+     collapses to hidden when no filters are active; Export is always
+     visible. Flex with gap keeps both buttons sized to content. */
+  .action-row { display: flex; gap: 6px; margin: 0 0 12px 0; }
+  .action-row .reset-btn { margin: 0; flex: 1; }
+  .action-row .export-btn {
+    flex: 0 0 auto; padding: 8px 12px;
+    border: 1px solid #c9d4e0; background: #f5f8fb; color: #1F4E79;
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+    font-weight: 600; transition: background 0.15s, border-color 0.15s;
+  }
+  .action-row .export-btn:hover { background: #e7eef6; border-color: #1F4E79; }
+  .action-row .reset-btn.hidden + .export-btn,
+  .action-row .export-btn:only-child { flex: 1; }
+
+  /* Search box — top of the filter card. Searches store number,
+     banner, holding company, city, zip, address. Shows up to 8
+     autocomplete results; click a result to fly the map to that
+     store and open its popup. */
+  .search-wrap { position: relative; margin: 0 0 12px 0; }
+  .search-input {
+    width: 100%; padding: 7px 10px; font-size: 12px;
+    border: 1px solid #c9d4e0; border-radius: 6px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: #1F4E79; }
+  .search-results {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border: 1px solid #c9d4e0; border-top: none;
+    border-radius: 0 0 6px 6px; max-height: 240px; overflow-y: auto;
+    z-index: 1100; box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    display: none;
+  }
+  .search-results.open { display: block; }
+  .search-result-item {
+    padding: 7px 10px; cursor: pointer; font-size: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover, .search-result-item.active { background: #f5f8fb; }
+  .search-result-item .sr-banner { font-weight: 600; color: #1F4E79; }
+  .search-result-item .sr-meta { color: #888; font-size: 11px; }
+  .search-empty { padding: 10px; text-align: center; color: #888; font-size: 12px; }
+
+  /* Coverage dot — green for store-match results, transparent
+     spacer of the same width for general-geocode results so the
+     two visually align. Mirrors the Gopuff coverage-dot pattern. */
+  .search-result-item .sr-row { display: flex; align-items: center; gap: 8px; }
+  .coverage-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2e9966; flex-shrink: 0;
+  }
+  .coverage-dot.empty { background: transparent; }
+  .search-result-item.geocode .sr-banner { color: #555; font-weight: 500; }
+  .search-result-item.geocode .sr-type {
+    font-size: 10px; text-transform: uppercase;
+    color: #999; letter-spacing: 0.04em; margin-left: 4px;
+  }
+
+  /* Status banner under the search box — appears after the user
+     picks a general (non-store) location. Green = stores nearby,
+     red = no stores within ~25 miles. */
+  .search-status {
+    margin-top: 6px; padding: 8px 10px; border-radius: 6px;
+    font-size: 11px; line-height: 1.4; display: none;
+    border-left: 3px solid #888; background: #f5f8fb; color: #333;
+  }
+  .search-status.open { display: block; }
+  .search-status.covered { border-left-color: #2e9966; background: #effaf3; color: #1f5e3a; }
+  .search-status.not-covered { border-left-color: #d04545; background: #fdf2f2; color: #8a2222; }
+  .search-status .ss-title { font-weight: 700; }
+  .search-status .ss-close {
+    float: right; cursor: pointer; color: inherit; opacity: 0.6;
+    font-weight: 700; padding-left: 8px;
+  }
+  .search-status .ss-close:hover { opacity: 1; }
+
+  /* Search marker — orange pin used to mark a geocoded location
+     the user navigated to via the search box. */
+  .search-marker {
+    background: #ff6b3d; color: white; border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700;
+    box-shadow: 0 3px 10px rgba(255,107,61,0.5);
+    border: 3px solid white;
+  }
+
+  /* Mobile collapse — on narrow screens the filter card would cover
+     most of the map. We replace it with a compact toggle bar; tapping
+     it slides the full panel up from the bottom as a sheet. The
+     toggle is hidden on desktop (>700px). */
+  .filter-toggle {
+    display: none;
+    position: absolute; top: 10px; left: 10px; right: 10px;
+    z-index: 1001;
+    background: white; border: none; padding: 10px 14px;
+    border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 13px; font-weight: 600; color: #1F4E79;
+    text-align: left; cursor: pointer;
+  }
+  .filter-toggle::after { content: '▾'; float: right; }
+  body.filters-open .filter-toggle::after { content: '▴'; }
+
+  @media (max-width: 700px) {
+    .filter-toggle { display: block; }
+    .filters {
+      top: 56px; left: 10px; right: 10px; max-width: none;
+      max-height: calc(100vh - 70px);
+      transform: translateY(calc(-100% - 70px));
+      transition: transform 0.25s ease;
+    }
+    body.filters-open .filters { transform: translateY(0); }
+  }
+
+  /* Logo-based store pin. White circular plate with a 2px ring that
+     gets tinted by the store's org color (MilkPEP blue / TDA green /
+     Both purple). The logo image fills the plate via object-fit. */
+  .store-pin {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #ffffff; border: 2px solid #1f78b4;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .store-pin img {
+    width: 22px; height: 22px; object-fit: contain;
+    display: block; pointer-events: none;
+  }
+  /* Cluster variant: same logo plate sized dynamically (38/44/52px)
+     so denser clusters render visibly larger. Logo fills 78% of the
+     plate so the colored ring stays prominent. */
+  .store-pin--cluster {
+    border-width: 2.5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+  }
+  .store-pin--cluster img { width: 78%; height: 78%; }
+
+  /* Popup styling matches the original's clean look. */
+  .popup-content { font-size: 13px; line-height: 1.6; }
+  .popup-content .store-num { font-weight: 700; font-size: 15px; color: #1F4E79; }
+  .popup-content .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; margin: 2px 3px 0 0;
+    background: #f0f0f0; color: #333;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+
+  /* Leaflet attribution, made unobtrusive like the original. */
+  .leaflet-control-attribution {
+    background: rgba(255,255,255,0.6) !important;
+    font-size: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="pw-gate">
+  <div class="pw-card">
+    <img src="logos/CMAB.svg" alt="CMAB">
+    <h2>2026 CMAB Processor Map</h2>
+    <p>Enter the password to continue.</p>
+    <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+    <button id="pw-submit">Enter</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div id="map"></div>
+<button class="filter-toggle" id="filterToggle" aria-label="Toggle filters">Filters &amp; Search</button>
+<div class="filters" id="filters"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script>
+  // ====================================================================
+  // Configuration
+  // ====================================================================
+
+  // Retailer brand colors — drives the ring on each Retailer filter row
+  // (and, eventually, the ring around each pin). Sourced from each
+  // brand's primary color where known. Albertsons gets a split-gradient
+  // border to match the original — the rest get a single solid color.
+  const RETAILER_BORDER = {
+    Walmart:           'border:4px solid #ffc220;',
+    Safeway:           'border:4px solid #E31837;',
+    Albertsons:        'border:4px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(135deg,#00529F 50%,#009FE0 50%) border-box;',
+    Vons:              'border:4px solid #E31837;',
+    Pavilions:         'border:4px solid #4d7fb8;',
+    Acme:              'border:4px solid #0d6cb9;',
+    'Jewel-Osco':      'border:4px solid #cf2030;',
+    "Shaw's":          'border:4px solid #0e5eaf;',
+    'Star Markets':    'border:4px solid #E31837;',
+    'Tom Thumb':       'border:4px solid #E31837;',
+    Randalls:          'border:4px solid #cf2030;',
+    Carrs:             'border:4px solid #00529F;',
+    "Andronico's":     'border:4px solid #107c41;',
+    "Pak 'N Save":     'border:4px solid #fbb040;',
+    'United Supermarkets': 'border:4px solid #cf2030;',
+    Tops:              'border:4px solid #E31837;',
+    'Giant Eagle':     'border:4px solid #E31837;',
+    Weis:              'border:4px solid #cf2030;',
+    Ingles:            'border:4px solid #0e5eaf;',
+    'Food City':       'border:4px solid #E31837;',
+    'Food Giant':      'border:4px solid #E31837;',
+    'Piggly Wiggly':   'border:4px solid #cf2030;',
+    'Lowes Foods':     'border:4px solid #0e5eaf;',
+    'Winn-Dixie':      'border:4px solid #E31837;',
+    Kroger:            'border:4px solid #0067b6;',
+    'Misc.':           'border:4px solid #94a3b8;',
+  };
+
+  // Marker color (used until pin redesign): one color per organization,
+  // independent of retailer. Cluster icons use the same palette.
+  const ORG_COLORS = {
+    MilkPEP: '#1f78b4',
+    TDA:     '#2e8b57',
+    Both:    '#7b5cd6',
+  };
+
+  // Logos for each organization (used in the Organization filter rows).
+  // PNG files ship with the static site (built from each brand's
+  // own favicon at deploy time — see prior commit message).
+  // MilkPEP — official favicon is an SVG hosted on milkpep.org. We
+  // serve a local copy to keep the page fully self-contained. Dairy
+  // Alliance — PNG favicon pulled from their site, also local.
+  const ORG_LOGOS = {
+    MilkPEP: 'milkpep_logo.svg',
+    TDA:     'dairyalliance_logo.png',
+  };
+
+  // Logos for processors. Each file is the brand's actual logo,
+  // pulled from each processor's website favicon and bundled locally
+  // under `logos/` so the page stays self-contained on Vercel.
+  const PROCESSOR_LOGOS = {
+    Lucerne:            'logos/lucerne.png',
+    Maola:              'logos/maola.png',
+    'Crystal Creamery': 'logos/crystal_creamery.png',
+    Hollandia:          'logos/hollandia.png',
+    'Sarah Farms':      'logos/sarah_farms.png',
+  };
+
+  // Logos for retailers. Same source pattern as PROCESSOR_LOGOS —
+  // each is the brand's own favicon, fetched once and bundled.
+  // Misc. (catch-all) intentionally has no logo and falls back to
+  // the brand-color ring swatch.
+  const RETAILER_LOGOS = {
+    Walmart:               'logos/walmart.png',
+    Safeway:               'logos/safeway.png',
+    Albertsons:            'logos/albertsons.png',
+    Vons:                  'logos/vons.png',
+    Acme:                  'logos/acme.png',
+    'Jewel-Osco':          'logos/jewel-osco.png',
+    Ingles:                'logos/ingles.png',
+    "Shaw's":              'logos/shaws.png',
+    'Food City':           'logos/food-city.png',
+    'Piggly Wiggly':       'logos/piggly-wiggly.png',
+    Tops:                  'logos/tops.png',
+    'Tom Thumb':           'logos/tom-thumb.png',
+    Kroger:                'logos/kroger.png',
+    'Food Giant':          'logos/food-giant.jpg',
+    'Star Markets':        'logos/star-markets.png',
+    'United Supermarkets': 'logos/united-supermarkets.png',
+    Randalls:              'logos/randalls.png',
+    Weis:                  'logos/weis.png',
+    'Giant Eagle':         'logos/giant-eagle.png',
+    'Lowes Foods':         'logos/lowes-foods.svg',
+    'Winn-Dixie':          'logos/winn-dixie.png',
+    IGA:                   'logos/iga.png',
+    'Harris Teeter':       'logos/harris-teeter.png',
+    'Dollar General Market': 'logos/dollar-general.png',
+    Carrs:                 'logos/carrs.jpg',
+    "Shaw's":              'logos/shaws.png',
+    ShopRite:              'logos/shoprite.png',
+  };
+
+  // Display order for the Dairy Processors section. Order matches the
+  // original. Processors not in this list go after, alphabetically.
+  // `(unspecified)` always goes last because it's a catch-all.
+  const PROCESSOR_ORDER = ['Lucerne', 'Maola', 'Crystal Creamery', 'Hollandia', 'Sarah Farms'];
+
+  // ====================================================================
+  // State
+  // ====================================================================
+
+  let map, stateLayer, clusterGroup;
+  let allStores = [];
+  // Search state — debounce timer and currently-highlighted result
+  // index for keyboard navigation. Reset to -1 on every re-render
+  // so Arrow Down always lands on the first result.
+  let searchDebounce = null;
+  let searchActiveIdx = -1;
+  // Monotonic token so out-of-order async geocode responses can't
+  // overwrite a fresher result set (classic stale-promise bug).
+  let searchRequestToken = 0;
+  // Active search marker (the orange pin dropped on geocode hits).
+  let searchMarker = null;
+
+  // State-name → USPS abbr lookup, used to dedupe internal city hits
+  // against Nominatim suggestions for the same place. Nominatim
+  // returns full names ("North Carolina"); our store rows carry
+  // abbreviations ("NC").
+  const US_STATE_ABBR = {
+    'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+    'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+    'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+    'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+    'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+    'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+    'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+    'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+    'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+    'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY',
+    'District of Columbia':'DC'
+  };
+  let summary = {};
+  let tdaGrocery = {};
+  // Filter dimensions: organizations + retailers (banner_group) +
+  // processors + regions + states. Each maps key→bool.
+  let filters = {
+    organizations: {},
+    retailers: {},
+    processors: {},
+    regions: {},
+    states: {},
+  };
+  // Per-dimension filter mode — ports the original map's behavior:
+  // 'all' means "no manual selection yet" (clicking a row isolates
+  // that one item); 'single' means the user has already made manual
+  // selections (clicking a row toggles it within the current set).
+  // The mode flips to 'single' on first click, back to 'all' when
+  // the user hits the section's "all" link. Without this, selecting
+  // a single processor / banner / region requires N-1 deselects —
+  // the original's defining UX detail.
+  let filterMode = {
+    organizations: 'all',
+    retailers: 'all',
+    processors: 'all',
+    regions: 'all',
+    states: 'all',
+  };
+  let filteredStores = [];
+
+  // ====================================================================
+  // Pure helpers
+  // ====================================================================
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, ch =>
+      ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[ch]));
+  }
+
+  function markerColor(store) {
+    const orgs = store.organizations || [];
+    if (orgs.length === 2) return ORG_COLORS.Both;
+    if (orgs[0] === 'TDA') return ORG_COLORS.TDA;
+    return ORG_COLORS.MilkPEP;
+  }
+
+  /** Five-dimensional AND filter. A store is visible only if every
+   *  dimension that has any rows enabled accepts it. The org check
+   *  uses .some() because organizations is an array per store. */
+  function passesFilters(store) {
+    const orgs = store.organizations || [];
+    if (orgs.length && !orgs.some(o => filters.organizations[o])) return false;
+    const r = store.banner_group || 'Misc.';
+    if (!filters.retailers[r]) return false;
+    const p = store.processor || '(unspecified)';
+    if (!filters.processors[p]) return false;
+    const reg = store.region || '';
+    if (reg && !filters.regions[reg]) return false;
+    if (!filters.states[store.state]) return false;
+    return true;
+  }
+
+  function buildPopup(store) {
+    const orgs = (store.organizations || []).map(o =>
+      `<span class="badge" style="background:${ORG_COLORS[o] || '#888'};color:#fff">${escapeHtml(o)}</span>`).join(' ');
+    const proc = store.processor ? `<div><strong>Processor:</strong> ${escapeHtml(store.processor)}</div>` : '';
+    const owner = store.holding_co ? `<div><strong>Holding co.:</strong> ${escapeHtml(store.holding_co)}</div>` : '';
+    return `
+      <div class="popup-content">
+        <div class="store-num">${escapeHtml(store.banner)} #${escapeHtml(store.sn)}</div>
+        <div>${escapeHtml(store.addr || '')}</div>
+        <div>${escapeHtml(store.city || '')}, ${escapeHtml(store.state || '')} ${escapeHtml(store.zip || '')}</div>
+        ${owner}
+        ${proc}
+        <div style="margin-top:6px;">${orgs}</div>
+      </div>
+    `;
+  }
+
+  function buildMarker(store) {
+    // When the retailer has a logo on file, render the pin AS the
+    // logo — a small white-bordered circle containing the brand mark
+    // tinted with the org color along its rim. This makes individual
+    // pins recognizable at a glance without sacrificing the cluster
+    // (count) summary view at lower zooms.
+    const banner = store.banner_group || store.banner;
+    const logoSrc = RETAILER_LOGOS[banner];
+    if (logoSrc) {
+      const ringColor = markerColor(store);
+      const html = `<div class="store-pin" style="border-color:${ringColor}">`
+                 + `<img src="${logoSrc}" alt="" draggable="false">`
+                 + `</div>`;
+      return L.marker([store.lat, store.lon], {
+        icon: L.divIcon({ html, className: '', iconSize: [28, 28], iconAnchor: [14, 14] })
+      }).bindPopup(buildPopup(store));
+    }
+    // Fallback for Misc. and any banner without a logo: the original
+    // colored circle marker. Same look as before.
+    return L.circleMarker([store.lat, store.lon], {
+      radius: 6, color: '#ffffff', weight: 1.5,
+      fillColor: markerColor(store), fillOpacity: 0.9
+    }).bindPopup(buildPopup(store));
+  }
+
+  function clusterColor(markers) {
+    const counts = { MilkPEP: 0, TDA: 0, Both: 0 };
+    markers.forEach(m => {
+      const orgs = m.storeData.organizations || [];
+      if (orgs.length === 2) counts.Both++;
+      else if (orgs[0] === 'TDA') counts.TDA++;
+      else counts.MilkPEP++;
+    });
+    const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0][0];
+    return ORG_COLORS[top];
+  }
+
+  // ====================================================================
+  // Filter mutations + render pipeline
+  // ====================================================================
+
+  function recomputeAndRender(opts = {}) {
+    filteredStores = allStores.filter(passesFilters);
+    clusterGroup.clearLayers();
+    filteredStores.forEach(store => {
+      const m = buildMarker(store);
+      m.storeData = store;
+      clusterGroup.addLayer(m);
+    });
+    renderSidebar();
+    renderStateStyles();
+    // Auto-fit bounds is OPT-IN per call — we trigger it on isolate
+    // transitions (first click in a section) but NOT on every toggle.
+    // Fitting on every click would yank the viewport unpredictably.
+    if (opts.fitBounds && filteredStores.length > 0) {
+      const bounds = clusterGroup.getBounds();
+      if (bounds.isValid()) {
+        // maxZoom prevents zooming so far in that one isolated pin
+        // disappears off-center. Padding leaves visual room around
+        // the bounding box.
+        map.flyToBounds(bounds, { maxZoom: 9, padding: [40, 40], duration: 0.6 });
+      }
+    }
+  }
+
+  /** Original-map behavior: first click in a section ISOLATES that
+   *  item (deselects everything else in the section). Subsequent
+   *  clicks toggle within the now-active subset. The section's
+   *  "all" link resets back to isolate-mode. */
+  function toggleFilter(group, key) {
+    if (filterMode[group] === 'all') {
+      // Isolate this single value, then transition to single-select mode.
+      Object.keys(filters[group]).forEach(k => { filters[group][k] = false; });
+      filters[group][key] = true;
+      filterMode[group] = 'single';
+      recomputeAndRender({ fitBounds: true });
+    } else {
+      filters[group][key] = !filters[group][key];
+      // Refit on every toggle in single-select mode. Re-enabling a
+      // retailer / state / etc. would otherwise leave the viewport
+      // wherever the user last left it, which can hide the pins they
+      // just brought back. Fitting to the new active set makes the
+      // change visible.
+      recomputeAndRender({ fitBounds: true });
+    }
+  }
+
+  function setAllInGroup(group, value) {
+    Object.keys(filters[group]).forEach(k => { filters[group][k] = value; });
+    // "all" returns the section to isolate-mode (any subsequent click
+    // will solo that one item). "none" stays in 'single' mode.
+    filterMode[group] = value ? 'all' : 'single';
+    recomputeAndRender();
+  }
+
+  // ====================================================================
+  // Sidebar rendering
+  // ====================================================================
+
+  /** Compute counts for ONE filter dimension while honoring the OTHER
+   *  dimensions' current state. This is what makes "show me only
+   *  Maola pins" produce sensible "13 retailers" / "8 states"
+   *  numbers in the sidebar without inflating them with filtered-out
+   *  stores. O(N * dimensions) per render — fine at our scale. */
+  function countsForDimension(excludeDim) {
+    const counts = {};
+    Object.keys(filters[excludeDim]).forEach(k => counts[k] = 0);
+    allStores.forEach(s => {
+      // Re-implement passesFilters but skip the excluded dimension.
+      const orgs = s.organizations || [];
+      if (excludeDim !== 'organizations' && orgs.length && !orgs.some(o => filters.organizations[o])) return;
+      const r = s.banner_group || 'Misc.';
+      if (excludeDim !== 'retailers' && !filters.retailers[r]) return;
+      const p = s.processor || '(unspecified)';
+      if (excludeDim !== 'processors' && !filters.processors[p]) return;
+      const reg = s.region || '';
+      if (excludeDim !== 'regions' && reg && !filters.regions[reg]) return;
+      if (excludeDim !== 'states' && !filters.states[s.state]) return;
+
+      // Increment the count for whichever value of the excluded dim
+      // this store carries.
+      switch (excludeDim) {
+        case 'organizations': orgs.forEach(o => { if (o in counts) counts[o]++; }); break;
+        case 'retailers':     if (r in counts) counts[r]++; break;
+        case 'processors':    if (p in counts) counts[p]++; break;
+        case 'regions':       if (reg in counts) counts[reg]++; break;
+        case 'states':        if (s.state in counts) counts[s.state]++; break;
+      }
+    });
+    return counts;
+  }
+
+  function rowOrgHtml(key, count) {
+    const enabled = filters.organizations[key];
+    const logo = ORG_LOGOS[key]
+      ? `<img class="filter-logo" src="${ORG_LOGOS[key]}" alt="">`
+      : '';
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="organizations" data-key="${escapeHtml(key)}">
+      ${logo}
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function rowRetailerHtml(key, count) {
+    const enabled = filters.retailers[key];
+    // Prefer the brand logo when we have one; fall back to the
+    // ring-style brand-color swatch otherwise (Misc. + any banner
+    // we haven't sourced a logo for).
+    const mark = RETAILER_LOGOS[key]
+      ? `<img class="filter-logo" src="${RETAILER_LOGOS[key]}" alt="">`
+      : `<div class="retailer-border-sample" style="${RETAILER_BORDER[key] || RETAILER_BORDER['Misc.']}"></div>`;
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="retailers" data-key="${escapeHtml(key)}">
+      ${mark}
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function rowProcessorHtml(key, count) {
+    const enabled = filters.processors[key];
+    const logo = PROCESSOR_LOGOS[key]
+      ? `<img class="filter-logo" src="${PROCESSOR_LOGOS[key]}" alt="">`
+      // No logo on file — use an invisible spacer of the same width so
+      // labels align with logo'd rows. Avoids the gray-circle look
+      // that read as "broken image" to users.
+      : `<div class="filter-logo" style="visibility:hidden"></div>`;
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="processors" data-key="${escapeHtml(key)}">
+      ${logo}
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function rowSimpleHtml(group, key, count) {
+    const enabled = filters[group][key];
+    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="${group}" data-key="${escapeHtml(key)}">
+      <span class="filter-label">${escapeHtml(key)}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    </div>`;
+  }
+
+  function sectionHeader(label, group) {
+    return `<h4>${label}<span class="section-actions">
+      <a data-action="all" data-group="${group}">all</a>
+      <a data-action="none" data-group="${group}">none</a>
+    </span></h4>`;
+  }
+
+  function renderSidebar() {
+    const orgCounts = countsForDimension('organizations');
+    const retCounts = countsForDimension('retailers');
+    const procCounts = countsForDimension('processors');
+    const regCounts = countsForDimension('regions');
+    const stCounts  = countsForDimension('states');
+
+    const orgRows = ['MilkPEP', 'TDA']
+      .filter(o => o in filters.organizations)
+      .map(o => rowOrgHtml(o, orgCounts[o] || 0)).join('');
+
+    // Retailers — sort by current cross-filtered count (descending)
+    // so the most-populous brand always sits at top. Misc. always
+    // last regardless of count. This is the order Dan wanted: the
+    // legend reads as a ranked summary, not an authored priority list.
+    const retKeys = Object.keys(filters.retailers).filter(k => k !== 'Misc.');
+    retKeys.sort((a, b) => (retCounts[b] || 0) - (retCounts[a] || 0)
+                       || a.localeCompare(b));
+    const retOrder = [...retKeys];
+    if ('Misc.' in filters.retailers) retOrder.push('Misc.');
+    const retRows = retOrder.map(r => rowRetailerHtml(r, retCounts[r] || 0)).join('');
+
+    // Processors — priority order then the rest, with `(unspecified)`
+    // pinned to the bottom so the actual processors are visually
+    // grouped together.
+    const procKeys = Object.keys(filters.processors);
+    const procPri = PROCESSOR_ORDER.filter(p => procKeys.includes(p));
+    const procExtra = procKeys.filter(p => !PROCESSOR_ORDER.includes(p) && p !== '(unspecified)').sort();
+    const procOrdered = [...procPri, ...procExtra];
+    if (procKeys.includes('(unspecified)')) procOrdered.push('(unspecified)');
+    const procRows = procOrdered.map(p => rowProcessorHtml(p, procCounts[p] || 0)).join('');
+
+    const regOrder = ['Northeast','Midwest','South','West'].filter(r => r in filters.regions);
+    const regRows = regOrder.map(r => rowSimpleHtml('regions', r, regCounts[r] || 0)).join('');
+
+    const stRows = Object.keys(filters.states).sort()
+      .map(s => rowSimpleHtml('states', s, stCounts[s] || 0)).join('');
+
+    document.getElementById('filters').innerHTML = `
+      <h3>Filters</h3>
+      <div class="filter-stats">
+        ${filteredStores.length.toLocaleString()} of ${allStores.length.toLocaleString()} pinned stores visible
+      </div>
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="searchInput"
+               placeholder="Search store #, city, zip, or address…"
+               autocomplete="off">
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      <div class="search-status" id="searchStatus"></div>
+      <div class="action-row">
+        <button class="reset-btn ${hasActiveFilters() ? '' : 'hidden'}" id="resetAll">↻ Reset filters</button>
+        <button class="export-btn" id="exportCsv" title="Download visible stores as CSV">⬇ Export CSV</button>
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('Source', 'organizations')}
+        ${orgRows}
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('Retailers', 'retailers')}
+        ${retRows}
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('Dairy Processors', 'processors')}
+        ${procRows}
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('Regions', 'regions')}
+        ${regRows}
+      </div>
+
+      <div class="filter-section">
+        ${sectionHeader('States', 'states')}
+        <div class="scroll-list">${stRows}</div>
+      </div>
+    `;
+  }
+
+  function renderStateStyles() {
+    if (!stateLayer) return;
+    const visibleStates = new Set(filteredStores.map(s => s.state));
+    const stateMap = {
+      Alabama:'AL', Alaska:'AK', Arizona:'AZ', Arkansas:'AR', California:'CA', Colorado:'CO', Connecticut:'CT', Delaware:'DE',
+      Florida:'FL', Georgia:'GA', Hawaii:'HI', Idaho:'ID', Illinois:'IL', Indiana:'IN', Iowa:'IA', Kansas:'KS', Kentucky:'KY',
+      Louisiana:'LA', Maine:'ME', Maryland:'MD', Massachusetts:'MA', Michigan:'MI', Minnesota:'MN', Mississippi:'MS',
+      Missouri:'MO', Montana:'MT', Nebraska:'NE', Nevada:'NV', 'New Hampshire':'NH', 'New Jersey':'NJ', 'New Mexico':'NM', 'New York':'NY',
+      'North Carolina':'NC', 'North Dakota':'ND', Ohio:'OH', Oklahoma:'OK', Oregon:'OR', Pennsylvania:'PA', 'Rhode Island':'RI',
+      'South Carolina':'SC', 'South Dakota':'SD', Tennessee:'TN', Texas:'TX', Utah:'UT', Vermont:'VT', Virginia:'VA', Washington:'WA',
+      'West Virginia':'WV', Wisconsin:'WI', Wyoming:'WY', 'District of Columbia':'DC'
+    };
+    // Original visual cue: inactive states have NO fill, just a faint
+    // outline. Active states get a barely-there blue tint. The pins
+    // are the focus, not the choropleth.
+    stateLayer.eachLayer(layer => {
+      const abbr = stateMap[layer.feature.properties.name];
+      const active = visibleStates.has(abbr);
+      layer.setStyle({
+        fillColor: '#bcd3e8',
+        fillOpacity: active ? 0.18 : 0,
+        color: active ? '#7fa7d1' : '#cdd6df',
+        weight: 0.7
+      });
+    });
+  }
+
+  function exportVisibleStores() {
+    const headers = ['Store Number','Banner','Holding Company','Processor','Organizations','Address','City','State','Zip','Region'];
+    const lines = [headers.join(',')];
+    filteredStores.forEach(s => {
+      const row = [
+        s.sn, s.banner, s.holding_co, s.processor,
+        (s.organizations || []).join('|'),
+        s.addr, s.city, s.state, s.zip, s.region
+      ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`);
+      lines.push(row.join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'processor-map-visible-stores.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Single delegated listener for the entire sidebar. Live clicks
+  // hit either a row (toggle the filter) or a section action link
+  // (all/none). No re-attaching needed when sidebar HTML re-renders.
+  function attachSidebarHandlers() {
+    const root = document.getElementById('filters');
+    root.addEventListener('click', e => {
+      // Global reset has highest precedence — wipe everything and
+      // recenter the map.
+      if (e.target.closest('#resetAll')) {
+        resetAllFilters();
+        return;
+      }
+      // Export visible stores to CSV.
+      if (e.target.closest('#exportCsv')) {
+        exportVisibleStores();
+        return;
+      }
+      // Search status banner close button.
+      if (e.target.closest('.ss-close')) {
+        const ss = document.getElementById('searchStatus');
+        if (ss) ss.classList.remove('open');
+        clearSearchMarker();
+        return;
+      }
+      // Search result selection — store hits fly+popup, geocode hits
+      // fly to lat/lon and check coverage.
+      const sr = e.target.closest('.search-result-item');
+      if (sr) {
+        const dropdown = document.getElementById('searchResults');
+        const input = document.getElementById('searchInput');
+        if (sr.classList.contains('geocode')) {
+          const lat = parseFloat(sr.dataset.lat);
+          const lon = parseFloat(sr.dataset.lon);
+          const label = sr.dataset.label || '';
+          flyToLocation(lat, lon, label);
+        } else {
+          const idx = +sr.dataset.idx;
+          flyToStore(allStores[idx]);
+        }
+        dropdown.classList.remove('open');
+        if (input) input.value = '';
+        return;
+      }
+      const action = e.target.closest('a[data-action]');
+      if (action) {
+        e.preventDefault();
+        setAllInGroup(action.dataset.group, action.dataset.action === 'all');
+        return;
+      }
+      const item = e.target.closest('.filter-item');
+      if (item) toggleFilter(item.dataset.group, item.dataset.key);
+    });
+
+    // Delegated input listener — survives sidebar re-renders.
+    // Debounced 200ms so we don't re-score 12k stores on every
+    // keystroke (the Gopuff map shipped this same fix). The timer
+    // is module-scoped so successive keystrokes coalesce.
+    root.addEventListener('input', e => {
+      if (e.target.id !== 'searchInput') return;
+      const value = e.target.value;
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => runSearch(value), 200);
+    });
+
+    // Keyboard navigation in the search box: Arrow up/down moves
+    // through results, Enter selects the highlighted one (or the
+    // first if none highlighted), Escape closes the dropdown.
+    root.addEventListener('keydown', e => {
+      if (e.target.id !== 'searchInput') return;
+      const dropdown = document.getElementById('searchResults');
+      const items = dropdown.querySelectorAll('.search-result-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!items.length) return;
+        searchActiveIdx = Math.min(searchActiveIdx + 1, items.length - 1);
+        updateSearchHighlight(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!items.length) return;
+        searchActiveIdx = Math.max(searchActiveIdx - 1, -1);
+        updateSearchHighlight(items);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const target = items[searchActiveIdx >= 0 ? searchActiveIdx : 0];
+        if (target) target.click();
+      } else if (e.key === 'Escape') {
+        dropdown.classList.remove('open');
+        searchActiveIdx = -1;
+      }
+    });
+
+    // Hide dropdown on focus loss, but with a 200ms delay so a click
+    // on a result registers before the dropdown disappears (the
+    // mousedown→blur→click sequence otherwise eats the click). Same
+    // workaround the Gopuff map uses.
+    root.addEventListener('focusout', e => {
+      if (e.target.id !== 'searchInput') return;
+      setTimeout(() => {
+        const dd = document.getElementById('searchResults');
+        if (dd) dd.classList.remove('open');
+      }, 200);
+    });
+    root.addEventListener('focusin', e => {
+      if (e.target.id !== 'searchInput' && !e.target.closest('.search-results')) return;
+      const dd = document.getElementById('searchResults');
+      if (dd && dd.innerHTML.trim()) dd.classList.add('open');
+    });
+
+    // Mobile toggle: open/close the slide-up filter sheet.
+    document.getElementById('filterToggle').addEventListener('click', () => {
+      document.body.classList.toggle('filters-open');
+    });
+
+    // Tap outside the panel on mobile closes the sheet (but not when
+    // tapping inside .filters itself).
+    document.addEventListener('click', e => {
+      if (!document.body.classList.contains('filters-open')) return;
+      if (e.target.closest('.filters') || e.target.closest('#filterToggle')) return;
+      document.body.classList.remove('filters-open');
+    });
+  }
+
+  /** Two-tier search: first ranks our internal store rows (store#,
+   *  banner, city, zip, address); then, if there's headroom, calls
+   *  Nominatim for general US geocoding suggestions so the user can
+   *  jump to a non-store location and see whether it's covered.
+   *
+   *  Internal hits get a green coverage dot. Geocode hits get a
+   *  transparent spacer of the same width so the two lists align.
+   *  This is the same pattern shipped on the Gopuff coverage map. */
+  async function runSearch(rawQuery) {
+    const dropdown = document.getElementById('searchResults');
+    if (!dropdown) return; // sidebar may have re-rendered between debounce fire and now
+    searchActiveIdx = -1; // reset keyboard cursor on every fresh result set
+    const q = (rawQuery || '').trim().toLowerCase();
+    if (q.length < 2) { dropdown.classList.remove('open'); dropdown.innerHTML = ''; return; }
+
+    // ---- Internal store hits ----
+    const scored = [];
+    for (let i = 0; i < allStores.length; i++) {
+      const s = allStores[i];
+      const sn = String(s.sn || '').toLowerCase();
+      const banner = String(s.banner || '').toLowerCase();
+      const city = String(s.city || '').toLowerCase();
+      const zip = String(s.zip || '').toLowerCase();
+      const addr = String(s.addr || '').toLowerCase();
+      const state = String(s.state || '').toLowerCase();
+      let score = 0;
+      if (sn === q) score = 100;
+      else if (sn.startsWith(q)) score = 80;
+      else if (banner.startsWith(q)) score = 70;
+      else if (zip.startsWith(q)) score = 65;
+      else if (city.startsWith(q)) score = 60;
+      else if (banner.includes(q)) score = 50;
+      else if (city.includes(q)) score = 40;
+      else if (addr.includes(q)) score = 30;
+      else if (state.includes(q)) score = 20;
+      if (score) scored.push({ idx: i, score });
+      if (scored.length > 200) break;
+    }
+    scored.sort((a, b) => b.score - a.score);
+    const storeHits = scored.slice(0, 6);
+
+    // Render internal hits immediately so the dropdown feels snappy
+    // even before Nominatim responds.
+    renderSearchResults(dropdown, q, storeHits, []);
+
+    // ---- General geocode suggestions (Nominatim) ----
+    // Skip the network call for pure store-number queries — they're
+    // never going to geocode usefully and we'd just hit rate limits.
+    if (/^\d{1,5}$/.test(q) && !/\d{5}/.test(q)) {
+      // partial numeric (likely store#) — no geocode
+      return;
+    }
+    // Token-stamp this request so a slower in-flight response from a
+    // previous query can't overwrite a newer dropdown.
+    const myToken = ++searchRequestToken;
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rawQuery)}&limit=5&countrycodes=us&addressdetails=1`;
+      const resp = await fetch(url, { headers: { 'Accept-Language': 'en-US' } });
+      if (!resp.ok || myToken !== searchRequestToken) return;
+      const data = await resp.json();
+      if (myToken !== searchRequestToken) return;
+      // Filter out duplicates of internal city hits so the same city
+      // doesn't appear twice (once with a dot, once without).
+      const internalCityKeys = new Set(
+        storeHits.map(h => `${(allStores[h.idx].city || '').toLowerCase()}|${(allStores[h.idx].state || '').toLowerCase()}`)
+      );
+      const geocodes = [];
+      for (const r of data) {
+        const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+        if (!isFinite(lat) || !isFinite(lon)) continue;
+        const a = r.address || {};
+        const city = a.city || a.town || a.village || a.municipality || a.county || '';
+        const state = a.state || '';
+        const cityKey = `${city.toLowerCase()}|${(US_STATE_ABBR[state] || state).toLowerCase()}`;
+        if (internalCityKeys.has(cityKey)) continue;
+        const label = r.display_name;
+        const short = city && state
+          ? `${city}, ${state}`
+          : (label.split(',').slice(0, 2).join(',').trim() || label);
+        geocodes.push({
+          lat, lon, label, short,
+          type: r.type || (r.class === 'place' ? 'place' : '')
+        });
+        if (geocodes.length >= 5) break;
+      }
+      renderSearchResults(dropdown, q, storeHits, geocodes);
+    } catch (err) {
+      // Network failure is non-fatal — internal results already
+      // rendered, just log for diagnostics.
+      console.warn('Geocode autocomplete failed:', err);
+    }
+  }
+
+  /** Render both result groups into the dropdown. Called twice per
+   *  query: once with just store hits (instant) and once again
+   *  after the geocode response lands. */
+  function renderSearchResults(dropdown, q, storeHits, geocodes) {
+    if (!storeHits.length && !geocodes.length) {
+      dropdown.innerHTML = '<div class="search-empty">No matches</div>';
+      dropdown.classList.add('open');
+      return;
+    }
+    const storeRows = storeHits.map(({ idx }) => {
+      const s = allStores[idx];
+      const num = s.sn ? `#${escapeHtml(String(s.sn))} · ` : '';
+      return `<div class="search-result-item" data-idx="${idx}">
+        <div class="sr-row">
+          <span class="coverage-dot"></span>
+          <div style="flex:1;min-width:0;">
+            <div><span class="sr-banner">${escapeHtml(s.banner || '')}</span> ${num}${escapeHtml(s.city || '')}, ${escapeHtml(s.state || '')}</div>
+            <div class="sr-meta">${escapeHtml(s.addr || '')} ${escapeHtml(s.zip || '')}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    const geoRows = geocodes.map(g => {
+      return `<div class="search-result-item geocode"
+                   data-lat="${g.lat}" data-lon="${g.lon}"
+                   data-label="${escapeHtml(g.short)}">
+        <div class="sr-row">
+          <span class="coverage-dot empty"></span>
+          <div style="flex:1;min-width:0;">
+            <div><span class="sr-banner">${escapeHtml(g.short)}</span><span class="sr-type">${escapeHtml(g.type || 'place')}</span></div>
+            <div class="sr-meta">${escapeHtml(g.label)}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    dropdown.innerHTML = storeRows + geoRows;
+    dropdown.classList.add('open');
+  }
+
+  /** Visually mark the keyboard-selected search result and scroll
+   *  it into view if needed. Called from keydown Arrow handlers. */
+  function updateSearchHighlight(items) {
+    items.forEach((el, i) => {
+      if (i === searchActiveIdx) {
+        el.classList.add('active');
+        el.scrollIntoView({ block: 'nearest' });
+      } else {
+        el.classList.remove('active');
+      }
+    });
+  }
+
+  /** Fly to a geocoded location (a Nominatim suggestion the user
+   *  picked). Drops an orange search marker, evaluates coverage by
+   *  finding the nearest store within ~25mi, and renders a status
+   *  banner under the search box (covered / not covered). The user
+   *  navigates to non-covered locations all the same — same UX
+   *  promise as the Gopuff coverage map.
+   *
+   *  We DON'T mutate filters here — the user is investigating a
+   *  geographic question, not a brand question. Their filter state
+   *  is preserved. The status banner reports coverage relative to
+   *  *currently visible* stores so it answers the question they
+   *  actually care about. */
+  function flyToLocation(lat, lon, label) {
+    if (!isFinite(lat) || !isFinite(lon)) return;
+    clearSearchMarker();
+    searchMarker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: '<div class="search-marker">📍</div>',
+        className: '', iconSize: [36, 36], iconAnchor: [18, 18]
+      })
+    }).addTo(map);
+    map.flyTo([lat, lon], 11, { duration: 0.7 });
+
+    // Coverage check against currently-filtered stores.
+    const RADIUS_MI = 25;
+    const nearest = nearestVisibleStore(lat, lon);
+    const ss = document.getElementById('searchStatus');
+    if (!ss) return;
+    if (nearest && nearest.distMi <= RADIUS_MI) {
+      const s = nearest.store;
+      ss.className = 'search-status covered open';
+      ss.innerHTML = `<span class="ss-close">✕</span>
+        <div class="ss-title">✓ ${escapeHtml(label || 'Location')} is covered</div>
+        <div>Nearest visible store: <b>${escapeHtml(s.banner || '')}</b>
+          ${s.sn ? `#${escapeHtml(String(s.sn))}` : ''} in
+          ${escapeHtml(s.city || '')}, ${escapeHtml(s.state || '')}
+          (~${nearest.distMi.toFixed(1)} mi)</div>`;
+    } else if (nearest) {
+      ss.className = 'search-status not-covered open';
+      ss.innerHTML = `<span class="ss-close">✕</span>
+        <div class="ss-title">✗ No stores within ${RADIUS_MI} mi of ${escapeHtml(label || 'this location')}</div>
+        <div>Nearest visible: <b>${escapeHtml(nearest.store.banner || '')}</b>
+          in ${escapeHtml(nearest.store.city || '')},
+          ${escapeHtml(nearest.store.state || '')}
+          (~${nearest.distMi.toFixed(0)} mi away)</div>`;
+    } else {
+      ss.className = 'search-status not-covered open';
+      ss.innerHTML = `<span class="ss-close">✕</span>
+        <div class="ss-title">✗ No visible stores</div>
+        <div>Try resetting filters to see all coverage.</div>`;
+    }
+  }
+
+  function clearSearchMarker() {
+    if (searchMarker) { map.removeLayer(searchMarker); searchMarker = null; }
+  }
+
+  /** Haversine nearest-store search across the currently filtered set.
+   *  Linear scan is fine at our scale (~12k pins, single-digit ms). */
+  function nearestVisibleStore(lat, lon) {
+    let best = null;
+    for (const s of filteredStores) {
+      if (s.lat == null || s.lon == null) continue;
+      const d = haversineMi(lat, lon, s.lat, s.lon);
+      if (!best || d < best.distMi) best = { store: s, distMi: d };
+    }
+    return best;
+  }
+
+  function haversineMi(lat1, lon1, lat2, lon2) {
+    const R = 3958.8; // miles
+    const toRad = x => x * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2) ** 2 +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon/2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+
+  /** Fly to a store and open its popup. If the store is currently
+   *  filtered out, we temporarily reset filters so the pin is
+   *  visible — searching for a hidden store and getting nothing
+   *  would be confusing. */
+  function flyToStore(s) {
+    if (!s || s.lat == null || s.lon == null) return;
+    if (!passesFilters(s)) {
+      resetAllFilters();
+    }
+    map.flyTo([s.lat, s.lon], 14, { duration: 0.7 });
+    // After the cluster un-spiderfies at zoom 10+, find the marker
+    // and open its popup. Slight delay to let flyTo settle.
+    setTimeout(() => {
+      clusterGroup.eachLayer(m => {
+        if (m.storeData && m.storeData === s) {
+          clusterGroup.zoomToShowLayer(m, () => m.openPopup());
+        }
+      });
+      // Auto-close mobile sheet so the user sees the map.
+      document.body.classList.remove('filters-open');
+    }, 750);
+  }
+
+  /** Test whether any filter dimension is non-default (i.e., any
+   *  value within it is unselected, or its mode is single). Used to
+   *  decide if the global Reset button should be visible. */
+  function hasActiveFilters() {
+    for (const dim of Object.keys(filters)) {
+      if (filterMode[dim] !== 'all') return true;
+      for (const k of Object.keys(filters[dim])) {
+        if (!filters[dim][k]) return true;
+      }
+    }
+    return false;
+  }
+
+  /** Global reset — returns every dimension to all-on, every mode to
+   *  'all', and re-centers the map on the default US-wide view. */
+  function resetAllFilters() {
+    for (const dim of Object.keys(filters)) {
+      Object.keys(filters[dim]).forEach(k => { filters[dim][k] = true; });
+      filterMode[dim] = 'all';
+    }
+    recomputeAndRender();
+    map.flyTo([39.5, -96.5], 4, { duration: 0.6 });
+  }
+
+  // ====================================================================
+  // Boot
+  // ====================================================================
+
+  async function init() {
+    const [dataResp, statesResp] = await Promise.all([
+      fetch('./data/processor_map_data.json'),
+      fetch('./us_states_complete.json')
+    ]);
+    const data = await dataResp.json();
+    const statesGeo = await statesResp.json();
+
+    allStores = data.stores;
+    summary = (data.meta && data.meta.summary) || {};
+    tdaGrocery = (data.meta && data.meta.tda_grocery_summary) || {};
+
+    // Initialize filter state — every value present in data starts ON.
+    ['MilkPEP', 'TDA'].forEach(o => filters.organizations[o] = true);
+    new Set(allStores.map(s => s.banner_group || 'Misc.')).forEach(b =>
+      filters.retailers[b] = true);
+    new Set(allStores.map(s => s.processor || '(unspecified)')).forEach(p =>
+      filters.processors[p] = true);
+    new Set(allStores.map(s => s.region).filter(Boolean)).forEach(r =>
+      filters.regions[r] = true);
+    new Set(allStores.map(s => s.state)).forEach(s =>
+      filters.states[s] = true);
+
+    map = L.map('map', { minZoom: 4, maxZoom: 16, zoomControl: true })
+            .setView([39.5, -96.5], 4);
+    // Two-layer basemap to match the original behavior: a clean
+    // no-labels tile is always on, and a labels-only overlay fades in
+    // at zoom ≥ 5 so city names appear when the user zooms in but
+    // don't crowd the country-wide view. minZoom on the labels layer
+    // is the gate — Leaflet automatically hides the layer below it.
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd', maxZoom: 20
+    }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd', minZoom: 5, maxZoom: 20, pane: 'overlayPane'
+    }).addTo(map);
+
+    stateLayer = L.geoJSON(statesGeo, {
+      style: { fillColor: '#bcd3e8', fillOpacity: 0, color: '#cdd6df', weight: 0.7 }
+    }).addTo(map);
+
+    // Cluster radius is zoom-dependent so the country-wide view stays
+    // readable (heavy clustering, count circles dominate) while the
+    // city-level view exposes individual brand-logo pins. A constant
+    // small radius made the East Coast pile of 800+ stores unreadable
+    // at zoom 4, and a constant large radius hid logos people zoomed
+    // in to see. The function below tapers from 80px at country zoom
+    // down to 12px when the user is essentially looking at one block.
+    clusterGroup = L.markerClusterGroup({
+      maxClusterRadius(zoom) {
+        if (zoom <= 4) return 80;
+        if (zoom === 5) return 60;
+        if (zoom === 6) return 40;
+        if (zoom === 7) return 25;
+        return 12;
+      },
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      disableClusteringAtZoom: 10,
+      iconCreateFunction(cluster) {
+        const markers = cluster.getAllChildMarkers();
+        const color = clusterColor(markers);
+        const count = cluster.getChildCount();
+        const size = count > 20 ? 52 : count > 5 ? 44 : 38;
+
+        // At country/region zooms (≤5) every cluster renders as a
+        // count circle regardless of banner uniformity. A lone
+        // Jewel-Osco logo amid 9 numbered blobs reads as a glitch;
+        // the count-only treatment keeps the overview consistent.
+        // Once the user zooms into a state, single-banner clusters
+        // get to keep their brand logo.
+        const mapZoom = map.getZoom();
+        const banners = new Set(
+          markers.map(m => m.storeData ? (m.storeData.banner_group || m.storeData.banner) : null)
+        );
+        if (mapZoom > 5 && banners.size === 1) {
+          const banner = banners.values().next().value;
+          const logoSrc = banner && RETAILER_LOGOS[banner];
+          if (logoSrc) {
+            // Single-banner cluster: just the logo, no number. The
+            // count is implicit in the visual size (38/44/52 scale
+            // already conveys density).
+            const html =
+              `<div class="store-pin store-pin--cluster" style="width:${size}px;height:${size}px;border-color:${color}">` +
+                `<img src="${logoSrc}" alt="" draggable="false">` +
+              `</div>`;
+            return L.divIcon({ html, className: '', iconSize: [size, size] });
+          }
+        }
+
+        return L.divIcon({
+          html: `<div style="width:${size}px;height:${size}px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:${size>44?14:12}px;font-weight:700;border:2.5px solid rgba(255,255,255,0.92);box-shadow:0 2px 6px rgba(0,0,0,0.22);background:${color}">${count}</div>`,
+          className: '', iconSize: [size, size]
+        });
+      }
+    }).addTo(map);
+
+    attachSidebarHandlers();
+    recomputeAndRender();
+  }
+
+  init().catch(err => {
+    console.error(err);
+    document.getElementById('filters').innerHTML =
+      '<div style="padding:14px;color:#a00;">Failed to load map data.</div>';
+  });
+</script>
+
+<script>
+  (function () {
+    const CORRECT = 'gonnaneedmilk';
+    const gate = document.getElementById('pw-gate');
+    const input = document.getElementById('pw-input');
+    const btn = document.getElementById('pw-submit');
+    const err = document.getElementById('pw-error');
+
+    if (sessionStorage.getItem('pw_ok') === '1') {
+      gate.classList.add('hidden');
+      return;
+    }
+
+    function attempt() {
+      if (input.value === CORRECT) {
+        sessionStorage.setItem('pw_ok', '1');
+        gate.classList.add('hidden');
+      } else {
+        err.textContent = 'Incorrect password. Please try again.';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    btn.addEventListener('click', attempt);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') attempt();
+    });
+  })();
+</script>
+</body>
+</html>
