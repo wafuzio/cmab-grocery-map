@@ -14,7 +14,7 @@ def store_id_to_key(store_id: str) -> str:
 
 
 def main() -> None:
-    with CSV_PATH.open(newline="", encoding="utf-8") as f:
+    with CSV_PATH.open(newline="", encoding="utf-8-sig") as f:
         audit = {
             r["Store #"]: r
             for r in csv.DictReader(f)
