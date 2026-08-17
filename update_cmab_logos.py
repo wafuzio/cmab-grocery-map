@@ -6,6 +6,7 @@ import csv
 import json
 import os
 import re
+import subprocess
 import urllib.request
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,7 +16,7 @@ from urllib.parse import urlparse, urljoin
 REPO = Path(__file__).parent
 HTML = REPO / "cmab_map.html"
 MAP = REPO / "data" / "ca_grocer_map_data.json"
-CSV = Path("/home/ubuntu/ca_grocery_stores_audited.csv")
+CSV = REPO / "data" / "ca_grocery_stores_audited.csv"
 LOGO_DIR = REPO / "logos"
 
 DIRECTORY_DOMAINS = {
@@ -209,15 +210,35 @@ def extract_js_object(html: str, name: str):
 
 
 def _fetch_url(req, timeout):
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read()
+    """Fetch a URL, preferring curl for better DNS/network behavior."""
+    url = req.full_url if isinstance(req, urllib.request.Request) else str(req)
+    if not url:
+        raise ValueError("empty URL")
+    ua = req.get_header("User-agent") or (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+    )
+    result = subprocess.run(
+        ["curl", "-sL", "--max-time", str(timeout), "-A", ua, url],
+        capture_output=True,
+        timeout=timeout + 5,
+    )
+    if result.returncode != 0:
+        raise Exception(result.stderr.decode("utf-8", "ignore")[:200])
+    data = result.stdout
+    if not data:
+        raise Exception("empty response")
+    return data
 
 
-def download_favicon(website_url: str, filepath: Path) -> bool:
+def download_favicon(website_url: str, filepath: Path, verbose: bool = False) -> bool:
     domain = domain_from_url(website_url)
     if not domain:
         return False
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+
+    def log(msg):
+        if verbose:
+            print(msg)
 
     # Google favicon service (high-res)
     google_url = f"https://www.google.com/s2/favicons?domain={domain}&sz=128"
@@ -227,7 +248,7 @@ def download_favicon(website_url: str, filepath: Path) -> bool:
             filepath.write_bytes(data)
             return True
     except Exception as e:
-        print(f"    google favicon failed for {domain}: {e}")
+        log(f"    google favicon failed for {domain}: {e}")
 
     # Direct /favicon.ico
     try:
@@ -237,7 +258,7 @@ def download_favicon(website_url: str, filepath: Path) -> bool:
             filepath.write_bytes(data)
             return True
     except Exception as e:
-        print(f"    direct favicon failed for {domain}: {e}")
+        log(f"    direct favicon failed for {domain}: {e}")
 
     # Parse homepage HTML for rel=icon / apple-touch-icon
     try:
@@ -255,9 +276,56 @@ def download_favicon(website_url: str, filepath: Path) -> bool:
                     return True
                 break
     except Exception as e:
-        print(f"    html favicon failed for {domain}: {e}")
+        log(f"    html favicon failed for {domain}: {e}")
 
     return False
+
+
+def safe_domain_filename(domain: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", domain.lower().replace("www.", "")).strip("-") + ".png"
+
+
+def download_misc_store_logos(stores: list) -> int:
+    """For Misc. stores with an official web_url, download a per-domain favicon once and reference it for every matching store."""
+    domain_file: dict[str, str] = {}
+    attempted: set[str] = set()
+    downloaded = 0
+
+    def ensure_file(domain: str, url: str) -> str | None:
+        nonlocal downloaded
+        if domain in domain_file:
+            return domain_file[domain]
+        filename = safe_domain_filename(domain)
+        filepath = LOGO_DIR / filename
+        if filepath.exists() and filepath.stat().st_size > 100:
+            domain_file[domain] = f"logos/{filename}"
+            return domain_file[domain]
+        if domain in attempted:
+            return None
+        attempted.add(domain)
+        if download_favicon(url, filepath, verbose=False):
+            downloaded += 1
+            domain_file[domain] = f"logos/{filename}"
+            return domain_file[domain]
+        return None
+
+    def handle(store: dict):
+        url = (store.get("web_url") or "").strip()
+        if not url or is_directory(url):
+            return
+        domain = domain_from_url(url)
+        if not domain:
+            return
+        logo = ensure_file(domain, url)
+        if logo:
+            store["logo"] = logo
+
+    # Concurrency speeds up the large number of independent domains.
+    with ThreadPoolExecutor(max_workers=20) as pool:
+        for store in stores:
+            if (store.get("banner_group") or "Misc.") == "Misc." and store.get("web_url"):
+                pool.submit(handle, store)
+    return downloaded
 
 
 def find_best_logo_file(banner: str, files: list) -> tuple:
@@ -394,7 +462,6 @@ def main():
             return True
         return False
 
-    downloads_to_run = []
     for banner, count in banner_counts.items():
         if banner in retailer_logos:
             continue
@@ -406,7 +473,12 @@ def main():
         if banner not in retailer_logos:
             print(f"  no logo for {banner} (count {count})")
 
-    # 5. After downloads, re-run fuzzy matching for any still-unmapped files
+    # 5. Download per-domain favicons for Misc. stores that have an official web_url.
+    print("  downloading per-store favicons for Misc. entries with web URLs...")
+    misc_logo_count = download_misc_store_logos(stores)
+    print(f"    added {misc_logo_count} Misc. store logos")
+
+    # 6. After downloads, re-run fuzzy matching for any still-unmapped files
     logo_files = [f for f in os.listdir(LOGO_DIR) if f not in PROCESSOR_LOGOS]
     for banner in list(banner_counts.keys()):
         if banner in retailer_logos:
@@ -475,11 +547,18 @@ def main():
     else:
         print("  no HTML changes needed")
 
+    # Persist per-store logo references back to map data.
+    if misc_logo_count:
+        MAP.write_text(json.dumps(map_data, indent=2), encoding="utf-8")
+        print(f"  updated {MAP.name} with {misc_logo_count} store logo references")
+
     # Summary
     unmapped = [b for b, c in banner_counts.items() if b not in retailer_logos and c >= 3]
     print(f"  unmapped banner groups with >=3 stores: {len(unmapped)}")
     if unmapped:
         print("    " + ", ".join(sorted(unmapped)[:20]))
+    logo_store_count = sum(1 for s in stores if s.get("logo"))
+    print(f"  stores with per-store logo: {logo_store_count}")
 
 
 if __name__ == "__main__":
