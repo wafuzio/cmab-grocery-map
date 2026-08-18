@@ -3,20 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026 CMAB Processor Map</title>
+<title>2026 CMAB SNAP Grocer Map</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
 <style>
-  /* ---- Original processor-map CSS, ported verbatim ----
+  /* ---- CMAB SNAP Grocer Map CSS ----
      Preserves: floating .filters card, ring-style retailer swatches,
-     brand-logo filter rows, scrollable state list. The visual target
-     is oldmap.png, which is what the .filter-* class set produces.
-     Layout differs from the original in two ways only:
-       (1) no top header bar — stats moved into the floating card
-       (2) optional info-card panel on the right for the Maola/TDA
-           data note, dismissible
-     Everything else matches the original. */
+     brand-logo filter rows, scrollable state list. */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: Arial, sans-serif; background: transparent; }
 
@@ -97,7 +91,7 @@
     background: white;
   }
 
-  /* Brand logo in filter rows (processors, organizations). */
+  /* Brand logo in filter rows. */
   .filter-logo {
     width: 32px; height: 32px; margin-right: 10px;
     object-fit: contain; flex-shrink: 0; border-radius: 3px;
@@ -240,9 +234,8 @@
     body.filters-open .filters { transform: translateY(0); }
   }
 
-  /* Logo-based store pin. White circular plate with a 2px ring that
-     gets tinted by the store's org color (MilkPEP blue / TDA green /
-     Both purple). The logo image fills the plate via object-fit. */
+  /* Logo-based store pin. White circular plate with a 2px ring.
+     The logo image fills the plate via object-fit. */
   .store-pin {
     width: 28px; height: 28px; border-radius: 50%;
     background: #ffffff; border: 2px solid #1f78b4;
@@ -285,7 +278,7 @@
 <div id="pw-gate">
   <div class="pw-card">
     <img src="logos/CMAB.svg" alt="CMAB">
-    <h2>2026 CMAB Processor Map</h2>
+    <h2>2026 CMAB SNAP Grocer Map</h2>
     <p>Enter the password to continue.</p>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
     <button id="pw-submit">Enter</button>
@@ -509,38 +502,9 @@
     "Misc.": 'border:4px solid #94a3b8;',
   };
 
-  // Marker color (used until pin redesign): one color per organization,
-  // independent of retailer. Cluster icons use the same palette.
-  const ORG_COLORS = {
-    MilkPEP: '#1f78b4',
-    TDA:     '#2e8b57',
-    Both:    '#7b5cd6',
-  };
-
-  // Logos for each organization (used in the Organization filter rows).
-  // PNG files ship with the static site (built from each brand's
-  // own favicon at deploy time — see prior commit message).
-  // MilkPEP — official favicon is an SVG hosted on milkpep.org. We
-  // serve a local copy to keep the page fully self-contained. Dairy
-  // Alliance — PNG favicon pulled from their site, also local.
-  const ORG_LOGOS = {
-    MilkPEP: 'logos/milkpep_logo.svg',
-    TDA:     'logos/dairyalliance_logo.png',
-  };
-
-  // Logos for processors. Each file is the brand's actual logo,
-  // pulled from each processor's website favicon and bundled locally
-  // under `logos/` so the page stays self-contained on Vercel.
-  const PROCESSOR_LOGOS = {
-    Lucerne:            'logos/lucerne.png',
-    Maola:              'logos/maola.png',
-    'Crystal Creamery': 'logos/crystal_creamery.png',
-    Hollandia:          'logos/hollandia.png',
-    'Sarah Farms':      'logos/sarah_farms.png',
-  };
-
-  // Logos for retailers. Same source pattern as PROCESSOR_LOGOS —
-  // each is the brand's own favicon, fetched once and bundled.
+  // Logos for retailers. Each is the brand's own favicon, fetched
+  // once and bundled locally under `logos/` so the page stays
+  // self-contained.
   // Misc. (catch-all) intentionally has no logo and falls back to
   // the brand-color ring swatch.
   const RETAILER_LOGOS = {
@@ -742,11 +706,6 @@
     "Zion Market": 'logos/zion-market.png',
   };
 
-  // Display order for the Dairy Processors section. Order matches the
-  // original. Processors not in this list go after, alphabetically.
-  // `(unspecified)` always goes last because it's a catch-all.
-  const PROCESSOR_ORDER = ['Lucerne', 'Maola', 'Crystal Creamery', 'Hollandia', 'Sarah Farms'];
-
   // ====================================================================
   // State
   // ====================================================================
@@ -782,13 +741,10 @@
     'District of Columbia':'DC'
   };
   let summary = {};
-  let tdaGrocery = {};
-  // Filter dimensions: organizations + retailers (banner_group) +
-  // processors + regions + states. Each maps key→bool.
+  // Filter dimensions: retailers (banner_group) + regions + states.
+  // Each maps key→bool.
   let filters = {
-    organizations: {},
     retailers: {},
-    processors: {},
     regions: {},
     states: {},
   };
@@ -798,12 +754,10 @@
   // selections (clicking a row toggles it within the current set).
   // The mode flips to 'single' on first click, back to 'all' when
   // the user hits the section's "all" link. Without this, selecting
-  // a single processor / banner / region requires N-1 deselects —
+  // a single banner / region requires N-1 deselects —
   // the original's defining UX detail.
   let filterMode = {
-    organizations: 'all',
     retailers: 'all',
-    processors: 'all',
     regions: 'all',
     states: 'all',
   };
@@ -819,22 +773,14 @@
   }
 
   function markerColor(store) {
-    const orgs = store.organizations || [];
-    if (orgs.length === 2) return ORG_COLORS.Both;
-    if (orgs[0] === 'TDA') return ORG_COLORS.TDA;
-    return ORG_COLORS.MilkPEP;
+    return '#1f78b4';
   }
 
-  /** Five-dimensional AND filter. A store is visible only if every
-   *  dimension that has any rows enabled accepts it. The org check
-   *  uses .some() because organizations is an array per store. */
+  /** Three-dimensional AND filter. A store is visible only if every
+   *  dimension that has any rows enabled accepts it. */
   function passesFilters(store) {
-    const orgs = store.organizations || [];
-    if (orgs.length && !orgs.some(o => filters.organizations[o])) return false;
     const r = store.banner_group || 'Misc.';
     if (!filters.retailers[r]) return false;
-    const p = store.processor || '(unspecified)';
-    if (!filters.processors[p]) return false;
     const reg = store.region || '';
     if (reg && !filters.regions[reg]) return false;
     if (!filters.states[store.state]) return false;
@@ -842,10 +788,8 @@
   }
 
   function buildPopup(store) {
-    const orgs = (store.organizations || []).map(o =>
-      `<span class="badge" style="background:${ORG_COLORS[o] || '#888'};color:#fff">${escapeHtml(o)}</span>`).join(' ');
-    const proc = store.processor ? `<div><strong>Processor:</strong> ${escapeHtml(store.processor)}</div>` : '';
     const owner = store.holding_co ? `<div><strong>Holding co.:</strong> ${escapeHtml(store.holding_co)}</div>` : '';
+    const county = store.county ? `<div><strong>County:</strong> ${escapeHtml(store.county)}</div>` : '';
     const web = store.web_url ? `<div><a href="${escapeHtml(store.web_url)}" target="_blank" rel="noopener">Website</a></div>` : '';
     return `
       <div class="popup-content">
@@ -853,34 +797,25 @@
         <div>${escapeHtml(store.addr || '')}</div>
         <div>${escapeHtml(store.city || '')}, ${escapeHtml(store.state || '')} ${escapeHtml(store.zip || '')}</div>
         ${owner}
-        ${proc}
+        ${county}
         ${web}
-        <div style="margin-top:6px;">${orgs}</div>
       </div>
     `;
   }
 
   function buildMarker(store) {
-    // When the retailer has a logo on file, render the pin AS the
-    // logo — a small white-bordered circle containing the brand mark
-    // tinted with the org color along its rim. This makes individual
-    // pins recognizable at a glance without sacrificing the cluster
-    // (count) summary view at lower zooms.
     const banner = store.banner_group || store.banner;
     let logoSrc = store.logo || RETAILER_LOGOS[banner];
     // No remote favicon fallback here; directory-style web_url domains often
     // produce broken images, so we fall back to the colored circle marker.
     if (logoSrc) {
-      const ringColor = markerColor(store);
-      const html = `<div class="store-pin" style="border-color:${ringColor}">`
+      const html = `<div class="store-pin">`
                  + `<img src="${logoSrc}" alt="" draggable="false">`
                  + `</div>`;
       return L.marker([store.lat, store.lon], {
         icon: L.divIcon({ html, className: '', iconSize: [28, 28], iconAnchor: [14, 14] })
       }).bindPopup(buildPopup(store));
     }
-    // Fallback for Misc. and any banner without a logo: the original
-    // colored circle marker. Same look as before.
     return L.circleMarker([store.lat, store.lon], {
       radius: 6, color: '#ffffff', weight: 1.5,
       fillColor: markerColor(store), fillOpacity: 0.9
@@ -888,15 +823,7 @@
   }
 
   function clusterColor(markers) {
-    const counts = { MilkPEP: 0, TDA: 0, Both: 0 };
-    markers.forEach(m => {
-      const orgs = m.storeData.organizations || [];
-      if (orgs.length === 2) counts.Both++;
-      else if (orgs[0] === 'TDA') counts.TDA++;
-      else counts.MilkPEP++;
-    });
-    const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0][0];
-    return ORG_COLORS[top];
+    return '#1f78b4';
   }
 
   // ====================================================================
@@ -963,47 +890,24 @@
 
   /** Compute counts for ONE filter dimension while honoring the OTHER
    *  dimensions' current state. This is what makes "show me only
-   *  Maola pins" produce sensible "13 retailers" / "8 states"
    *  numbers in the sidebar without inflating them with filtered-out
    *  stores. O(N * dimensions) per render — fine at our scale. */
   function countsForDimension(excludeDim) {
     const counts = {};
     Object.keys(filters[excludeDim]).forEach(k => counts[k] = 0);
     allStores.forEach(s => {
-      // Re-implement passesFilters but skip the excluded dimension.
-      const orgs = s.organizations || [];
-      if (excludeDim !== 'organizations' && orgs.length && !orgs.some(o => filters.organizations[o])) return;
       const r = s.banner_group || 'Misc.';
       if (excludeDim !== 'retailers' && !filters.retailers[r]) return;
-      const p = s.processor || '(unspecified)';
-      if (excludeDim !== 'processors' && !filters.processors[p]) return;
       const reg = s.region || '';
       if (excludeDim !== 'regions' && reg && !filters.regions[reg]) return;
       if (excludeDim !== 'states' && !filters.states[s.state]) return;
-
-      // Increment the count for whichever value of the excluded dim
-      // this store carries.
       switch (excludeDim) {
-        case 'organizations': orgs.forEach(o => { if (o in counts) counts[o]++; }); break;
         case 'retailers':     if (r in counts) counts[r]++; break;
-        case 'processors':    if (p in counts) counts[p]++; break;
         case 'regions':       if (reg in counts) counts[reg]++; break;
         case 'states':        if (s.state in counts) counts[s.state]++; break;
       }
     });
     return counts;
-  }
-
-  function rowOrgHtml(key, count) {
-    const enabled = filters.organizations[key];
-    const logo = ORG_LOGOS[key]
-      ? `<img class="filter-logo" src="${ORG_LOGOS[key]}" alt="">`
-      : '';
-    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="organizations" data-key="${escapeHtml(key)}">
-      ${logo}
-      <span class="filter-label">${escapeHtml(key)}</span>
-      <span class="filter-count">${count.toLocaleString()}</span>
-    </div>`;
   }
 
   function rowRetailerHtml(key, count) {
@@ -1016,21 +920,6 @@
       : `<div class="retailer-border-sample" style="${RETAILER_BORDER[key] || RETAILER_BORDER['Misc.']}"></div>`;
     return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="retailers" data-key="${escapeHtml(key)}">
       ${mark}
-      <span class="filter-label">${escapeHtml(key)}</span>
-      <span class="filter-count">${count.toLocaleString()}</span>
-    </div>`;
-  }
-
-  function rowProcessorHtml(key, count) {
-    const enabled = filters.processors[key];
-    const logo = PROCESSOR_LOGOS[key]
-      ? `<img class="filter-logo" src="${PROCESSOR_LOGOS[key]}" alt="">`
-      // No logo on file — use an invisible spacer of the same width so
-      // labels align with logo'd rows. Avoids the gray-circle look
-      // that read as "broken image" to users.
-      : `<div class="filter-logo" style="visibility:hidden"></div>`;
-    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="processors" data-key="${escapeHtml(key)}">
-      ${logo}
       <span class="filter-label">${escapeHtml(key)}</span>
       <span class="filter-count">${count.toLocaleString()}</span>
     </div>`;
@@ -1052,36 +941,19 @@
   }
 
   function renderSidebar() {
-    const orgCounts = countsForDimension('organizations');
     const retCounts = countsForDimension('retailers');
-    const procCounts = countsForDimension('processors');
     const regCounts = countsForDimension('regions');
     const stCounts  = countsForDimension('states');
 
-    const orgRows = ['MilkPEP', 'TDA']
-      .filter(o => o in filters.organizations)
-      .map(o => rowOrgHtml(o, orgCounts[o] || 0)).join('');
-
     // Retailers — sort by current cross-filtered count (descending)
     // so the most-populous brand always sits at top. Misc. always
-    // last regardless of count. This is the order Dan wanted: the
-    // legend reads as a ranked summary, not an authored priority list.
+    // last regardless of count.
     const retKeys = Object.keys(filters.retailers).filter(k => k !== 'Misc.');
     retKeys.sort((a, b) => (retCounts[b] || 0) - (retCounts[a] || 0)
                        || a.localeCompare(b));
     const retOrder = [...retKeys];
     if ('Misc.' in filters.retailers) retOrder.push('Misc.');
     const retRows = retOrder.map(r => rowRetailerHtml(r, retCounts[r] || 0)).join('');
-
-    // Processors — priority order then the rest, with `(unspecified)`
-    // pinned to the bottom so the actual processors are visually
-    // grouped together.
-    const procKeys = Object.keys(filters.processors);
-    const procPri = PROCESSOR_ORDER.filter(p => procKeys.includes(p));
-    const procExtra = procKeys.filter(p => !PROCESSOR_ORDER.includes(p) && p !== '(unspecified)').sort();
-    const procOrdered = [...procPri, ...procExtra];
-    if (procKeys.includes('(unspecified)')) procOrdered.push('(unspecified)');
-    const procRows = procOrdered.map(p => rowProcessorHtml(p, procCounts[p] || 0)).join('');
 
     const regOrder = ['Northeast','Midwest','South','West'].filter(r => r in filters.regions);
     const regRows = regOrder.map(r => rowSimpleHtml('regions', r, regCounts[r] || 0)).join('');
@@ -1092,7 +964,7 @@
     document.getElementById('filters').innerHTML = `
       <h3>Filters</h3>
       <div class="filter-stats">
-        ${filteredStores.length.toLocaleString()} of ${allStores.length.toLocaleString()} pinned stores visible
+        ${filteredStores.length.toLocaleString()} of ${allStores.length.toLocaleString()} SNAP grocers visible
       </div>
       <div class="search-wrap">
         <input type="text" class="search-input" id="searchInput"
@@ -1107,18 +979,8 @@
       </div>
 
       <div class="filter-section">
-        ${sectionHeader('Source', 'organizations')}
-        ${orgRows}
-      </div>
-
-      <div class="filter-section">
         ${sectionHeader('Retailers', 'retailers')}
         ${retRows}
-      </div>
-
-      <div class="filter-section">
-        ${sectionHeader('Dairy Processors', 'processors')}
-        ${procRows}
       </div>
 
       <div class="filter-section">
@@ -1161,20 +1023,19 @@
   }
 
   function exportVisibleStores() {
-    const headers = ['Store Number','Banner','Holding Company','Processor','Organizations','Address','City','State','Zip','Region'];
+    const headers = ['Store Number','Banner','Holding Company','Address','City','State','Zip','Region','County'];
     const lines = [headers.join(',')];
     filteredStores.forEach(s => {
       const row = [
-        s.sn, s.banner, s.holding_co, s.processor,
-        (s.organizations || []).join('|'),
-        s.addr, s.city, s.state, s.zip, s.region
+        s.sn, s.banner, s.holding_co,
+        s.addr, s.city, s.state, s.zip, s.region, s.county
       ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`);
       lines.push(row.join(','));
     });
     const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'processor-map-visible-stores.csv';
+    a.href = url; a.download = 'cmab-snap-grocers-visible.csv';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
@@ -1570,7 +1431,7 @@
       filterMode[dim] = 'all';
     }
     recomputeAndRender();
-    map.flyTo([39.5, -96.5], 4, { duration: 0.6 });
+    map.flyTo([36.7, -119.4], 6, { duration: 0.6 });
   }
 
   // ====================================================================
@@ -1579,7 +1440,7 @@
 
   async function init() {
     const [dataResp, statesResp] = await Promise.all([
-      fetch('./data/ca_grocer_map_data.json'),
+      fetch('./data/cmab_snap_grocers.json'),
       fetch('./us_states_complete.json')
     ]);
     const data = await dataResp.json();
@@ -1587,21 +1448,17 @@
 
     allStores = data.stores;
     summary = (data.meta && data.meta.summary) || {};
-    tdaGrocery = (data.meta && data.meta.tda_grocery_summary) || {};
 
     // Initialize filter state — every value present in data starts ON.
-    ['MilkPEP', 'TDA'].forEach(o => filters.organizations[o] = true);
     new Set(allStores.map(s => s.banner_group || 'Misc.')).forEach(b =>
       filters.retailers[b] = true);
-    new Set(allStores.map(s => s.processor || '(unspecified)')).forEach(p =>
-      filters.processors[p] = true);
     new Set(allStores.map(s => s.region).filter(Boolean)).forEach(r =>
       filters.regions[r] = true);
     new Set(allStores.map(s => s.state)).forEach(s =>
       filters.states[s] = true);
 
     map = L.map('map', { minZoom: 4, maxZoom: 16, zoomControl: true })
-            .setView([39.5, -96.5], 4);
+            .setView([36.7, -119.4], 6);
     // Two-layer basemap to match the original behavior: a clean
     // no-labels tile is always on, and a labels-only overlay fades in
     // at zoom ≥ 5 so city names appear when the user zooms in but

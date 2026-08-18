@@ -8,15 +8,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
 <style>
-  /* ---- Original processor-map CSS, ported verbatim ----
+  /* ---- CMAB CA SNAP Grocer Map CSS ----
      Preserves: floating .filters card, ring-style retailer swatches,
-     brand-logo filter rows, scrollable state list. The visual target
-     is oldmap.png, which is what the .filter-* class set produces.
-     Layout differs from the original in two ways only:
-       (1) no top header bar — stats moved into the floating card
-       (2) optional info-card panel on the right for the Maola/TDA
-           data note, dismissible
-     Everything else matches the original. */
+     brand-logo filter rows, scrollable state list, tract overlay. */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: Arial, sans-serif; background: transparent; }
 
@@ -61,6 +55,23 @@
     z-index: 1000; font-size: 12px; max-width: 280px;
     max-height: calc(100vh - 28px); overflow-y: auto;
   }
+  .sidebar-masthead {
+    display: flex; align-items: center; justify-content: flex-start;
+    gap: 12px; margin-bottom: 10px;
+  }
+  .masthead-logo {
+    height: 32px; object-fit: contain;
+  }
+  .masthead-cmab {
+    height: 48px;
+  }
+  .gale-watermark {
+    position: absolute; bottom: 12px; right: 12px; z-index: 999;
+    pointer-events: none;
+  }
+  .gale-watermark img {
+    height: 24px; opacity: 0.7; object-fit: contain;
+  }
   .filters h3 {
     margin: 0 0 10px 0; font-size: 13px; color: #333;
     border-bottom: 1px solid #eee; padding-bottom: 6px;
@@ -89,6 +100,12 @@
   .filter-item:hover { background: #f5f5f5; }
   .filter-item.disabled { opacity: 0.3; }
 
+  /* Colored dot swatch for store type filter rows */
+  .store-type-swatch {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid; flex-shrink: 0; margin-right: 6px;
+  }
+
   /* Ring swatch — retailer brand color as border, white interior.
      This is the visual signature of the legend in the original. */
   .retailer-border-sample {
@@ -97,7 +114,7 @@
     background: white;
   }
 
-  /* Brand logo in filter rows (processors, organizations). */
+  /* Brand logo in filter rows. */
   .filter-logo {
     width: 32px; height: 32px; margin-right: 10px;
     object-fit: contain; flex-shrink: 0; border-radius: 3px;
@@ -202,17 +219,6 @@
   }
   .search-status .ss-close:hover { opacity: 1; }
 
-  /* Search marker — orange pin used to mark a geocoded location
-     the user navigated to via the search box. */
-  .search-marker {
-    background: #ff6b3d; color: white; border-radius: 50%;
-    width: 36px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; font-weight: 700;
-    box-shadow: 0 3px 10px rgba(255,107,61,0.5);
-    border: 3px solid white;
-  }
-
   /* Mobile collapse — on narrow screens the filter card would cover
      most of the map. We replace it with a compact toggle bar; tapping
      it slides the full panel up from the bottom as a sheet. The
@@ -240,9 +246,8 @@
     body.filters-open .filters { transform: translateY(0); }
   }
 
-  /* Logo-based store pin. White circular plate with a 2px ring that
-     gets tinted by the store's org color (MilkPEP blue / TDA green /
-     Both purple). The logo image fills the plate via object-fit. */
+  /* Logo-based store pin. White circular plate with a 2px ring.
+     The logo image fills the plate via object-fit. */
   .store-pin {
     width: 28px; height: 28px; border-radius: 50%;
     background: #ffffff; border: 2px solid #1f78b4;
@@ -291,13 +296,12 @@
     font-size: 10px;
   }
 
-  /* ---- Tract overlay ---- */
+  /* ---- Tract overlay (inside sidebar) ---- */
   .tract-toggle {
-    position: absolute; top: 50px; right: 10px; z-index: 1000;
-    background: #fff; border: 1px solid #ccc; border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 6px 10px;
-    font-size: 13px; cursor: pointer; display: flex; align-items: center;
-    gap: 8px; user-select: none; transition: background 0.15s;
+    background: #fff; border: 1px solid #eee; border-radius: 8px;
+    padding: 8px 10px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+    user-select: none; transition: background 0.15s; margin-bottom: 10px;
   }
   .tract-toggle:hover { background: #f5f5f5; }
   .tract-toggle .tt-label { font-weight: 600; color: #333; }
@@ -317,6 +321,32 @@
   }
   .tract-toggle.active .tt-switch { background: #1a73e8; }
   .tract-toggle.active .tt-switch::after { transform: translateX(16px); }
+
+  .nrs-info-icon {
+    color: #aaa; font-size: 14px; font-weight: 400;
+    cursor: pointer; vertical-align: middle; margin-left: 4px;
+    background: transparent; border: none; display: inline;
+  }
+  .nrs-info-icon:hover { color: #888; }
+
+  .nrs-modal {
+    position: fixed; bottom: 3.5rem; right: 1rem; z-index: 1500;
+    background: #fff; border: 1px solid #ccc; border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); padding: 16px;
+    max-width: 320px; font-size: 12px;
+  }
+  .nrs-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .nrs-modal-header h5 { margin: 0; font-size: 13px; font-weight: 700; color: #333; }
+  .nrs-modal-close {
+    cursor: pointer; color: #999; font-size: 18px; line-height: 1;
+    border: none; background: none; padding: 0 4px;
+  }
+  .nrs-modal-close:hover { color: #333; }
+  .nrs-modal img { width: 100%; border-radius: 6px; }
+  .nrs-modal p { margin: 8px 0 0; color: #666; line-height: 1.4; }
   .visibility-toggle {
     display: flex; align-items: center; gap: 8px;
     padding: 4px 0 6px; font-size: 12px; color: #555; cursor: pointer;
@@ -333,20 +363,20 @@
   }
   .visibility-toggle.off .vt-switch { background: #ccc; }
   .visibility-toggle.off .vt-switch::after { transform: translateX(0); }
-  /* Bivariate legend — replicated from Grocery Gap Atlas */
+  /* Bivariate legend — inside sidebar */
   .tract-legend {
-    position: absolute; bottom: 2rem; right: 1rem; z-index: 1000;
-    background: #fff; border: 1px solid #ccc; border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 14px 24px 16px;
-    display: none; font-size: 12px;
+    background: #fff; border: 1px solid #eee; border-radius: 8px;
+    padding: 14px 12px 16px; margin-bottom: 10px;
+    font-size: 12px;
+    display: flex; flex-direction: column; align-items: center;
   }
-  .tract-legend.visible { display: block; }
+  .hidden { display: none !important; }
   .tract-legend h3 {
     margin: 0 0 16px; font-size: 13px; font-weight: 700; color: #333;
   }
   .legend-wrap {
     position: relative; width: 200px;
-    padding: 4px 0 64px;
+    padding: 4px 0 80px;
     margin: 0 auto 24px;
   }
   .legend-grid {
@@ -359,22 +389,13 @@
   }
   .legend-col { display: flex; flex-direction: column; }
   .legend-cell { width: 32px; height: 32px; }
-  .legend-arrow-d, .legend-arrow-r {
-    position: absolute; z-index: 10;
-    font-weight: 900; color: #000; font-size: 18px; line-height: 1;
-    pointer-events: none;
-  }
-  .legend-label-y {
+  .legend-label-y, .legend-label-x {
     position: absolute; white-space: nowrap;
-    font-size: 12px; color: #555;
-    transform: rotate(-45deg);
-    transform-origin: 0 50%;
+    font-size: 11px; color: #555;
+    line-height: 1;
   }
-  .legend-label-x {
-    position: absolute; white-space: nowrap;
-    font-size: 12px; color: #555;
-    transform: rotate(45deg);
-    transform-origin: 100% 50%;
+  .legend-axis-arrow {
+    font-weight: 900; color: #000; font-size: 12px;
   }
   .legend-foot {
     font-size: 10px; color: #888; text-align: right;
@@ -401,11 +422,23 @@
   .leaflet-tract-pane path.leaflet-interactive { cursor: pointer; }
   .leaflet-overlay-pane path.leaflet-interactive { cursor: pointer; }
 
-  /* Tract selection tally */
-  .tract-tally {
-    margin-top: 12px; padding-top: 12px; border-top: 1px solid #ddd;
+  /* Tract selection tally — floating panel at bottom right */
+  .tract-tally-panel {
+    position: absolute; bottom: 3.5rem; right: 1rem; z-index: 1000;
+    background: #fff; border: 1px solid #ccc; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 14px 18px;
+    font-size: 12px; min-width: 220px;
   }
-  .tract-tally h4 { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: #333; }
+  .tract-tally-panel h4 { margin: 0; font-size: 12px; font-weight: 700; color: #333; }
+  .tally-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .tally-minimize {
+    border: none; background: none; cursor: pointer; padding: 0;
+    font-size: 16px; line-height: 1; color: #999;
+  }
+  .tally-minimize:hover { color: #333; }
   .tally-row {
     display: flex; justify-content: space-between; padding: 3px 0;
     font-size: 12px; color: #555;
@@ -454,7 +487,7 @@
 
 <div id="pw-gate">
   <div class="pw-card">
-    <img src="milkpep_logo.svg" alt="MilkPEP">
+    <img src="logos/CMAB.svg" alt="CMAB">
     <h2>CMAB California Grocery Store Map</h2>
     <p>Enter the password to continue.</p>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
@@ -464,51 +497,24 @@
 </div>
 
 <div id="map"></div>
-<div class="tract-toggle active" id="tractToggle">
-  <span class="tt-label">Tract Overlay</span>
-  <select id="tractMetricX" title="X-axis metric">
-    <option value="hp">Market Concentration</option>
-    <option value="gp">Food Access</option>
-    <option value="sp">Segregation</option>
-    <option value="adi">Disadvantage</option>
-    <option value="snap">SNAP %</option>
-    <option value="pov">Poverty</option>
-    <option value="mi">Median Income</option>
-    <option value="ph">% Hispanic</option>
-    <option value="pw">% White</option>
-    <option value="pb">% Black</option>
-    <option value="pa">% Asian</option>
-    <option value="popd" selected>Pop Density</option>
-  </select>
-  <span style="color:#999;font-size:11px">×</span>
-  <select id="tractMetricY" title="Y-axis metric">
-    <option value="gp">Food Access</option>
-    <option value="hp">Market Concentration</option>
-    <option value="sp">Segregation</option>
-    <option value="adi">Disadvantage</option>
-    <option value="snap">SNAP %</option>
-    <option value="pov">Poverty</option>
-    <option value="mi">Median Income</option>
-    <option value="ph" selected>% Hispanic</option>
-    <option value="pw">% White</option>
-    <option value="pb">% Black</option>
-    <option value="pa">% Asian</option>
-    <option value="popd">Pop Density</option>
-  </select>
-  <div class="tt-switch"></div>
+<div class="gale-watermark">
+  <img src="logos/GALE copy.svg" alt="Gale">
 </div>
-<div class="tract-legend" id="tractLegend">
-  <h3 id="legendTitle">Concentration & Food Access</h3>
-  <div class="legend-wrap" id="legendWrap">
-    <div class="legend-grid" id="legendGrid"></div>
-    <span class="legend-arrow-d" id="legendArrowD">↓</span>
-    <span class="legend-arrow-r" id="legendArrowR">→</span>
-    <p class="legend-label-y" id="legendLabelY">Poor Food Access</p>
-    <p class="legend-label-x" id="legendLabelX">Market Concentration</p>
+
+<div class="nrs-modal" id="nrsModal" style="display:none">
+  <div class="nrs-modal-header">
+    <h5>Retail Screen Inventory</h5>
+    <button class="nrs-modal-close" id="nrsModalClose">&times;</button>
   </div>
-  <p class="legend-foot">National Data</p>
-  <div class="tract-tally" id="tractTally" style="display:none">
+  <img src="NRS-thumb.jpg" alt="Retail screen">
+  <p>Digital out-of-home ad screens in convenience stores and bodegas across California. 687 locations mapped.</p>
+</div>
+<div class="tract-tally-panel" id="tractTally" style="display:none">
+  <div class="tally-header">
     <h4>Selection Tally</h4>
+    <button class="tally-minimize" id="tallyMinimize">+</button>
+  </div>
+  <div class="tally-body" id="tallyBody" style="display:none">
     <div class="tally-row"><span>People selected</span><span id="tallyPop">0</span></div>
     <div class="tally-row"><span>% of CA population</span><span id="tallyPopPct">—</span></div>
     <div class="tally-row"><span>% Hispanic (selected)</span><span id="tallyPct">—</span></div>
@@ -629,136 +635,223 @@
     'Misc.':           'border:4px solid #94a3b8;',
   };
 
-  // Marker color (used until pin redesign): one color per organization,
-  // independent of retailer. Cluster icons use the same palette.
-  const ORG_COLORS = {
-    MilkPEP: '#1f78b4',
-    TDA:     '#2e8b57',
-    Both:    '#7b5cd6',
-    SNAP:    '#e67e22',
-  };
-
-  // Logos for each organization (used in the Organization filter rows).
-  // PNG files ship with the static site (built from each brand's
-  // own favicon at deploy time — see prior commit message).
-  // MilkPEP — official favicon is an SVG hosted on milkpep.org. We
-  // serve a local copy to keep the page fully self-contained. Dairy
-  // Alliance — PNG favicon pulled from their site, also local.
-  const ORG_LOGOS = {
-    MilkPEP: 'milkpep_logo.svg',
-    TDA:     'dairyalliance_logo.png',
-  };
-
-  // Logos for processors. Each file is the brand's actual logo,
-  // pulled from each processor's website favicon and bundled locally
-  // under `logos/` so the page stays self-contained on Vercel.
-  const PROCESSOR_LOGOS = {
-    Lucerne:            'logos/lucerne.png',
-    Maola:              'logos/maola.png',
-    'Crystal Creamery': 'logos/crystal_creamery.png',
-    Hollandia:          'logos/hollandia.png',
-    'Sarah Farms':      'logos/sarah_farms.png',
-  };
-
-  // Logos for retailers. Same source pattern as PROCESSOR_LOGOS —
-  // each is the brand's own favicon, fetched once and bundled.
+  // Logos for retailers. Each is the brand's own favicon, fetched
+  // once and bundled locally under `logos/` so the page stays
+  // self-contained.
   // Misc. (catch-all) intentionally has no logo and falls back to
   // the brand-color ring swatch.
   const RETAILER_LOGOS = {
-    Walmart:               'logos/walmart.png',
-    Safeway:               'logos/safeway.png',
-    Albertsons:            'logos/albertsons.png',
-    Vons:                  'logos/vons.png',
-    Acme:                  'logos/acme.png',
-    'Jewel-Osco':          'logos/jewel-osco.png',
-    Ingles:                'logos/ingles.png',
-    "Shaw's":              'logos/shaws.png',
-    'Food City':           'logos/food-city.png',
-    'Piggly Wiggly':       'logos/piggly-wiggly.png',
-    Tops:                  'logos/tops.png',
-    'Tom Thumb':           'logos/tom-thumb.png',
-    Kroger:                'logos/kroger.png',
-    'Food Giant':          'logos/food-giant.jpg',
-    'Star Markets':        'logos/star-markets.png',
-    'United Supermarkets': 'logos/united-supermarkets.png',
-    Randalls:              'logos/randalls.png',
-    Weis:                  'logos/weis.png',
-    'Giant Eagle':         'logos/giant-eagle.png',
-    'Lowes Foods':         'logos/lowes-foods.svg',
-    'Winn-Dixie':          'logos/winn-dixie.png',
-    IGA:                   'logos/iga.png',
-    'Harris Teeter':       'logos/harris-teeter.png',
-    'Dollar General Market': 'logos/dollar-general.png',
-    Carrs:                 'logos/carrs.jpg',
-    ShopRite:              'logos/shoprite.png',
-    'Smart & Final':       'logos/smart-final.png',
-    'Sprouts Farmers Market': 'logos/sprouts.png',
-    'Costco Wholesale':    'logos/costco.png',
-    "Trader Joe's":        'logos/trader-joes.png',
-    'Aldi':                'logos/aldi.png',
-    'Food 4 Less':         'logos/food-4-less.png',
-    'Stater Bros. Market': 'logos/stater-bros.png',
-    'Whole Foods Market':  'logos/whole-foods.png',
+    "168 Market": 'logos/168-market.png',
+    "99 Ranch Market": 'logos/ranch-99.png',
+    Acme: 'logos/acme.png',
+    Albertsons: 'logos/albertsons.png',
+    Aldi: 'logos/aldi.png',
+    "Andronico's": 'logos/andronicos.png',
+    "Arteagas Food Center": 'logos/arteagas-food-center.png',
+    "Azteca Market": 'logos/azteca-market.png',
+    "Baby Nutrition": 'logos/baby-nutrition.png',
+    "Baja Ranch Market": 'logos/baja-ranch-market.png',
+    "Barons Market": 'logos/barons.png',
+    "Basic Nutrition": 'logos/basic-nutrition.png',
+    "Bel Air": 'logos/bel-air.png',
+    "Bi-Rite Market": 'logos/bi-rite-market.png',
+    "Big Saver Foods": 'logos/big-saver.png',
+    "Bristol Farms": 'logos/bristol-farms.png',
+    "Canyon Market": 'logos/canyon-market.png',
+    Cardenas: 'logos/cardenas.png',
+    "Carnival Market": 'logos/carnival-market.png',
+    Carrs: 'logos/carrs.jpg',
+    "Central Market": 'logos/central-market.png',
+    "Chavez Supermarket": 'logos/chavez.png',
+    "Corner Market": 'logos/corner-market.png',
+    "Costco Wholesale": 'logos/costco.png',
+    "Dollar General Market": 'logos/dollar-general.png',
+    "El Charrito Market": 'logos/el-charrito-market.png',
+    "El Pacifico Market": 'logos/el-pacifico-market.png',
+    "El Super": 'logos/el-super.png',
+    "Family Market": 'logos/family-market.png',
+    "First Step Nutrition": 'logos/first-step.png',
+    "Food 4 Less": 'logos/food-4-less.png',
+    "Food City": 'logos/food-city.png',
+    "Food Giant": 'logos/food-giant.jpg',
+    "Food Maxx": 'logos/food-maxx.png',
+    "Foods Co": 'logos/foods-co.png',
+    "Garcia's Market": 'logos/garcias-market.png',
+    "Gelson's Market": 'logos/gelsons.png',
+    "Giant Eagle": 'logos/giant-eagle.png',
+    "Gold Star Mart": 'logos/star-markets.png',
+    "Grocery Outlet": 'logos/grocery-outlet.png',
+    "H Mart": 'logos/h-mart.png',
+    "Harris Teeter": 'logos/harris-teeter.png',
+    "Holiday Market": 'logos/holiday-market.png',
+    IGA: 'logos/iga.png',
+    Ingles: 'logos/ingles.png',
+    "Island Pacific Supermarket": 'logos/island-pacific.png',
+    "Jacksons Food Stores": 'logos/jacksons.png',
+    "Jewel-Osco": 'logos/jewel-osco.png',
+    "Jons Market": 'logos/jons-market.png',
+    "Kids Nutricare": 'logos/kids-nutricare.png',
+    "Kings Market": 'logos/kings-market.png',
+    Kroger: 'logos/kroger.png',
+    "La Hacienda Market": 'logos/la-hacienda-market.png',
+    "La Perla Tapatia": 'logos/la-tapatia-market.png',
+    "La Princesa Market": 'logos/la-princesa-market.png',
+    "La Tapatia Market": 'logos/la-tapatia-market.png',
+    "Las Espuelas": 'logos/las-espuelas.png',
+    "Lazy Acres": 'logos/lazy-acres.png',
+    "Lola's Market": 'logos/lolas-market.png',
+    "Lowes Foods": 'logos/lowes-foods.svg',
+    Lucky: 'logos/lucky.png',
+    "Lucky 7": 'logos/lucky.png',
+    "Lucky Market": 'logos/lucky.png',
+    "Lunardi's Market": 'logos/lunardis.png',
+    "Major Market": 'logos/major-market.png',
+    "Mariposa Market": 'logos/mariposa-market.png',
+    "Maxi Mart": 'logos/maxi-mart.png',
+    "Mi Rancho Market": 'logos/mi-rancho-market.png',
+    "Mi Tierra Market": 'logos/mi-tierra-market.png',
+    "Mollie Stone's Market": 'logos/mollie-stones.png',
+    "Mother Earth Nutrition": 'logos/mother-earth.png',
+    "Mother's Market": 'logos/mothers-market.png',
     "Mother's Nutritional Center": 'logos/mothers-nutritional.png',
-    'Superior Grocers':    'logos/superior-grocers.png',
-    'Lucky':               'logos/lucky.png',
-    "Raley's":             'logos/raleys.png',
-    'Ralphs':              'logos/ralphs.png',
-    'Food Maxx':           'logos/food-maxx.png',
-    'Primetime Nutrition': 'logos/primetime-nutrition.png',
-    'Save Mart':           'logos/save-mart.png',
-    "Sam's Club":          'logos/sams-club.png',
-    'Winco Foods':         'logos/winco.png',
-    'Bel Air':             'logos/bel-air.png',
-    'Jacksons Food Stores': 'logos/jacksons.png',
-    'Redwood Market':      'logos/redwood-market.png',
-    'Foods Co':            'logos/foods-co.png',
-    'Cardenas':            'logos/cardenas.png',
-    'Nob Hill Foods':      'logos/nob-hill.png',
-    'Seafood City Supermarket': 'logos/seafood-city.png',
-    'Target':              'logos/target-2.png',
-    'Family Market':       'logos/family-market.png',
-    'Grocery Outlet':      'logos/grocery-outlet.png',
-    'Island Pacific Supermarket': 'logos/island-pacific.png',
-    'Village Market':      'logos/village-market.png',
-    'Bristol Farms':       'logos/bristol-farms.png',
-    'El Super':            'logos/el-super.png',
-    'Vallarta Supermarket': 'logos/vallarta.png',
-    'Northgate Market':    'logos/northgate.png',
-    'Gelson\'s Market':    'logos/gelsons.png',
-    'Holiday Market':      'logos/holiday-market.png',
-    'Chavez Supermarket':  'logos/chavez.png',
-    'Nugget Market':       'logos/nugget.png',
-    'Verdugo Market':      'logos/verdugo.png',
-    '99 Ranch Market':     'logos/ranch-99.png',
-    'SF Supermarket':      'logos/sf-supermarket.png',
-    'Pavilions':           'logos/pavilions.png',
-    'Super King Market':   'logos/super-king.png',
-    'Mother\'s Market':    'logos/mothers-market.png',
-    'Mother Earth Nutrition': 'logos/mother-earth.png',
-    'Sav Mor Foods':       'logos/sav-mor.png',
-    'Big Saver Foods':     'logos/big-saver.png',
-    'Barons Market':       'logos/barons.png',
-    'New Leaf Community Market': 'logos/new-leaf.png',
-    '168 Market':          'logos/168-market.png',
-    'Mollie Stone\'s Market': 'logos/mollie-stones.png',
-    'Andronico\'s':        'logos/andronicos.png',
-    'Rancho San Miguel Market': 'logos/rancho-san-miguel.png',
-    'Baby Nutrition':      'logos/baby-nutrition.png',
-    'Basic Nutrition':     'logos/basic-nutrition.png',
-    'First Step Nutrition': 'logos/first-step.png',
+    "Mother's Nutritonal Center": 'logos/mothers-market.png',
+    "Murphy's Market": 'logos/murphys-market.png',
+    "New Leaf Community Market": 'logos/new-leaf.png',
+    "Nob Hill Foods": 'logos/nob-hill.png',
+    "North Park Produce": 'logos/north-park-produce.png',
+    "Northgate Market": 'logos/northgate.png',
+    "Nugget Market": 'logos/nugget.png',
+    "Oasis Food Market": 'logos/oasis-food-market.png',
+    "Oliver's Market": 'logos/olivers-market.png',
+    "Park View Market": 'logos/park-view-market.png',
+    Pavilions: 'logos/pavilions.png',
+    "Piggly Wiggly": 'logos/piggly-wiggly.png',
+    "Primetime Nutrition": 'logos/primetime-nutrition.png',
+    "R-Ranch Market": 'logos/r-ranch-market.png',
+    "Rainbow Market": 'logos/rainbow-market.png',
+    "Raley's": 'logos/raleys.png',
+    Ralphs: 'logos/ralphs.png',
+    "Rancho San Miguel Market": 'logos/rancho-san-miguel.png',
+    Randalls: 'logos/randalls.png',
+    "Ray's Food Place": 'logos/rays-food.png',
+    "Redwood Market": 'logos/redwood-market.png',
+    Safeway: 'logos/safeway.png',
+    "Sam's Club": 'logos/sams-club.png',
+    "San Diego Market": 'logos/san-diego-market.png',
+    "Sanchez Market": 'logos/sanchez-market.png',
+    "Santa Cruz Market": 'logos/santa-cruz-market.png',
+    "Santa Fe Foods": 'logos/santa-fe-foods.png',
+    "Sav Mor Foods": 'logos/sav-mor.png',
+    "Save Mart": 'logos/save-mart.png',
+    "Save More Market": 'logos/save-mart.png',
+    Saveco: 'logos/saveco.png',
+    "Seafood City Supermarket": 'logos/seafood-city.png',
+    "SF Supermarket": 'logos/sf-supermarket.png',
+    "Shaw's": 'logos/shaws.png',
+    "Shop & Save Market": 'logos/save-mart.png',
+    ShopRite: 'logos/shoprite.png',
+    "Smart & Final": 'logos/smart-final.png',
+    "Sprouts Farmers Market": 'logos/sprouts.png',
+    "Star Market": 'logos/star-markets.png',
+    "Star Markets": 'logos/star-markets.png',
+    "State Foods Supermarket": 'logos/state-foods-supermarket.png',
+    "Stater Bros. Market": 'logos/stater-bros.png',
+    "Super A Foods": 'logos/super-a-foods.png',
+    "Super King Market": 'logos/super-king.png',
+    "Super Star Market": 'logos/star-markets.png',
+    "Superior Grocers": 'logos/superior-grocers.png',
+    "T S Emporium": 'logos/t-s-emporium.png',
+    Target: 'logos/target-2.png',
+    "Tom Thumb": 'logos/tom-thumb.png',
+    Tops: 'logos/tops.png',
+    "Trader Joe's": 'logos/trader-joes.png',
+    "U-Save Market": 'logos/save-mart.png',
+    "United Market": 'logos/united-supermarkets.png',
+    "United Supermarkets": 'logos/united-supermarkets.png',
+    "Vallarta Supermarket": 'logos/vallarta.png',
+    "Verdugo Market": 'logos/verdugo.png',
+    "Village Market": 'logos/village-market.png',
+    "Viva Market": 'logos/viva-market.png',
+    Vons: 'logos/vons.png',
+    Walmart: 'logos/walmart.png',
+    Weis: 'logos/weis.png',
+    "Whole Foods Market": 'logos/whole-foods.png',
+    "Winco Foods": 'logos/winco.png',
+    "Winn-Dixie": 'logos/winn-dixie.png',
+    "Zion Market": 'logos/zion-market.png',
+    // --- Logos from PR #2/#3 logo files, mapped to banner groups ---
+    "Amapola Market": 'logos/amapola-market.png',
+    "Apple Tree Market": 'logos/apple-tree-market.png',
+    "Berkeley Bowl": 'logos/berkeleybowl-com.png',
+    "Beyond Food Mart": 'logos/beyond-food-mart.png',
+    "Bonita Market": 'logos/bonita-market.png',
+    "Carniceria La Carreta": 'logos/carnicerialacarreta-com.png',
+    "Coconut Hill": 'logos/coconuthill-com.png',
+    "Cost Less Foods": 'logos/costlessfoods-com.png',
+    "El Mexicano Market": 'logos/el-mexicano-market.png',
+    "Eureka Natural Foods": 'logos/eurekanaturalfoods-com.png',
+    "Fircrest Market": 'logos/fircrestmarket-com.png',
+    "Foodnet Supermarket": 'logos/foodnetsuper-com.png',
+    "Frazier Farms Market": 'logos/frazierfarmsmarket-com.png',
+    "Freshco Food Center": 'logos/freshcofoodcenter-com.png',
+    "GW Supermarket": 'logos/gw-supermarket-com.png',
+    "Galleria Market": 'logos/galleria-market.png',
+    "Garden Farms Market": 'logos/gardenfarmsmarket-com.png',
+    "Guadalajara Market": 'logos/guadalajara-market.png',
+    "Hamilton Euromarket": 'logos/hamiltoneuromarkets-com.png',
+    "Hank's Farmer Market": 'logos/hanks-farmer-market.png',
+    "Hardester's Markets": 'logos/hardestersmarkets-com.png',
+    "Hollister Super": 'logos/hollistersuper-com.png',
+    "International Market": 'logos/international-market.png',
+    "Jimbo's": 'logos/jimbos-com.png',
+    "Juniors Market": 'logos/juniors-market.png',
+    "La Aguila Market": 'logos/laaguilamarket-com.png',
+    "La Esperanza Market": 'logos/laesperanzaca-com.png',
+    "La Favorita Market": 'logos/lafavoritaplaza-com.png',
+    "La Fiesta Market": 'logos/lafiestamexicanamarket-net.png',
+    "La Fortuna Market": 'logos/la-fortuna-latina-market-wheree-com.png',
+    "La Mexicana Market": 'logos/la-mexicana-market.png',
+    "La Poblana": 'logos/lapoblanamarket-com.png',
+    "La Reyna Meat Market": 'logos/la-reyna-meat-market.png',
+    "Las Montanas": 'logos/las-montanas.png',
+    "Las Palmas Market": 'logos/laspalmasmercado-com.png',
+    "Lassens": 'logos/lassens-com.png',
+    "Leonards Markets": 'logos/leonardsmarkets-com.png',
+    "Los Novillo": 'logos/los-novillo.png',
+    "Marukai": 'logos/marukai-com.png',
+    "Mercado California": 'logos/mercadocalifornia-com.png',
+    "Namaste Plaza": 'logos/namaste-plaza.png',
+    "New Moon Natural Foods": 'logos/newmoonnaturalfoods-com.png',
+    "O'Brien's Market": 'logos/obriensmarket-com.png',
+    "Orlando's Market": 'logos/orlandosmarket-com.png',
+    "Payless Market": 'logos/paylessfoods-com.png',
+    "Quickeroo": 'logos/quickeroo.png',
+    "Ramirez Market": 'logos/ramirezmeatmarket-weebly-com.png',
+    "Rancho Market": 'logos/ranchomarketdeli-com.png',
+    "San Marcos Market": 'logos/san-marcos-market.png',
+    "Sf Supermarket": 'logos/sf-supermarket.png',
+    "Sierra Market": 'logos/sierra-market.png',
+    "Sierra Minit Mart": 'logos/sierraminitmart-com.png',
+    "Spencer's Fresh Markets": 'logos/spencersfreshmarkets-com.png',
+    "Staff Of Life": 'logos/staffoflifemarket-com.png',
+    "State Market": 'logos/state-market.png',
+    "Street Corner": 'logos/streetcorner-com.png',
+    "Sunrise Natural Foods": 'logos/sunrisenaturalfoods-net.png',
+    "The Meat Market": 'logos/the-meat-market.png',
+    "The Whole Wheatery": 'logos/thewholewheatery-com.png',
+    "Tokyo Central": 'logos/tokyocentral-com.png',
+    "Tower Market": 'logos/tower-market.png',
+    "Tula Market": 'logos/tulamarket-com.png',
+    "Woodlands Market": 'logos/woodlandsmarket-com.png',
   };
-
-  // Display order for the Dairy Processors section. Order matches the
-  // original. Processors not in this list go after, alphabetically.
-  // `(unspecified)` always goes last because it's a catch-all.
-  const PROCESSOR_ORDER = ['Lucerne', 'Maola', 'Crystal Creamery', 'Hollandia', 'Sarah Farms'];
 
   // ====================================================================
   // State
   // ====================================================================
 
-  let map, stateLayer, clusterGroup;
+  let map, stateLayer, cityLayer, clusterGroup;
+  let nrsLayer = null;
+  let nrsVisible = false;
   let allStores = [];
   // Tract overlay state
   let tractGeo = null;       // GeoJSON FeatureCollection with boundaries
@@ -798,9 +891,8 @@
     'District of Columbia':'DC'
   };
   let summary = {};
-  let tdaGrocery = {};
-  // Filter dimensions: organizations + retailers (banner_group) +
-  // processors + regions + states. Each maps key→bool.
+  // Filter dimensions: retailers (banner_group) + store types + states.
+  // Each maps key→bool.
   let filters = {
     retailers: {},
     storeTypes: {},
@@ -812,7 +904,7 @@
   // selections (clicking a row toggles it within the current set).
   // The mode flips to 'single' on first click, back to 'all' when
   // the user hits the section's "all" link. Without this, selecting
-  // a single processor / banner / region requires N-1 deselects —
+  // a single banner / store type requires N-1 deselects —
   // the original's defining UX detail.
   let filterMode = {
     retailers: 'all',
@@ -830,13 +922,26 @@
       ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[ch]));
   }
 
-  function markerColor(store) {
-    return ORG_COLORS.MilkPEP;
+  const HISPANIC_TYPES = new Set(['Hispanic C-Store', 'Hispanic Grocer', 'Hispanic Meat Market']);
+
+  function markerFillColor(store) {
+    if (HISPANIC_TYPES.has(store.store_type)) return '#CF6A00';
+    if (store.store_type === 'Convenience Store') return '#000000';
+    return '#1f78b4';
   }
 
-  /** Five-dimensional AND filter. A store is visible only if every
-   *  dimension that has any rows enabled accepts it. The org check
-   *  uses .some() because organizations is an array per store. */
+  function markerOutlineColor(store) {
+    if (store.store_type === 'Hispanic C-Store') return '#000000';
+    return markerFillColor(store);
+  }
+
+  // Kept for clusterColor compatibility
+  function markerColor(store) {
+    return markerFillColor(store);
+  }
+
+  /** Multi-dimensional AND filter. A store is visible only if every
+   *  dimension that has any rows enabled accepts it. */
   function passesFilters(store) {
     const r = store.banner_group || 'Misc.';
     if (!filters.retailers[r]) return false;
@@ -847,7 +952,6 @@
   }
 
   function buildPopup(store) {
-    const proc = store.processor ? `<div><strong>Processor:</strong> ${escapeHtml(store.processor)}</div>` : '';
     const owner = store.holding_co ? `<div><strong>Holding co.:</strong> ${escapeHtml(store.holding_co)}</div>` : '';
     const stType = store.store_type ? `<div><strong>Store type:</strong> ${escapeHtml(store.store_type)}</div>` : '';
     const storeName = store.banner && store.sn ? `${escapeHtml(store.banner)} #${escapeHtml(store.sn)}` : escapeHtml(store.banner || store.store_name || '');
@@ -859,7 +963,6 @@
         <div>${escapeHtml(store.addr || '')}</div>
         <div>${escapeHtml(store.city || '')}, ${escapeHtml(store.state || '')} ${escapeHtml(store.zip || '')}</div>
         ${owner}
-        ${proc}
         ${stType}
         <div class="sv-wrap">
           <iframe src="${svEmbed}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -878,7 +981,7 @@
     const banner = store.banner_group || store.banner;
     const logoSrc = RETAILER_LOGOS[banner];
     if (logoSrc) {
-      const ringColor = markerColor(store);
+      const ringColor = markerOutlineColor(store);
       const html = `<div class="store-pin" style="border-color:${ringColor}">`
                  + `<img src="${logoSrc}" alt="" draggable="false">`
                  + `</div>`;
@@ -889,14 +992,17 @@
     // Fallback for Misc. and any banner without a logo: the original
     // colored circle marker. Same look as before.
     const cm = L.circleMarker([store.lat, store.lon], {
-      radius: 6, color: '#ffffff', weight: 1.5,
-      fillColor: markerColor(store), fillOpacity: 0.9
+      radius: 6, color: markerOutlineColor(store), weight: 1.5,
+      fillColor: markerFillColor(store), fillOpacity: 0.9
     }).bindPopup(buildPopup(store), { maxWidth: 320 });
     return cm;
   }
 
   function clusterColor(markers) {
-    return ORG_COLORS.MilkPEP;
+    const all = markers.filter(m => m.storeData);
+    if (all.length && all.every(m => HISPANIC_TYPES.has(m.storeData.store_type))) return '#CF6A00';
+    if (all.length && all.every(m => m.storeData.store_type === 'Convenience Store')) return '#000000';
+    return '#1f78b4';
   }
 
   // ====================================================================
@@ -972,7 +1078,6 @@
 
   /** Compute counts for ONE filter dimension while honoring the OTHER
    *  dimensions' current state. This is what makes "show me only
-   *  Maola pins" produce sensible "13 retailers" / "8 states"
    *  numbers in the sidebar without inflating them with filtered-out
    *  stores. O(N * dimensions) per render — fine at our scale. */
   function countsForDimension(excludeDim) {
@@ -1000,18 +1105,6 @@
     return counts;
   }
 
-  function rowOrgHtml(key, count) {
-    const enabled = filters.organizations[key];
-    const logo = ORG_LOGOS[key]
-      ? `<img class="filter-logo" src="${ORG_LOGOS[key]}" alt="">`
-      : '';
-    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="organizations" data-key="${escapeHtml(key)}">
-      ${logo}
-      <span class="filter-label">${escapeHtml(key)}</span>
-      <span class="filter-count">${count.toLocaleString()}</span>
-    </div>`;
-  }
-
   function rowRetailerHtml(key, count) {
     const enabled = filters.retailers[key];
     // Prefer the brand logo when we have one; fall back to the
@@ -1027,24 +1120,18 @@
     </div>`;
   }
 
-  function rowProcessorHtml(key, count) {
-    const enabled = filters.processors[key];
-    const logo = PROCESSOR_LOGOS[key]
-      ? `<img class="filter-logo" src="${PROCESSOR_LOGOS[key]}" alt="">`
-      // No logo on file — use an invisible spacer of the same width so
-      // labels align with logo'd rows. Avoids the gray-circle look
-      // that read as "broken image" to users.
-      : `<div class="filter-logo" style="visibility:hidden"></div>`;
-    return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="processors" data-key="${escapeHtml(key)}">
-      ${logo}
-      <span class="filter-label">${escapeHtml(key)}</span>
-      <span class="filter-count">${count.toLocaleString()}</span>
-    </div>`;
-  }
-
   function rowSimpleHtml(group, key, count) {
     const enabled = filters[group][key];
+    let swatch = '';
+    if (group === 'storeTypes') {
+      const fill = HISPANIC_TYPES.has(key) ? '#CF6A00'
+                 : key === 'Convenience Store' ? '#000000'
+                 : '#1f78b4';
+      const outline = key === 'Hispanic C-Store' ? '#000000' : fill;
+      swatch = `<span class="store-type-swatch" style="background:${fill};border-color:${outline}"></span>`;
+    }
     return `<div class="filter-item ${enabled ? '' : 'disabled'}" data-group="${group}" data-key="${escapeHtml(key)}">
+      ${swatch}
       <span class="filter-label">${escapeHtml(key)}</span>
       <span class="filter-count">${count.toLocaleString()}</span>
     </div>`;
@@ -1083,6 +1170,9 @@
     const savedResultsOpen = oldResults ? oldResults.classList.contains('open') : false;
 
     document.getElementById('filters').innerHTML = `
+      <div class="sidebar-masthead">
+        <img src="logos/CMAB.svg" alt="CMAB" class="masthead-logo masthead-cmab">
+      </div>
       <h3>Filters</h3>
       <div class="filter-stats">
         ${filteredStores.length.toLocaleString()} of ${allStores.length.toLocaleString()} pinned stores visible
@@ -1097,6 +1187,56 @@
       <div class="action-row">
         <button class="reset-btn ${hasActiveFilters() ? '' : 'hidden'}" id="resetAll">↻ Reset filters</button>
         <button class="export-btn" id="exportCsv" title="Download visible stores as CSV">⬇ Export CSV</button>
+      </div>
+
+      <div class="tract-toggle ${tractActive ? 'active' : ''}" id="tractToggle">
+        <span class="tt-label">Tract Overlay</span>
+        <select id="tractMetricX" title="X-axis metric">
+          <option value="hp">Market Concentration</option>
+          <option value="gp">Food Access</option>
+          <option value="sp">Segregation</option>
+          <option value="adi">Disadvantage</option>
+          <option value="snap">SNAP %</option>
+          <option value="pov">Poverty</option>
+          <option value="mi">Median Income</option>
+          <option value="ph">% Hispanic</option>
+          <option value="pw">% White</option>
+          <option value="pb">% Black</option>
+          <option value="pa">% Asian</option>
+          <option value="popd" selected>Pop Density</option>
+        </select>
+        <span style="color:#999;font-size:11px">×</span>
+        <select id="tractMetricY" title="Y-axis metric">
+          <option value="gp">Food Access</option>
+          <option value="hp">Market Concentration</option>
+          <option value="sp">Segregation</option>
+          <option value="adi">Disadvantage</option>
+          <option value="snap">SNAP %</option>
+          <option value="pov">Poverty</option>
+          <option value="mi">Median Income</option>
+          <option value="ph" selected>% Hispanic</option>
+          <option value="pw">% White</option>
+          <option value="pb">% Black</option>
+          <option value="pa">% Asian</option>
+          <option value="popd">Pop Density</option>
+        </select>
+        <div class="tt-switch"></div>
+      </div>
+
+      <div class="tract-toggle ${nrsVisible ? 'active' : ''}" id="nrsToggle">
+        <span class="tt-label">Retail Screens <span class="nrs-info-icon" id="nrsInfoIcon" title="View inventory">&#9432;</span></span>
+        <span style="font-size:11px;color:#888" id="nrsCount">${nrsLayer ? `(${nrsLayer.getLayers().length})` : ''}</span>
+        <div class="tt-switch"></div>
+      </div>
+
+      <div class="tract-legend ${tractActive ? '' : 'hidden'}" id="tractLegend">
+        <h3 id="legendTitle">Concentration & Food Access</h3>
+        <div class="legend-wrap" id="legendWrap">
+          <div class="legend-grid" id="legendGrid"></div>
+          <p class="legend-label-y" id="legendLabelY"><span class="legend-axis-arrow">←</span> Poor Food Access</p>
+          <p class="legend-label-x" id="legendLabelX"><span class="legend-axis-arrow">←</span> Market Concentration</p>
+        </div>
+        <p class="legend-foot">National Data</p>
       </div>
 
       <div class="filter-section">
@@ -1137,6 +1277,24 @@
         newResults.classList.add('open');
       }
     }
+    // Re-attach tract handlers since innerHTML was replaced.
+    attachTractToggle();
+    attachNrsToggle();
+    // Restore tract metric select values and legend state.
+    const mxSel = document.getElementById('tractMetricX');
+    const mySel = document.getElementById('tractMetricY');
+    if (mxSel) mxSel.value = tractMetricX;
+    if (mySel) mySel.value = tractMetricY;
+    if (tractActive) {
+      updateLegend();
+      updateTally();
+    }
+    // Restore Retail Screens toggle state
+    const nrsToggleEl = document.getElementById('nrsToggle');
+    if (nrsToggleEl) {
+      nrsToggleEl.classList.toggle('active', nrsVisible);
+      if (nrsVisible && nrsLayer && !map.hasLayer(nrsLayer)) nrsLayer.addTo(map);
+    }
   }
 
   function renderStateStyles() {
@@ -1169,12 +1327,12 @@
   function exportVisibleStores() {
     const normCity = c => (c || '').trim().toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase());
     const headers = ['Store #','Retailer','Store Type','Address','City','State','Zip',
-      'County','Tract GEOID','Lat','Lon','Processor','Holding Co.'];
+      'County','Tract GEOID','Lat','Lon','Holding Co.'];
     const lines = [headers.join(',')];
     filteredStores.forEach(s => {
       const row = [
         s.sn, s.banner_group || 'Misc.', s.store_type, s.addr, normCity(s.city), s.state, s.zip,
-        s.county || '', s._tractGeoid || '', s.lat, s.lon, s.processor || '', s.holding_co
+        s.county || '', s._tractGeoid || '', s.lat, s.lon, s.holding_co
       ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`);
       lines.push(row.join(','));
     });
@@ -1527,14 +1685,23 @@
    *  actually care about. */
   function flyToLocation(lat, lon, label) {
     if (!isFinite(lat) || !isFinite(lon)) return;
-    clearSearchMarker();
-    searchMarker = L.marker([lat, lon], {
-      icon: L.divIcon({
-        html: '<div class="search-marker">📍</div>',
-        className: '', iconSize: [36, 36], iconAnchor: [18, 18]
-      })
-    }).addTo(map);
     map.flyTo([lat, lon], 11, { duration: 0.7 });
+
+    // Highlight the searched city's border
+    if (cityLayer) {
+      if (!map.hasLayer(cityLayer)) cityLayer.addTo(map);
+      cityLayer.eachLayer(layer => {
+        layer.setStyle({ color: '#ccc', weight: 0.5, fillColor: '#eee', fillOpacity: 0.02 });
+      });
+      const cleanLabel = (label || '').trim().toLowerCase();
+      cityLayer.eachLayer(layer => {
+        const name = (layer.feature.properties.name || '').trim().toLowerCase();
+        if (name === cleanLabel || name.startsWith(cleanLabel)) {
+          layer.setStyle({ color: '#1F4E79', weight: 2.5, fillColor: '#1F4E79', fillOpacity: 0.08 });
+          layer.bringToFront();
+        }
+      });
+    }
 
     // Coverage check against currently-filtered stores.
     const RADIUS_MI = 25;
@@ -1745,9 +1912,9 @@
     const myCfg = TRACT_METRICS[tractMetricY];
     document.getElementById('legendTitle').textContent =
       `${mxCfg.label} & ${myCfg.label}`;
-    document.getElementById('legendLabelX').textContent = mxCfg.label;
-    document.getElementById('legendLabelY').textContent =
-      myCfg.good === true ? `Low ${myCfg.label}` : `High ${myCfg.label}`;
+    document.getElementById('legendLabelX').innerHTML = `<span class="legend-axis-arrow">←</span> ${mxCfg.label}`;
+    document.getElementById('legendLabelY').innerHTML =
+      `<span class="legend-axis-arrow">←</span> ${myCfg.good === true ? `Low ${myCfg.label}` : `High ${myCfg.label}`}`;
 
     // Attach hover tooltips to each cell
     const tooltip = document.getElementById('legendTooltip');
@@ -1789,8 +1956,12 @@
       });
     });
 
-    // Position arrows and labels relative to diamond tips
-    // Use rAF to ensure legend is rendered before measuring
+    // Position arrows and labels along the bordered edges of the diamond.
+    // The grid has border-width: 2px 0 0 2px, then rotated -135deg.
+    // After rotation, the two bordered edges form a V meeting at the bottom tip:
+    //   - Right-lower edge: right tip → bottom tip (runs at -45deg / 315deg)
+    //   - Left-lower edge:  left tip  → bottom tip (runs at +45deg)
+    // Axis labels run parallel to these edges, offset outward.
     requestAnimationFrame(() => {
       const wrap = document.getElementById('legendWrap');
       const gridRect = grid.getBoundingClientRect();
@@ -1799,31 +1970,42 @@
       const gcy = gridRect.top + gridRect.height / 2;
       const halfDiag = gridRect.width / 2 * Math.SQRT2;
 
-      // Diamond tips in screen coords
-      const rightTip = { x: gcx + halfDiag, y: gcy };
-      const leftTip  = { x: gcx - halfDiag, y: gcy };
-      const botTip   = { x: gcx, y: gcy + halfDiag };
+      // Diamond tips relative to wrap
+      const rightTip = { x: gcx + halfDiag - wrapRect.left, y: gcy - wrapRect.top };
+      const leftTip  = { x: gcx - halfDiag - wrapRect.left, y: gcy - wrapRect.top };
+      const botTip   = { x: gcx - wrapRect.left, y: gcy + halfDiag - wrapRect.top };
 
-      // Position ↓ arrow at the right tip
-      const arrowD = document.getElementById('legendArrowD');
-      arrowD.style.left = (rightTip.x - wrapRect.left - 6) + 'px';
-      arrowD.style.top  = (rightTip.y - wrapRect.top - 9) + 'px';
+      // Midpoints of the two bordered edges
+      const rightEdgeMid = { x: (rightTip.x + botTip.x) / 2, y: (rightTip.y + botTip.y) / 2 };
+      const leftEdgeMid  = { x: (leftTip.x + botTip.x) / 2,  y: (leftTip.y + botTip.y) / 2 };
 
-      // Position → arrow at the left tip
-      const arrowR = document.getElementById('legendArrowR');
-      arrowR.style.left = (leftTip.x - wrapRect.left - 9) + 'px';
-      arrowR.style.top  = (leftTip.y - wrapRect.top - 9) + 'px';
+      // Perpendicular offset (outward from the diamond center)
+      const offset = 14; // px outward from the edge
 
-      // Position Y label starting at bottom tip, offset outward from right edge
+      // Right-lower edge direction: from right tip to bottom tip
+      // Edge vector: (-halfDiag, +halfDiag) → angle = 135deg from x-axis
+      // Perpendicular outward (away from center): (+halfDiag, +halfDiag) normalized → (1,1)/√2
+      const rpx = Math.SQRT1_2, rpy = Math.SQRT1_2;
+
+      // Left-lower edge direction: from left tip to bottom tip
+      // Edge vector: (+halfDiag, +halfDiag) → angle = 45deg from x-axis
+      // Perpendicular outward (away from center): (-halfDiag, +halfDiag) normalized → (-1,1)/√2
+      const lpx = -Math.SQRT1_2, lpy = Math.SQRT1_2;
+
+      // Position Y label along the right-lower edge (rotated -45deg to match edge)
       const labelY = document.getElementById('legendLabelY');
-      const offY = 24 * Math.SQRT1_2; // ~17px perpendicular offset
-      labelY.style.left = (botTip.x - wrapRect.left + offY) + 'px';
-      labelY.style.top  = (botTip.y - wrapRect.top + offY - 6) + 'px';
+      labelY.style.left = (rightEdgeMid.x + rpx * offset - labelY.offsetWidth / 2) + 'px';
+      labelY.style.top  = (rightEdgeMid.y + rpy * offset - 6) + 'px';
+      labelY.style.transform = 'rotate(-45deg)';
+      labelY.style.transformOrigin = '50% 50%';
 
-      // Position X label ending at bottom tip, offset outward from left edge
+      // Position X label along the left-lower edge (rotated +45deg to match edge)
       const labelX = document.getElementById('legendLabelX');
-      labelX.style.left = (botTip.x - wrapRect.left - labelX.offsetWidth - offY) + 'px';
-      labelX.style.top  = (botTip.y - wrapRect.top + offY - 6) + 'px';
+      labelX.style.left = (leftEdgeMid.x + lpx * offset - labelX.offsetWidth / 2) + 'px';
+      labelX.style.top  = (leftEdgeMid.y + lpy * offset - 6) + 'px';
+      labelX.style.transform = 'rotate(45deg)';
+      labelX.style.transformOrigin = '50% 50%';
+
     });
   }
 
@@ -2116,9 +2298,9 @@
         tractLayer.addTo(map);
       }
       updateLegend();
-      document.getElementById('tractLegend').classList.add('visible');
+      document.getElementById('tractLegend').classList.remove('hidden');
     } else {
-      document.getElementById('tractLegend').classList.remove('visible');
+      document.getElementById('tractLegend').classList.add('hidden');
     }
   }
 
@@ -2167,7 +2349,11 @@
     geoids.forEach(geoid => {
       if (groupExcludedGeoids.has(geoid)) return;
       const city = tractCity[geoid];
-      if (city && excludedCities.has(city)) return;
+      // When cities are being excluded, tracts with no city assignment
+      // (no stores → no city mapping) should also be excluded so the
+      // tally only counts tracts in non-excluded cities.
+      if (!city) return;
+      if (excludedCities.has(city)) return;
       filtered.add(geoid);
     });
     return filtered;
@@ -2189,12 +2375,16 @@
   function updateTally() {
     const tallyEl = document.getElementById('tractTally');
     if (!tallyEl) return;
-    const tracts = getSelectedTracts();
-    if (tracts.length === 0) {
+    // Hide tally only when no legend cells are selected at all.
+    // Keep it visible even when all cities are excluded so the user
+    // can click "all" to restore the selection.
+    if (tractFilter.size === 0) {
       tallyEl.style.display = 'none';
       return;
     }
     tallyEl.style.display = 'block';
+
+    const tracts = getSelectedTracts();
 
     // Compute totals for selected tracts
     let selPop = 0, selHisp = 0;
@@ -2253,6 +2443,34 @@
     document.getElementById('tallyPct').textContent = hispPct;
     document.getElementById('tallyHispPct').textContent = caHispPct;
     document.getElementById('tallyCities').textContent = cityList.length.toLocaleString();
+
+    // Add all/none links for city selection
+    const citiesHeader = document.querySelector('#tractTally h4');
+    if (citiesHeader && !citiesHeader.querySelector('.tally-city-actions')) {
+      citiesHeader.innerHTML = 'Selection Tally <span class="tally-city-actions" style="float:right;font-weight:normal;font-size:10px"><a id="tallyCitiesAll" style="color:#888;text-decoration:none;margin-left:6px;cursor:pointer">all</a><a id="tallyCitiesNone" style="color:#888;text-decoration:none;margin-left:6px;cursor:pointer">none</a></span>';
+      citiesHeader.querySelector('#tallyCitiesAll').addEventListener('click', () => {
+        excludedCities.clear();
+        tractStoreFilter = effectiveTractGeoids();
+        updateTally();
+        recomputeAndRender();
+      });
+      citiesHeader.querySelector('#tallyCitiesNone').addEventListener('click', () => {
+        // Recompute the full city list from current data instead of
+        // relying on the closure-captured cityList which may be stale.
+        const allLegendGeoids = geoidsFromLegendFilter();
+        if (allLegendGeoids && tractGeo && tractGeo.features) {
+          tractGeo.features.forEach(f => {
+            const p = f.properties || {};
+            if (!allLegendGeoids.has(p.geoid)) return;
+            const city = tractCity[p.geoid];
+            if (city) excludedCities.add(city);
+          });
+        }
+        tractStoreFilter = effectiveTractGeoids();
+        updateTally();
+        recomputeAndRender();
+      });
+    }
 
     const cityListEl = document.getElementById('tallyCityList');
     if (cityListEl) {
@@ -2365,12 +2583,12 @@
     // --- Sheet 2: Filtered Stores ---
     const normCity = c => (c || '').trim().toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase());
     const storeHeaders = ['Store #', 'Retailer', 'Store Type', 'Address', 'City', 'State', 'Zip',
-      'County', 'Tract GEOID', 'Lat', 'Lon', 'Processor', 'Holding Co.'];
+      'County', 'Tract GEOID', 'Lat', 'Lon', 'Holding Co.'];
     const storeData = [storeHeaders];
     filteredStores.forEach(s => {
       storeData.push([
         s.sn, s.banner_group || 'Misc.', s.store_type, s.addr, normCity(s.city), s.state, s.zip,
-        s.county || '', s._tractGeoid || '', s.lat, s.lon, s.processor || '', s.holding_co
+        s.county || '', s._tractGeoid || '', s.lat, s.lon, s.holding_co
       ]);
     });
 
@@ -2389,6 +2607,16 @@
     if (btn) btn.addEventListener('click', exportSelectedTracts);
     const saveBtn = document.getElementById('tallySaveGroup');
     if (saveBtn) saveBtn.addEventListener('click', saveCurrentGroup);
+    const minBtn = document.getElementById('tallyMinimize');
+    if (minBtn) {
+      minBtn.addEventListener('click', () => {
+        const body = document.getElementById('tallyBody');
+        if (!body) return;
+        const hidden = body.style.display === 'none';
+        body.style.display = hidden ? 'block' : 'none';
+        minBtn.innerHTML = hidden ? '&#8722;' : '+';
+      });
+    }
   }
 
   /** Save custom groups to localStorage. */
@@ -2468,23 +2696,56 @@
     });
   }
 
+  function attachNrsToggle() {
+    const toggle = document.getElementById('nrsToggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', (e) => {
+      if (e.target.closest('.nrs-info-icon')) return;
+      nrsVisible = !nrsVisible;
+      toggle.classList.toggle('active', nrsVisible);
+      if (nrsVisible && nrsLayer) {
+        nrsLayer.addTo(map);
+      } else if (!nrsVisible && nrsLayer && map.hasLayer(nrsLayer)) {
+        map.removeLayer(nrsLayer);
+      }
+    });
+    const infoIcon = document.getElementById('nrsInfoIcon');
+    if (infoIcon) {
+      infoIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const modal = document.getElementById('nrsModal');
+        if (modal) modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+      });
+    }
+    const closeBtn = document.getElementById('nrsModalClose');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        const modal = document.getElementById('nrsModal');
+        if (modal) modal.style.display = 'none';
+      });
+    }
+  }
+
   // ====================================================================
   // Boot
   // ====================================================================
 
   async function init() {
-    const [dataResp, statesResp, tractResp] = await Promise.all([
-      fetch('./data/ca_grocer_map_data.json'),
+    const [dataResp, statesResp, tractResp, citiesResp, nrsResp] = await Promise.all([
+      fetch('./data/cmab_snap_grocers.json'),
       fetch('./us_states_complete.json'),
-      fetch('./data/ca_tract_boundaries.json')
+      fetch('./data/ca_tract_boundaries.json'),
+      fetch('./data/ca_city_boundaries.json'),
+      fetch('./data/nrs_boards.json')
     ]);
     const data = await dataResp.json();
     const statesGeo = await statesResp.json();
     tractGeo = await tractResp.json();
+    const citiesGeo = await citiesResp.json();
+    const nrsData = await nrsResp.json();
 
     allStores = data.stores;
     summary = (data.meta && data.meta.summary) || {};
-    tdaGrocery = (data.meta && data.meta.tda_grocery_summary) || {};
 
     // Map each store to its census tract GEOID for tract-based filtering
     mapStoresToTracts();
@@ -2492,14 +2753,6 @@
     buildTractCityLookup();
     // Compute data-driven tertile thresholds for all metrics
     computeTertileThresholds();
-
-    // Reclassify MilkPEP/TDA store types to actual store types.
-    const SUPERSTORE_BANNERS = new Set(['Walmart', 'Supercenter', 'Walmart Supercenter']);
-    allStores.forEach(s => {
-      if (s.store_type === 'MilkPEP/TDA' || s.store_type === 'MilkPEP/TDA + SNAP') {
-        s.store_type = SUPERSTORE_BANNERS.has(s.banner) ? 'Super Store' : 'Supermarket';
-      }
-    });
 
     // Initialize filter state — every value present in data starts ON.
     new Set(allStores.map(s => s.banner_group || 'Misc.')).forEach(b =>
@@ -2543,6 +2796,31 @@
     stateLayer = L.geoJSON(statesGeo, {
       style: { fillColor: '#bcd3e8', fillOpacity: 0, color: '#cdd6df', weight: 0.7 }
     }).addTo(map);
+
+    // City boundaries — visible at zoom >= 8, subtle by default
+    cityLayer = L.geoJSON(citiesGeo, {
+      style: { fillColor: '#eee', fillOpacity: 0.02, color: '#ccc', weight: 0.5 }
+    });
+    const updateCityLayer = () => {
+      if (map.getZoom() >= 8) {
+        if (!map.hasLayer(cityLayer)) cityLayer.addTo(map);
+      } else {
+        if (map.hasLayer(cityLayer)) map.removeLayer(cityLayer);
+      }
+    };
+    map.on('zoomend', updateCityLayer);
+    updateCityLayer();
+
+    // Retail Screens overlay — separate layer, not counted in store totals.
+    const nrsBoards = nrsData.boards || [];
+    nrsLayer = L.layerGroup();
+    nrsBoards.forEach(b => {
+      const marker = L.circleMarker([b.lat, b.lon], {
+        radius: 5, fillColor: '#7B2D8E', fillOpacity: 0.8,
+        color: '#fff', weight: 1
+      });
+      nrsLayer.addLayer(marker);
+    });
 
     // Cluster radius is zoom-dependent so the country-wide view stays
     // readable (heavy clustering, count circles dominate) while the
@@ -2618,7 +2896,6 @@
     });
 
     attachSidebarHandlers();
-    attachTractToggle();
     attachTallyExport();
     loadGroups();
     if (customGroups.length > 0) renderSidebar();
