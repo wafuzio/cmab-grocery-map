@@ -1,0 +1,5500 @@
+{
+  "boards": [
+    {
+      "id": "NRS-001",
+      "lat": 41.96885,
+      "lon": -121.9165,
+      "label": "Dorris #1",
+      "city": "Dorris",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-002",
+      "lat": 41.95554,
+      "lon": -121.47995,
+      "label": "Tulelake #1",
+      "city": "Tulelake",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-003",
+      "lat": 41.7461,
+      "lon": -122.63578,
+      "label": "Yreka #1",
+      "city": "Yreka",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-004",
+      "lat": 41.69619,
+      "lon": -122.6502,
+      "label": "Yreka #2",
+      "city": "Yreka",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-005",
+      "lat": 41.48664,
+      "lon": -120.54409,
+      "label": "Alturas #1",
+      "city": "Alturas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-006",
+      "lat": 41.42765,
+      "lon": -122.39093,
+      "label": "Weed #1",
+      "city": "Weed",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-007",
+      "lat": 41.30335,
+      "lon": -123.54221,
+      "label": "Orleans #1",
+      "city": "Orleans",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-008",
+      "lat": 40.95458,
+      "lon": -124.11039,
+      "label": "Mckinleyville #1",
+      "city": "Mckinleyville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-009",
+      "lat": 40.89648,
+      "lon": -124.07745,
+      "label": "Arcata #1",
+      "city": "Arcata",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-010",
+      "lat": 40.86227,
+      "lon": -124.16893,
+      "label": "Samoa #1",
+      "city": "Samoa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-011",
+      "lat": 40.83192,
+      "lon": -124.09704,
+      "label": "Bayside #1",
+      "city": "Bayside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-012",
+      "lat": 40.79851,
+      "lon": -124.19122,
+      "label": "Samoa #2",
+      "city": "Samoa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-013",
+      "lat": 40.77534,
+      "lon": -124.10155,
+      "label": "Eureka #1",
+      "city": "Eureka",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-014",
+      "lat": 40.73958,
+      "lon": -124.2076,
+      "label": "Fields Landing #1",
+      "city": "Fields Landing",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-015",
+      "lat": 40.73071,
+      "lon": -122.944,
+      "label": "Weaverville #1",
+      "city": "Weaverville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-016",
+      "lat": 40.69276,
+      "lon": -122.4178,
+      "label": "Redding #1",
+      "city": "Redding",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-017",
+      "lat": 40.68597,
+      "lon": -122.35969,
+      "label": "Shasta Lake #1",
+      "city": "Shasta Lake",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-018",
+      "lat": 40.62504,
+      "lon": -122.40119,
+      "label": "Redding #2",
+      "city": "Redding",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-019",
+      "lat": 40.60571,
+      "lon": -124.16632,
+      "label": "Fortuna #1",
+      "city": "Fortuna",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-020",
+      "lat": 40.57186,
+      "lon": -122.33794,
+      "label": "Redding #3",
+      "city": "Redding",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-021",
+      "lat": 40.56274,
+      "lon": -122.4178,
+      "label": "Redding #4",
+      "city": "Redding",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-022",
+      "lat": 40.56024,
+      "lon": -124.13767,
+      "label": "Fortuna #2",
+      "city": "Fortuna",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-023",
+      "lat": 40.49787,
+      "lon": -122.36855,
+      "label": "Anderson #1",
+      "city": "Anderson",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-024",
+      "lat": 40.49337,
+      "lon": -124.10649,
+      "label": "Rio Dell #1",
+      "city": "Rio Dell",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-025",
+      "lat": 40.45276,
+      "lon": -122.30388,
+      "label": "Anderson #2",
+      "city": "Anderson",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-026",
+      "lat": 40.31321,
+      "lon": -120.99422,
+      "label": "Westwood #1",
+      "city": "Westwood",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-027",
+      "lat": 40.23493,
+      "lon": -123.82824,
+      "label": "Miranda #1",
+      "city": "Miranda",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-028",
+      "lat": 40.17122,
+      "lon": -122.23047,
+      "label": "Red Bluff #1",
+      "city": "Red Bluff",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-029",
+      "lat": 40.10028,
+      "lon": -123.79914,
+      "label": "Garberville #1",
+      "city": "Garberville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-030",
+      "lat": 39.93391,
+      "lon": -122.05418,
+      "label": "Vina #1",
+      "city": "Vina",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-031",
+      "lat": 39.91808,
+      "lon": -122.20058,
+      "label": "Corning #1",
+      "city": "Corning",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-032",
+      "lat": 39.90462,
+      "lon": -122.11157,
+      "label": "Corning #2",
+      "city": "Corning",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-033",
+      "lat": 39.86399,
+      "lon": -123.71924,
+      "label": "Leggett #1",
+      "city": "Leggett",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-034",
+      "lat": 39.81852,
+      "lon": -121.59265,
+      "label": "Paradise #1",
+      "city": "Paradise",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-035",
+      "lat": 39.80486,
+      "lon": -120.46999,
+      "label": "Portola #1",
+      "city": "Portola",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-036",
+      "lat": 39.75872,
+      "lon": -121.62394,
+      "label": "Paradise #2",
+      "city": "Paradise",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-037",
+      "lat": 39.74774,
+      "lon": -121.86611,
+      "label": "Chico #1",
+      "city": "Chico",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-038",
+      "lat": 39.74366,
+      "lon": -122.1982,
+      "label": "Orland #1",
+      "city": "Orland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-039",
+      "lat": 39.71242,
+      "lon": -121.8018,
+      "label": "Chico #2",
+      "city": "Chico",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-040",
+      "lat": 39.56088,
+      "lon": -120.82992,
+      "label": "Downieville #1",
+      "city": "Downieville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-041",
+      "lat": 39.52134,
+      "lon": -122.20773,
+      "label": "Willows #1",
+      "city": "Willows",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-042",
+      "lat": 39.51343,
+      "lon": -121.59231,
+      "label": "Canyon Dam #1",
+      "city": "Canyon Dam",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-043",
+      "lat": 39.48797,
+      "lon": -121.53865,
+      "label": "Palermo #1",
+      "city": "Palermo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-044",
+      "lat": 39.45033,
+      "lon": -121.05612,
+      "label": "Camptonville #1",
+      "city": "Camptonville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-045",
+      "lat": 39.44315,
+      "lon": -123.38706,
+      "label": "Willits #1",
+      "city": "Willits",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-046",
+      "lat": 39.42935,
+      "lon": -121.55315,
+      "label": "Palermo #2",
+      "city": "Palermo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-047",
+      "lat": 39.41147,
+      "lon": -121.71222,
+      "label": "Biggs #1",
+      "city": "Biggs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-048",
+      "lat": 39.39181,
+      "lon": -123.34978,
+      "label": "Willits #2",
+      "city": "Willits",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-049",
+      "lat": 39.35342,
+      "lon": -121.69467,
+      "label": "Gridley #1",
+      "city": "Gridley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-050",
+      "lat": 39.32925,
+      "lon": -120.25072,
+      "label": "Truckee #1",
+      "city": "Truckee",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-051",
+      "lat": 39.30956,
+      "lon": -121.42176,
+      "label": "Browns Valley #1",
+      "city": "Browns Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-052",
+      "lat": 39.27598,
+      "lon": -122.19625,
+      "label": "Maxwell #1",
+      "city": "Maxwell",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-053",
+      "lat": 39.27311,
+      "lon": -121.6673,
+      "label": "Live Oak #1",
+      "city": "Live Oak",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-054",
+      "lat": 39.26832,
+      "lon": -121.03495,
+      "label": "Nevada City #1",
+      "city": "Nevada City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-055",
+      "lat": 39.23912,
+      "lon": -123.20492,
+      "label": "Calpella #1",
+      "city": "Calpella",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-056",
+      "lat": 39.22019,
+      "lon": -121.09467,
+      "label": "Rough And Ready #1",
+      "city": "Rough And Ready",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-057",
+      "lat": 39.21974,
+      "lon": -123.77825,
+      "label": "Albion #1",
+      "city": "Albion",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-058",
+      "lat": 39.20842,
+      "lon": -122.01262,
+      "label": "Colusa #1",
+      "city": "Colusa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-059",
+      "lat": 39.19744,
+      "lon": -121.52348,
+      "label": "Marysville #1",
+      "city": "Marysville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-060",
+      "lat": 39.19705,
+      "lon": -121.1789,
+      "label": "Penn Valley #1",
+      "city": "Penn Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-061",
+      "lat": 39.19609,
+      "lon": -121.01168,
+      "label": "Cedar Ridge #1",
+      "city": "Cedar Ridge",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-062",
+      "lat": 39.1689,
+      "lon": -123.2109,
+      "label": "Ukiah #1",
+      "city": "Ukiah",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-063",
+      "lat": 39.16276,
+      "lon": -121.62614,
+      "label": "Yuba City #1",
+      "city": "Yuba City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-064",
+      "lat": 39.15181,
+      "lon": -122.15402,
+      "label": "Williams #1",
+      "city": "Williams",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-065",
+      "lat": 39.14159,
+      "lon": -121.07023,
+      "label": "Grass Valley #1",
+      "city": "Grass Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-066",
+      "lat": 39.13749,
+      "lon": -121.69228,
+      "label": "Yuba City #2",
+      "city": "Yuba City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-067",
+      "lat": 39.12618,
+      "lon": -121.56597,
+      "label": "Olivehurst #1",
+      "city": "Olivehurst",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-068",
+      "lat": 39.09443,
+      "lon": -120.95185,
+      "label": "Colfax #1",
+      "city": "Colfax",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-069",
+      "lat": 39.07325,
+      "lon": -121.89656,
+      "label": "Grimes #1",
+      "city": "Grimes",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-070",
+      "lat": 39.07162,
+      "lon": -121.55196,
+      "label": "Olivehurst #2",
+      "city": "Olivehurst",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-071",
+      "lat": 39.069,
+      "lon": -121.66794,
+      "label": "Yuba City #3",
+      "city": "Yuba City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-072",
+      "lat": 39.03821,
+      "lon": -121.08396,
+      "label": "Meadow Vista #1",
+      "city": "Meadow Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-073",
+      "lat": 39.03287,
+      "lon": -122.91761,
+      "label": "Lakeport #1",
+      "city": "Lakeport",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-074",
+      "lat": 39.00943,
+      "lon": -121.43,
+      "label": "Wheatland #1",
+      "city": "Wheatland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-075",
+      "lat": 39.00393,
+      "lon": -122.79051,
+      "label": "Glenhaven #1",
+      "city": "Glenhaven",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-076",
+      "lat": 38.98917,
+      "lon": -121.0258,
+      "label": "Meadow Vista #2",
+      "city": "Meadow Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-077",
+      "lat": 38.97868,
+      "lon": -122.8556,
+      "label": "Finley #1",
+      "city": "Finley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-078",
+      "lat": 38.97439,
+      "lon": -123.10567,
+      "label": "Hopland #1",
+      "city": "Hopland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-079",
+      "lat": 38.9649,
+      "lon": -122.64592,
+      "label": "Clearlake Park #1",
+      "city": "Clearlake Park",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-080",
+      "lat": 38.95391,
+      "lon": -119.95118,
+      "label": "South Lake Tahoe #1",
+      "city": "South Lake Tahoe",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-081",
+      "lat": 38.94931,
+      "lon": -121.10255,
+      "label": "Auburn #1",
+      "city": "Auburn",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-082",
+      "lat": 38.92113,
+      "lon": -122.61135,
+      "label": "Lower Lake #1",
+      "city": "Lower Lake",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-083",
+      "lat": 38.91647,
+      "lon": -120.00125,
+      "label": "South Lake Tahoe #2",
+      "city": "South Lake Tahoe",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-084",
+      "lat": 38.90383,
+      "lon": -120.8419,
+      "label": "Garden Valley #1",
+      "city": "Garden Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-085",
+      "lat": 38.89098,
+      "lon": -121.01644,
+      "label": "Cool #1",
+      "city": "Cool",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-086",
+      "lat": 38.8882,
+      "lon": -121.29745,
+      "label": "Lincoln #1",
+      "city": "Lincoln",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-087",
+      "lat": 38.88012,
+      "lon": -121.97348,
+      "label": "Dunnigan #1",
+      "city": "Dunnigan",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-088",
+      "lat": 38.87473,
+      "lon": -121.08704,
+      "label": "Auburn #2",
+      "city": "Auburn",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-089",
+      "lat": 38.82289,
+      "lon": -121.28433,
+      "label": "Rocklin #1",
+      "city": "Rocklin",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-090",
+      "lat": 38.8221,
+      "lon": -121.19614,
+      "label": "Loomis #1",
+      "city": "Loomis",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-091",
+      "lat": 38.79949,
+      "lon": -120.89125,
+      "label": "Coloma #1",
+      "city": "Coloma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-092",
+      "lat": 38.79574,
+      "lon": -121.72136,
+      "label": "Knights Landing #1",
+      "city": "Knights Landing",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-093",
+      "lat": 38.75945,
+      "lon": -121.327,
+      "label": "Roseville #1",
+      "city": "Roseville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-094",
+      "lat": 38.75924,
+      "lon": -120.5831,
+      "label": "Pollock Pines #1",
+      "city": "Pollock Pines",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-095",
+      "lat": 38.75122,
+      "lon": -121.24064,
+      "label": "Roseville #2",
+      "city": "Roseville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-096",
+      "lat": 38.74953,
+      "lon": -122.61983,
+      "label": "Middletown #1",
+      "city": "Middletown",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-097",
+      "lat": 38.74118,
+      "lon": -120.88008,
+      "label": "Coloma #2",
+      "city": "Coloma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-098",
+      "lat": 38.7373,
+      "lon": -120.78121,
+      "label": "Placerville #1",
+      "city": "Placerville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-099",
+      "lat": 38.73231,
+      "lon": -120.67294,
+      "label": "Camino #1",
+      "city": "Camino",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-100",
+      "lat": 38.71836,
+      "lon": -121.3971,
+      "label": "Antelope #1",
+      "city": "Antelope",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-101",
+      "lat": 38.71171,
+      "lon": -121.17344,
+      "label": "Represa #1",
+      "city": "Represa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-102",
+      "lat": 38.70477,
+      "lon": -122.90888,
+      "label": "Geyserville #1",
+      "city": "Geyserville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-103",
+      "lat": 38.70316,
+      "lon": -120.99222,
+      "label": "Rescue #1",
+      "city": "Rescue",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-104",
+      "lat": 38.68332,
+      "lon": -121.30038,
+      "label": "Citrus Heights #1",
+      "city": "Citrus Heights",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-105",
+      "lat": 38.68154,
+      "lon": -120.83904,
+      "label": "Diamond Springs #1",
+      "city": "Diamond Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-106",
+      "lat": 38.6813,
+      "lon": -121.47968,
+      "label": "Sacramento #1",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-107",
+      "lat": 38.67945,
+      "lon": -120.74951,
+      "label": "Diamond Springs #2",
+      "city": "Diamond Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-108",
+      "lat": 38.67515,
+      "lon": -121.73255,
+      "label": "Woodland #1",
+      "city": "Woodland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-109",
+      "lat": 38.67451,
+      "lon": -121.80076,
+      "label": "Woodland #2",
+      "city": "Woodland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-110",
+      "lat": 38.6614,
+      "lon": -120.91742,
+      "label": "Shingle Springs #1",
+      "city": "Shingle Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-111",
+      "lat": 38.66065,
+      "lon": -121.13308,
+      "label": "Folsom #1",
+      "city": "Folsom",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-112",
+      "lat": 38.65535,
+      "lon": -121.3808,
+      "label": "Mcclellan #1",
+      "city": "Mcclellan",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-113",
+      "lat": 38.65435,
+      "lon": -121.22514,
+      "label": "Fair Oaks #1",
+      "city": "Fair Oaks",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-114",
+      "lat": 38.64725,
+      "lon": -120.99716,
+      "label": "Shingle Springs #2",
+      "city": "Shingle Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-115",
+      "lat": 38.64527,
+      "lon": -120.68627,
+      "label": "Somerset #1",
+      "city": "Somerset",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-116",
+      "lat": 38.61692,
+      "lon": -121.53763,
+      "label": "West Sacramento #1",
+      "city": "West Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-117",
+      "lat": 38.6142,
+      "lon": -122.87748,
+      "label": "Healdsburg #1",
+      "city": "Healdsburg",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-118",
+      "lat": 38.61005,
+      "lon": -121.44878,
+      "label": "Sacramento #2",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-119",
+      "lat": 38.59764,
+      "lon": -121.35811,
+      "label": "Sacramento #3",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-120",
+      "lat": 38.59234,
+      "lon": -121.2713,
+      "label": "Rancho Cordova #1",
+      "city": "Rancho Cordova",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-121",
+      "lat": 38.5684,
+      "lon": -122.84318,
+      "label": "Windsor #1",
+      "city": "Windsor",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-122",
+      "lat": 38.5476,
+      "lon": -121.50163,
+      "label": "Sacramento #4",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-123",
+      "lat": 38.54626,
+      "lon": -121.5838,
+      "label": "Sacramento #5",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-124",
+      "lat": 38.54476,
+      "lon": -121.73287,
+      "label": "Davis #1",
+      "city": "Davis",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-125",
+      "lat": 38.53772,
+      "lon": -121.34032,
+      "label": "Sacramento #6",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-126",
+      "lat": 38.53489,
+      "lon": -121.42244,
+      "label": "Sacramento #7",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-127",
+      "lat": 38.52148,
+      "lon": -121.97007,
+      "label": "Winters #1",
+      "city": "Winters",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-128",
+      "lat": 38.49738,
+      "lon": -123.00086,
+      "label": "Guerneville #1",
+      "city": "Guerneville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-129",
+      "lat": 38.48378,
+      "lon": -121.54039,
+      "label": "Sacramento #8",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-130",
+      "lat": 38.47283,
+      "lon": -122.90328,
+      "label": "Forestville #1",
+      "city": "Forestville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-131",
+      "lat": 38.46768,
+      "lon": -121.45913,
+      "label": "Sacramento #9",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-132",
+      "lat": 38.46375,
+      "lon": -121.37444,
+      "label": "Sacramento #10",
+      "city": "Sacramento",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-133",
+      "lat": 38.45211,
+      "lon": -121.83549,
+      "label": "Dixon #1",
+      "city": "Dixon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-134",
+      "lat": 38.43884,
+      "lon": -122.77738,
+      "label": "Santa Rosa #1",
+      "city": "Santa Rosa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-135",
+      "lat": 38.4308,
+      "lon": -122.68393,
+      "label": "Santa Rosa #2",
+      "city": "Santa Rosa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-136",
+      "lat": 38.40935,
+      "lon": -120.65587,
+      "label": "Pine Grove #1",
+      "city": "Pine Grove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-137",
+      "lat": 38.40234,
+      "lon": -120.52829,
+      "label": "West Point #1",
+      "city": "West Point",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-138",
+      "lat": 38.39997,
+      "lon": -121.25975,
+      "label": "Wilton #1",
+      "city": "Wilton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-139",
+      "lat": 38.39638,
+      "lon": -121.37149,
+      "label": "Elk Grove #1",
+      "city": "Elk Grove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-140",
+      "lat": 38.3941,
+      "lon": -121.44325,
+      "label": "Elk Grove #2",
+      "city": "Elk Grove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-141",
+      "lat": 38.37885,
+      "lon": -122.72423,
+      "label": "Santa Rosa #3",
+      "city": "Santa Rosa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-142",
+      "lat": 38.37475,
+      "lon": -120.81313,
+      "label": "Martell #1",
+      "city": "Martell",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-143",
+      "lat": 38.36835,
+      "lon": -121.52088,
+      "label": "Hood #1",
+      "city": "Hood",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-144",
+      "lat": 38.36385,
+      "lon": -121.96256,
+      "label": "Vacaville #1",
+      "city": "Vacaville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-145",
+      "lat": 38.36311,
+      "lon": -122.5292,
+      "label": "Glen Ellen #1",
+      "city": "Glen Ellen",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-146",
+      "lat": 38.34451,
+      "lon": -120.76945,
+      "label": "Martell #2",
+      "city": "Martell",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-147",
+      "lat": 38.32839,
+      "lon": -121.57485,
+      "label": "Courtland #1",
+      "city": "Courtland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-148",
+      "lat": 38.32795,
+      "lon": -123.05712,
+      "label": "Bodega Bay #1",
+      "city": "Bodega Bay",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-149",
+      "lat": 38.32443,
+      "lon": -122.74735,
+      "label": "Cotati #1",
+      "city": "Cotati",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-150",
+      "lat": 38.31813,
+      "lon": -122.31372,
+      "label": "Napa #1",
+      "city": "Napa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-151",
+      "lat": 38.31436,
+      "lon": -121.99727,
+      "label": "Vacaville #2",
+      "city": "Vacaville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-152",
+      "lat": 38.31432,
+      "lon": -122.92777,
+      "label": "Valley Ford #1",
+      "city": "Valley Ford",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-153",
+      "lat": 38.31249,
+      "lon": -122.6726,
+      "label": "Penngrove #1",
+      "city": "Penngrove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-154",
+      "lat": 38.31084,
+      "lon": -122.4851,
+      "label": "Boyes Hot Springs #1",
+      "city": "Boyes Hot Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-155",
+      "lat": 38.27784,
+      "lon": -122.27821,
+      "label": "Napa #2",
+      "city": "Napa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-156",
+      "lat": 38.26716,
+      "lon": -122.44074,
+      "label": "Vineburg #1",
+      "city": "Vineburg",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-157",
+      "lat": 38.26055,
+      "lon": -121.30054,
+      "label": "Galt #1",
+      "city": "Galt",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-158",
+      "lat": 38.25207,
+      "lon": -122.07951,
+      "label": "Suisun City #1",
+      "city": "Suisun City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-159",
+      "lat": 38.24675,
+      "lon": -122.70399,
+      "label": "Petaluma #1",
+      "city": "Petaluma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-160",
+      "lat": 38.24055,
+      "lon": -122.01207,
+      "label": "Suisun City #2",
+      "city": "Suisun City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-161",
+      "lat": 38.23799,
+      "lon": -121.51744,
+      "label": "Walnut Grove #1",
+      "city": "Walnut Grove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-162",
+      "lat": 38.23502,
+      "lon": -121.04761,
+      "label": "Clements #1",
+      "city": "Clements",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-163",
+      "lat": 38.23314,
+      "lon": -122.61409,
+      "label": "Petaluma #2",
+      "city": "Petaluma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-164",
+      "lat": 38.20194,
+      "lon": -121.27619,
+      "label": "Acampo #1",
+      "city": "Acampo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-165",
+      "lat": 38.18739,
+      "lon": -120.67623,
+      "label": "San Andreas #1",
+      "city": "San Andreas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-166",
+      "lat": 38.18682,
+      "lon": -121.08517,
+      "label": "Clements #2",
+      "city": "Clements",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-167",
+      "lat": 38.18195,
+      "lon": -120.89763,
+      "label": "Burson #1",
+      "city": "Burson",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-168",
+      "lat": 38.17644,
+      "lon": -120.82368,
+      "label": "Valley Springs #1",
+      "city": "Valley Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-169",
+      "lat": 38.1623,
+      "lon": -122.25343,
+      "label": "American Canyon #1",
+      "city": "American Canyon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-170",
+      "lat": 38.15898,
+      "lon": -121.61478,
+      "label": "Isleton #1",
+      "city": "Isleton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-171",
+      "lat": 38.15736,
+      "lon": -121.69733,
+      "label": "Rio Vista #1",
+      "city": "Rio Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-172",
+      "lat": 38.15132,
+      "lon": -121.15011,
+      "label": "Lockeford #1",
+      "city": "Lockeford",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-173",
+      "lat": 38.14827,
+      "lon": -121.22732,
+      "label": "Victor #1",
+      "city": "Victor",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-174",
+      "lat": 38.12752,
+      "lon": -121.30075,
+      "label": "Lodi #1",
+      "city": "Lodi",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-175",
+      "lat": 38.10694,
+      "lon": -122.20221,
+      "label": "Vallejo #1",
+      "city": "Vallejo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-176",
+      "lat": 38.10636,
+      "lon": -122.58983,
+      "label": "Novato #1",
+      "city": "Novato",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-177",
+      "lat": 38.0999,
+      "lon": -122.28167,
+      "label": "Vallejo #2",
+      "city": "Vallejo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-178",
+      "lat": 38.09142,
+      "lon": -121.2015,
+      "label": "Victor #2",
+      "city": "Victor",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-179",
+      "lat": 38.07521,
+      "lon": -120.55459,
+      "label": "Altaville #1",
+      "city": "Altaville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-180",
+      "lat": 38.06123,
+      "lon": -120.19185,
+      "label": "Mi Wuk Village #1",
+      "city": "Mi Wuk Village",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-181",
+      "lat": 38.0611,
+      "lon": -121.29952,
+      "label": "Stockton #1",
+      "city": "Stockton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-182",
+      "lat": 38.05982,
+      "lon": -122.80872,
+      "label": "Point Reyes Station #1",
+      "city": "Point Reyes Station",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-183",
+      "lat": 38.05476,
+      "lon": -122.53602,
+      "label": "Novato #2",
+      "city": "Novato",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-184",
+      "lat": 38.05126,
+      "lon": -122.15475,
+      "label": "Benicia #1",
+      "city": "Benicia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-185",
+      "lat": 38.04027,
+      "lon": -121.95866,
+      "label": "Pittsburg #1",
+      "city": "Pittsburg",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-186",
+      "lat": 38.0364,
+      "lon": -122.25122,
+      "label": "Rodeo #1",
+      "city": "Rodeo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-187",
+      "lat": 38.03462,
+      "lon": -121.85035,
+      "label": "Antioch #1",
+      "city": "Antioch",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-188",
+      "lat": 38.02729,
+      "lon": -120.40802,
+      "label": "Columbia #1",
+      "city": "Columbia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-189",
+      "lat": 38.01485,
+      "lon": -121.24408,
+      "label": "Stockton #2",
+      "city": "Stockton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-190",
+      "lat": 38.01184,
+      "lon": -121.3584,
+      "label": "Stockton #3",
+      "city": "Stockton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-191",
+      "lat": 38.00913,
+      "lon": -121.74621,
+      "label": "Oakley #1",
+      "city": "Oakley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-192",
+      "lat": 38.00722,
+      "lon": -122.32996,
+      "label": "Pinole #1",
+      "city": "Pinole",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-193",
+      "lat": 38.00383,
+      "lon": -120.25817,
+      "label": "Soulsbyville #1",
+      "city": "Soulsbyville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-194",
+      "lat": 37.99954,
+      "lon": -122.12333,
+      "label": "Martinez #1",
+      "city": "Martinez",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-195",
+      "lat": 37.9893,
+      "lon": -121.9077,
+      "label": "Pittsburg #2",
+      "city": "Pittsburg",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-196",
+      "lat": 37.98356,
+      "lon": -122.01874,
+      "label": "Concord #1",
+      "city": "Concord",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-197",
+      "lat": 37.98082,
+      "lon": -122.58308,
+      "label": "Fairfax #1",
+      "city": "Fairfax",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-198",
+      "lat": 37.97906,
+      "lon": -122.50165,
+      "label": "San Rafael #1",
+      "city": "San Rafael",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-199",
+      "lat": 37.97522,
+      "lon": -121.81034,
+      "label": "Antioch #2",
+      "city": "Antioch",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-200",
+      "lat": 37.97179,
+      "lon": -120.31776,
+      "label": "Standard #1",
+      "city": "Standard",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-201",
+      "lat": 37.96956,
+      "lon": -120.38862,
+      "label": "Sonora #1",
+      "city": "Sonora",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-202",
+      "lat": 37.96664,
+      "lon": -121.68318,
+      "label": "Knightsen #1",
+      "city": "Knightsen",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-203",
+      "lat": 37.96401,
+      "lon": -121.20359,
+      "label": "Stockton #4",
+      "city": "Stockton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-204",
+      "lat": 37.95174,
+      "lon": -121.32077,
+      "label": "Stockton #5",
+      "city": "Stockton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-205",
+      "lat": 37.95156,
+      "lon": -122.29277,
+      "label": "El Sobrante #1",
+      "city": "El Sobrante",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-206",
+      "lat": 37.94579,
+      "lon": -122.09767,
+      "label": "Pleasant Hill #1",
+      "city": "Pleasant Hill",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-207",
+      "lat": 37.94156,
+      "lon": -122.38181,
+      "label": "Richmond #1",
+      "city": "Richmond",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-208",
+      "lat": 37.93448,
+      "lon": -121.94607,
+      "label": "Concord #2",
+      "city": "Concord",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-209",
+      "lat": 37.91948,
+      "lon": -122.5125,
+      "label": "Corte Madera #1",
+      "city": "Corte Madera",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-210",
+      "lat": 37.91909,
+      "lon": -121.71903,
+      "label": "Brentwood #1",
+      "city": "Brentwood",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-211",
+      "lat": 37.90347,
+      "lon": -122.03654,
+      "label": "Walnut Creek #1",
+      "city": "Walnut Creek",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-212",
+      "lat": 37.90333,
+      "lon": -121.15265,
+      "label": "Stockton #6",
+      "city": "Stockton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-213",
+      "lat": 37.89793,
+      "lon": -121.26747,
+      "label": "French Camp #1",
+      "city": "French Camp",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-214",
+      "lat": 37.88361,
+      "lon": -122.11267,
+      "label": "Lafayette #1",
+      "city": "Lafayette",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-215",
+      "lat": 37.88267,
+      "lon": -122.32777,
+      "label": "Albany #1",
+      "city": "Albany",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-216",
+      "lat": 37.85651,
+      "lon": -122.50422,
+      "label": "Sausalito #1",
+      "city": "Sausalito",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-217",
+      "lat": 37.8548,
+      "lon": -122.26065,
+      "label": "Berkeley #1",
+      "city": "Berkeley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-218",
+      "lat": 37.83669,
+      "lon": -120.22884,
+      "label": "Big Oak Flat #1",
+      "city": "Big Oak Flat",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-219",
+      "lat": 37.83133,
+      "lon": -121.29246,
+      "label": "Lathrop #1",
+      "city": "Lathrop",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-220",
+      "lat": 37.82198,
+      "lon": -120.91139,
+      "label": "Escalon #1",
+      "city": "Escalon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-221",
+      "lat": 37.80888,
+      "lon": -122.44372,
+      "label": "San Francisco #1",
+      "city": "San Francisco",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-222",
+      "lat": 37.799,
+      "lon": -121.23078,
+      "label": "Manteca #1",
+      "city": "Manteca",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-223",
+      "lat": 37.79309,
+      "lon": -120.99337,
+      "label": "Escalon #2",
+      "city": "Escalon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-224",
+      "lat": 37.79253,
+      "lon": -122.19948,
+      "label": "Oakland #1",
+      "city": "Oakland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-225",
+      "lat": 37.78686,
+      "lon": -122.28725,
+      "label": "Oakland #2",
+      "city": "Oakland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-226",
+      "lat": 37.78064,
+      "lon": -121.16483,
+      "label": "Ripon #1",
+      "city": "Ripon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-227",
+      "lat": 37.78025,
+      "lon": -122.36852,
+      "label": "San Francisco #2",
+      "city": "San Francisco",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-228",
+      "lat": 37.77071,
+      "lon": -120.83622,
+      "label": "Oakdale #1",
+      "city": "Oakdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-229",
+      "lat": 37.76103,
+      "lon": -122.51989,
+      "label": "San Francisco #3",
+      "city": "San Francisco",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-230",
+      "lat": 37.75662,
+      "lon": -121.45889,
+      "label": "Tracy #1",
+      "city": "Tracy",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-231",
+      "lat": 37.75032,
+      "lon": -121.37582,
+      "label": "Tracy #2",
+      "city": "Tracy",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-232",
+      "lat": 37.74103,
+      "lon": -120.90705,
+      "label": "Riverbank #1",
+      "city": "Riverbank",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-233",
+      "lat": 37.73953,
+      "lon": -122.13692,
+      "label": "San Leandro #1",
+      "city": "San Leandro",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-234",
+      "lat": 37.73767,
+      "lon": -122.43485,
+      "label": "San Francisco #4",
+      "city": "San Francisco",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-235",
+      "lat": 37.7366,
+      "lon": -120.13444,
+      "label": "Coulterville #1",
+      "city": "Coulterville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-236",
+      "lat": 37.72494,
+      "lon": -121.1164,
+      "label": "Ripon #2",
+      "city": "Ripon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-237",
+      "lat": 37.72207,
+      "lon": -122.2354,
+      "label": "Alameda #1",
+      "city": "Alameda",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-238",
+      "lat": 37.71406,
+      "lon": -120.97584,
+      "label": "Riverbank #2",
+      "city": "Riverbank",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-239",
+      "lat": 37.70465,
+      "lon": -121.91567,
+      "label": "Dublin #1",
+      "city": "Dublin",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-240",
+      "lat": 37.69058,
+      "lon": -121.42973,
+      "label": "Tracy #3",
+      "city": "Tracy",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-241",
+      "lat": 37.68505,
+      "lon": -122.05779,
+      "label": "Castro Valley #1",
+      "city": "Castro Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-242",
+      "lat": 37.6828,
+      "lon": -121.05116,
+      "label": "Modesto #1",
+      "city": "Modesto",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-243",
+      "lat": 37.68226,
+      "lon": -122.3964,
+      "label": "Brisbane #1",
+      "city": "Brisbane",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-244",
+      "lat": 37.68049,
+      "lon": -121.76259,
+      "label": "Livermore #1",
+      "city": "Livermore",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-245",
+      "lat": 37.68048,
+      "lon": -122.50076,
+      "label": "Daly City #1",
+      "city": "Daly City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-246",
+      "lat": 37.67382,
+      "lon": -122.15809,
+      "label": "San Leandro #2",
+      "city": "San Leandro",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-247",
+      "lat": 37.66136,
+      "lon": -120.46323,
+      "label": "La Grange #1",
+      "city": "La Grange",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-248",
+      "lat": 37.6586,
+      "lon": -121.86435,
+      "label": "Pleasanton #1",
+      "city": "Pleasanton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-249",
+      "lat": 37.6572,
+      "lon": -120.93694,
+      "label": "Modesto #2",
+      "city": "Modesto",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-250",
+      "lat": 37.63669,
+      "lon": -120.76618,
+      "label": "Waterford #1",
+      "city": "Waterford",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-251",
+      "lat": 37.63496,
+      "lon": -121.27911,
+      "label": "Vernalis #1",
+      "city": "Vernalis",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-252",
+      "lat": 37.62741,
+      "lon": -122.44137,
+      "label": "San Bruno #1",
+      "city": "San Bruno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-253",
+      "lat": 37.61788,
+      "lon": -122.09171,
+      "label": "Hayward #1",
+      "city": "Hayward",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-254",
+      "lat": 37.61339,
+      "lon": -121.04038,
+      "label": "Modesto #3",
+      "city": "Modesto",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-255",
+      "lat": 37.60542,
+      "lon": -120.85926,
+      "label": "Hughson #1",
+      "city": "Hughson",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-256",
+      "lat": 37.59304,
+      "lon": -120.94359,
+      "label": "Ceres #1",
+      "city": "Ceres",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-257",
+      "lat": 37.59024,
+      "lon": -122.36778,
+      "label": "Burlingame #1",
+      "city": "Burlingame",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-258",
+      "lat": 37.58351,
+      "lon": -122.01536,
+      "label": "Fremont #1",
+      "city": "Fremont",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-259",
+      "lat": 37.55143,
+      "lon": -120.99907,
+      "label": "Ceres #2",
+      "city": "Ceres",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-260",
+      "lat": 37.54644,
+      "lon": -119.92535,
+      "label": "Midpines #1",
+      "city": "Midpines",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-261",
+      "lat": 37.545,
+      "lon": -122.30458,
+      "label": "San Mateo #1",
+      "city": "San Mateo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-262",
+      "lat": 37.54118,
+      "lon": -121.19994,
+      "label": "Westley #1",
+      "city": "Westley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-263",
+      "lat": 37.53523,
+      "lon": -120.89291,
+      "label": "Keyes #1",
+      "city": "Keyes",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-264",
+      "lat": 37.5332,
+      "lon": -122.05806,
+      "label": "Newark #1",
+      "city": "Newark",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-265",
+      "lat": 37.52461,
+      "lon": -120.8004,
+      "label": "Denair #1",
+      "city": "Denair",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-266",
+      "lat": 37.52418,
+      "lon": -122.52177,
+      "label": "Moss Beach #1",
+      "city": "Moss Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-267",
+      "lat": 37.51569,
+      "lon": -121.95832,
+      "label": "Fremont #2",
+      "city": "Fremont",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-268",
+      "lat": 37.48983,
+      "lon": -120.99556,
+      "label": "Crows Landing #1",
+      "city": "Crows Landing",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-269",
+      "lat": 37.48668,
+      "lon": -119.9722,
+      "label": "Mariposa #1",
+      "city": "Mariposa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-270",
+      "lat": 37.48325,
+      "lon": -122.26153,
+      "label": "San Carlos #1",
+      "city": "San Carlos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-271",
+      "lat": 37.47719,
+      "lon": -122.17488,
+      "label": "Redwood City #1",
+      "city": "Redwood City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-272",
+      "lat": 37.47018,
+      "lon": -121.13957,
+      "label": "Patterson #1",
+      "city": "Patterson",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-273",
+      "lat": 37.46681,
+      "lon": -120.84992,
+      "label": "Turlock #1",
+      "city": "Turlock",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-274",
+      "lat": 37.44585,
+      "lon": -120.69576,
+      "label": "Ballico #1",
+      "city": "Ballico",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-275",
+      "lat": 37.43431,
+      "lon": -121.97742,
+      "label": "Alviso #1",
+      "city": "Alviso",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-276",
+      "lat": 37.43353,
+      "lon": -122.10931,
+      "label": "Palo Alto #1",
+      "city": "Palo Alto",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-277",
+      "lat": 37.429,
+      "lon": -120.77728,
+      "label": "Delhi #1",
+      "city": "Delhi",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-278",
+      "lat": 37.41968,
+      "lon": -121.0989,
+      "label": "Crows Landing #2",
+      "city": "Crows Landing",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-279",
+      "lat": 37.39686,
+      "lon": -120.60668,
+      "label": "Winton #1",
+      "city": "Winton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-280",
+      "lat": 37.39289,
+      "lon": -120.85013,
+      "label": "Hilmar #1",
+      "city": "Hilmar",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-281",
+      "lat": 37.3852,
+      "lon": -122.05561,
+      "label": "Mountain View #1",
+      "city": "Mountain View",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-282",
+      "lat": 37.38156,
+      "lon": -121.82028,
+      "label": "San Jose #1",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-283",
+      "lat": 37.38146,
+      "lon": -120.71196,
+      "label": "Livingston #1",
+      "city": "Livingston",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-284",
+      "lat": 37.37563,
+      "lon": -121.89587,
+      "label": "San Jose #2",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-285",
+      "lat": 37.3751,
+      "lon": -121.06623,
+      "label": "Crows Landing #3",
+      "city": "Crows Landing",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-286",
+      "lat": 37.37127,
+      "lon": -121.97545,
+      "label": "Santa Clara #1",
+      "city": "Santa Clara",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-287",
+      "lat": 37.3561,
+      "lon": -119.60252,
+      "label": "Oakhurst #1",
+      "city": "Oakhurst",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-288",
+      "lat": 37.34323,
+      "lon": -120.55437,
+      "label": "Atwater #1",
+      "city": "Atwater",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-289",
+      "lat": 37.33729,
+      "lon": -120.4714,
+      "label": "Merced #1",
+      "city": "Merced",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-290",
+      "lat": 37.33321,
+      "lon": -120.6216,
+      "label": "Atwater #2",
+      "city": "Atwater",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-291",
+      "lat": 37.32641,
+      "lon": -119.65524,
+      "label": "Oakhurst #2",
+      "city": "Oakhurst",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-292",
+      "lat": 37.32291,
+      "lon": -121.81832,
+      "label": "San Jose #3",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-293",
+      "lat": 37.31675,
+      "lon": -121.92715,
+      "label": "San Jose #4",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-294",
+      "lat": 37.31645,
+      "lon": -122.27892,
+      "label": "Loma Mar #1",
+      "city": "Loma Mar",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-295",
+      "lat": 37.31563,
+      "lon": -122.01083,
+      "label": "San Jose #5",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-296",
+      "lat": 37.31139,
+      "lon": -121.02555,
+      "label": "Newman #1",
+      "city": "Newman",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-297",
+      "lat": 37.28628,
+      "lon": -120.51941,
+      "label": "Merced #2",
+      "city": "Merced",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-298",
+      "lat": 37.28542,
+      "lon": -120.44477,
+      "label": "Merced #3",
+      "city": "Merced",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-299",
+      "lat": 37.27834,
+      "lon": -121.87682,
+      "label": "San Jose #6",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-300",
+      "lat": 37.25348,
+      "lon": -121.96441,
+      "label": "Los Gatos #1",
+      "city": "Los Gatos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-301",
+      "lat": 37.25236,
+      "lon": -121.80797,
+      "label": "San Jose #7",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-302",
+      "lat": 37.24871,
+      "lon": -121.00906,
+      "label": "Gustine #1",
+      "city": "Gustine",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-303",
+      "lat": 37.22717,
+      "lon": -120.25358,
+      "label": "Le Grand #1",
+      "city": "Le Grand",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-304",
+      "lat": 37.21929,
+      "lon": -121.88413,
+      "label": "San Jose #8",
+      "city": "San Jose",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-305",
+      "lat": 37.1217,
+      "lon": -122.12571,
+      "label": "Brookdale #1",
+      "city": "Brookdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-306",
+      "lat": 37.12,
+      "lon": -121.65152,
+      "label": "Morgan Hill #1",
+      "city": "Morgan Hill",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-307",
+      "lat": 37.1154,
+      "lon": -120.25875,
+      "label": "Chowchilla #1",
+      "city": "Chowchilla",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-308",
+      "lat": 37.09232,
+      "lon": -121.01932,
+      "label": "Gustine #2",
+      "city": "Gustine",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-309",
+      "lat": 37.09013,
+      "lon": -120.92805,
+      "label": "Los Banos #1",
+      "city": "Los Banos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-310",
+      "lat": 37.07752,
+      "lon": -121.59459,
+      "label": "San Martin #1",
+      "city": "San Martin",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-311",
+      "lat": 37.07445,
+      "lon": -119.48593,
+      "label": "Auberry #1",
+      "city": "Auberry",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-312",
+      "lat": 37.06675,
+      "lon": -122.08417,
+      "label": "Felton #1",
+      "city": "Felton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-313",
+      "lat": 37.05324,
+      "lon": -120.84885,
+      "label": "Los Banos #2",
+      "city": "Los Banos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-314",
+      "lat": 37.04626,
+      "lon": -120.63773,
+      "label": "Dos Palos #1",
+      "city": "Dos Palos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-315",
+      "lat": 37.00267,
+      "lon": -121.57646,
+      "label": "Gilroy #1",
+      "city": "Gilroy",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-316",
+      "lat": 36.9945,
+      "lon": -120.06669,
+      "label": "Madera #1",
+      "city": "Madera",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-317",
+      "lat": 36.99345,
+      "lon": -121.96291,
+      "label": "Soquel #1",
+      "city": "Soquel",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-318",
+      "lat": 36.98047,
+      "lon": -120.63408,
+      "label": "Dos Palos #2",
+      "city": "Dos Palos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-319",
+      "lat": 36.95821,
+      "lon": -122.04883,
+      "label": "Santa Cruz #1",
+      "city": "Santa Cruz",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-320",
+      "lat": 36.94627,
+      "lon": -121.77133,
+      "label": "Freedom #1",
+      "city": "Freedom",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-321",
+      "lat": 36.9431,
+      "lon": -121.96363,
+      "label": "Capitola #1",
+      "city": "Capitola",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-322",
+      "lat": 36.94172,
+      "lon": -120.01983,
+      "label": "Madera #2",
+      "city": "Madera",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-323",
+      "lat": 36.94024,
+      "lon": -120.11226,
+      "label": "Madera #3",
+      "city": "Madera",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-324",
+      "lat": 36.9068,
+      "lon": -121.36961,
+      "label": "Hollister #1",
+      "city": "Hollister",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-325",
+      "lat": 36.8904,
+      "lon": -121.74757,
+      "label": "Watsonville #1",
+      "city": "Watsonville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-326",
+      "lat": 36.8869,
+      "lon": -120.65564,
+      "label": "South Dos Palos #1",
+      "city": "South Dos Palos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-327",
+      "lat": 36.87478,
+      "lon": -120.11003,
+      "label": "Madera #4",
+      "city": "Madera",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-328",
+      "lat": 36.86864,
+      "lon": -119.76611,
+      "label": "Fresno #1",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-329",
+      "lat": 36.84798,
+      "lon": -121.43329,
+      "label": "Hollister #2",
+      "city": "Hollister",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-330",
+      "lat": 36.84751,
+      "lon": -120.49261,
+      "label": "Firebaugh #1",
+      "city": "Firebaugh",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-331",
+      "lat": 36.83832,
+      "lon": -119.67849,
+      "label": "Clovis #1",
+      "city": "Clovis",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-332",
+      "lat": 36.83735,
+      "lon": -121.3684,
+      "label": "Hollister #3",
+      "city": "Hollister",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-333",
+      "lat": 36.83384,
+      "lon": -119.86782,
+      "label": "Fresno #2",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-334",
+      "lat": 36.81606,
+      "lon": -119.37966,
+      "label": "Piedra #1",
+      "city": "Piedra",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-335",
+      "lat": 36.80311,
+      "lon": -119.78169,
+      "label": "Fresno #3",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-336",
+      "lat": 36.77758,
+      "lon": -119.69026,
+      "label": "Fresno #4",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-337",
+      "lat": 36.77246,
+      "lon": -119.88066,
+      "label": "Fresno #5",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-338",
+      "lat": 36.76226,
+      "lon": -121.7612,
+      "label": "Castroville #1",
+      "city": "Castroville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-339",
+      "lat": 36.74633,
+      "lon": -120.38336,
+      "label": "Mendota #1",
+      "city": "Mendota",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-340",
+      "lat": 36.73827,
+      "lon": -119.78284,
+      "label": "Fresno #6",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-341",
+      "lat": 36.73593,
+      "lon": -121.64391,
+      "label": "Salinas #1",
+      "city": "Salinas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-342",
+      "lat": 36.73023,
+      "lon": -120.06196,
+      "label": "Kerman #1",
+      "city": "Kerman",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-343",
+      "lat": 36.71299,
+      "lon": -119.70157,
+      "label": "Fresno #7",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-344",
+      "lat": 36.70946,
+      "lon": -120.47577,
+      "label": "Mendota #2",
+      "city": "Mendota",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-345",
+      "lat": 36.70197,
+      "lon": -119.85319,
+      "label": "Fresno #8",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-346",
+      "lat": 36.70054,
+      "lon": -119.56736,
+      "label": "Sanger #1",
+      "city": "Sanger",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-347",
+      "lat": 36.69445,
+      "lon": -121.78943,
+      "label": "Marina #1",
+      "city": "Marina",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-348",
+      "lat": 36.67894,
+      "lon": -119.18735,
+      "label": "Yokuts #1",
+      "city": "Yokuts",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-349",
+      "lat": 36.67258,
+      "lon": -121.60716,
+      "label": "Salinas #2",
+      "city": "Salinas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-350",
+      "lat": 36.66969,
+      "lon": -121.67078,
+      "label": "Salinas #3",
+      "city": "Salinas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-351",
+      "lat": 36.66743,
+      "lon": -119.75442,
+      "label": "Fresno #9",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-352",
+      "lat": 36.64942,
+      "lon": -121.82989,
+      "label": "Seaside #1",
+      "city": "Seaside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-353",
+      "lat": 36.64636,
+      "lon": -120.25546,
+      "label": "Tranquillity #1",
+      "city": "Tranquillity",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-354",
+      "lat": 36.63435,
+      "lon": -119.55196,
+      "label": "Parlier #1",
+      "city": "Parlier",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-355",
+      "lat": 36.62549,
+      "lon": -119.68187,
+      "label": "Fowler #1",
+      "city": "Fowler",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-356",
+      "lat": 36.61847,
+      "lon": -121.92364,
+      "label": "Pacific Grove #1",
+      "city": "Pacific Grove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-357",
+      "lat": 36.61225,
+      "lon": -119.32708,
+      "label": "Orange Cove #1",
+      "city": "Orange Cove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-358",
+      "lat": 36.60734,
+      "lon": -119.42569,
+      "label": "Reedley #1",
+      "city": "Reedley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-359",
+      "lat": 36.60406,
+      "lon": -119.78679,
+      "label": "Fresno #10",
+      "city": "Fresno",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-360",
+      "lat": 36.59827,
+      "lon": -119.90187,
+      "label": "Raisin City #1",
+      "city": "Raisin City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-361",
+      "lat": 36.59257,
+      "lon": -121.83287,
+      "label": "Monterey #1",
+      "city": "Monterey",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-362",
+      "lat": 36.58891,
+      "lon": -119.50884,
+      "label": "Parlier #2",
+      "city": "Parlier",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-363",
+      "lat": 36.57849,
+      "lon": -119.61508,
+      "label": "Selma #1",
+      "city": "Selma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-364",
+      "lat": 36.57536,
+      "lon": -121.73525,
+      "label": "Salinas #4",
+      "city": "Salinas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-365",
+      "lat": 36.55365,
+      "lon": -119.85083,
+      "label": "Caruthers #1",
+      "city": "Caruthers",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-366",
+      "lat": 36.55177,
+      "lon": -119.40971,
+      "label": "Dinuba #1",
+      "city": "Dinuba",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-367",
+      "lat": 36.54656,
+      "lon": -119.285,
+      "label": "Orosi #1",
+      "city": "Orosi",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-368",
+      "lat": 36.53841,
+      "lon": -119.78468,
+      "label": "Caruthers #2",
+      "city": "Caruthers",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-369",
+      "lat": 36.51865,
+      "lon": -119.34212,
+      "label": "Sultana #1",
+      "city": "Sultana",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-370",
+      "lat": 36.51331,
+      "lon": -119.61306,
+      "label": "Selma #2",
+      "city": "Selma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-371",
+      "lat": 36.50466,
+      "lon": -121.45182,
+      "label": "Gonzales #1",
+      "city": "Gonzales",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-372",
+      "lat": 36.49178,
+      "lon": -119.68777,
+      "label": "Laton #1",
+      "city": "Laton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-373",
+      "lat": 36.48486,
+      "lon": -119.84786,
+      "label": "Caruthers #3",
+      "city": "Caruthers",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-374",
+      "lat": 36.48357,
+      "lon": -119.42896,
+      "label": "Traver #1",
+      "city": "Traver",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-375",
+      "lat": 36.47966,
+      "lon": -119.24668,
+      "label": "Yettem #1",
+      "city": "Yettem",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-376",
+      "lat": 36.47419,
+      "lon": -121.73247,
+      "label": "Carmel Valley #1",
+      "city": "Carmel Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-377",
+      "lat": 36.44951,
+      "lon": -119.49222,
+      "label": "Traver #2",
+      "city": "Traver",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-378",
+      "lat": 36.42018,
+      "lon": -119.86138,
+      "label": "Riverdale #1",
+      "city": "Riverdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-379",
+      "lat": 36.41806,
+      "lon": -121.32363,
+      "label": "Soledad #1",
+      "city": "Soledad",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-380",
+      "lat": 36.41323,
+      "lon": -119.67712,
+      "label": "Laton #2",
+      "city": "Laton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-381",
+      "lat": 36.41152,
+      "lon": -119.09708,
+      "label": "Woodlake #1",
+      "city": "Woodlake",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-382",
+      "lat": 36.34324,
+      "lon": -119.81715,
+      "label": "Lemoore #1",
+      "city": "Lemoore",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-383",
+      "lat": 36.34068,
+      "lon": -119.28299,
+      "label": "Visalia #1",
+      "city": "Visalia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-384",
+      "lat": 36.32248,
+      "lon": -119.63766,
+      "label": "Hanford #1",
+      "city": "Hanford",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-385",
+      "lat": 36.31648,
+      "lon": -121.24845,
+      "label": "Greenfield #1",
+      "city": "Greenfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-386",
+      "lat": 36.31636,
+      "lon": -119.35404,
+      "label": "Visalia #2",
+      "city": "Visalia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-387",
+      "lat": 36.30057,
+      "lon": -119.76413,
+      "label": "Armona #1",
+      "city": "Armona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-388",
+      "lat": 36.29637,
+      "lon": -119.22264,
+      "label": "Farmersville #1",
+      "city": "Farmersville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-389",
+      "lat": 36.29049,
+      "lon": -119.14361,
+      "label": "Exeter #1",
+      "city": "Exeter",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-390",
+      "lat": 36.25661,
+      "lon": -119.32488,
+      "label": "Tulare #1",
+      "city": "Tulare",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-391",
+      "lat": 36.20637,
+      "lon": -121.12311,
+      "label": "King City #1",
+      "city": "King City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-392",
+      "lat": 36.19702,
+      "lon": -120.10553,
+      "label": "Huron #1",
+      "city": "Huron",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-393",
+      "lat": 36.19585,
+      "lon": -119.08973,
+      "label": "Lindsay #1",
+      "city": "Lindsay",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-394",
+      "lat": 36.1903,
+      "lon": -119.34388,
+      "label": "Tulare #2",
+      "city": "Tulare",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-395",
+      "lat": 36.13314,
+      "lon": -120.35928,
+      "label": "Coalinga #1",
+      "city": "Coalinga",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-396",
+      "lat": 36.08967,
+      "lon": -119.20174,
+      "label": "Tipton #1",
+      "city": "Tipton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-397",
+      "lat": 36.08689,
+      "lon": -119.56793,
+      "label": "Corcoran #1",
+      "city": "Corcoran",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-398",
+      "lat": 36.06117,
+      "lon": -119.05162,
+      "label": "Porterville #1",
+      "city": "Porterville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-399",
+      "lat": 36.05616,
+      "lon": -119.13766,
+      "label": "Porterville #2",
+      "city": "Porterville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-400",
+      "lat": 36.04597,
+      "lon": -118.98495,
+      "label": "Porterville #3",
+      "city": "Porterville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-401",
+      "lat": 36.00162,
+      "lon": -120.12615,
+      "label": "Avenal #1",
+      "city": "Avenal",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-402",
+      "lat": 35.96305,
+      "lon": -119.04207,
+      "label": "Terra Bella #1",
+      "city": "Terra Bella",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-403",
+      "lat": 35.88691,
+      "lon": -119.05057,
+      "label": "Ducor #1",
+      "city": "Ducor",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-404",
+      "lat": 35.87784,
+      "lon": -119.27011,
+      "label": "Earlimart #1",
+      "city": "Earlimart",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-405",
+      "lat": 35.77419,
+      "lon": -119.25314,
+      "label": "Delano #1",
+      "city": "Delano",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-406",
+      "lat": 35.72203,
+      "lon": -119.24224,
+      "label": "Delano #2",
+      "city": "Delano",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-407",
+      "lat": 35.69816,
+      "lon": -118.45295,
+      "label": "Wofford Heights #1",
+      "city": "Wofford Heights",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-408",
+      "lat": 35.66354,
+      "lon": -119.2259,
+      "label": "Mc Farland #1",
+      "city": "Mc Farland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-409",
+      "lat": 35.64925,
+      "lon": -117.69131,
+      "label": "Ridgecrest #1",
+      "city": "Ridgecrest",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-410",
+      "lat": 35.64009,
+      "lon": -117.81449,
+      "label": "Inyokern #1",
+      "city": "Inyokern",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-411",
+      "lat": 35.63408,
+      "lon": -120.6959,
+      "label": "Paso Robles #1",
+      "city": "Paso Robles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-412",
+      "lat": 35.61203,
+      "lon": -118.47782,
+      "label": "Bodfish #1",
+      "city": "Bodfish",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-413",
+      "lat": 35.60547,
+      "lon": -117.65353,
+      "label": "Ridgecrest #2",
+      "city": "Ridgecrest",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-414",
+      "lat": 35.59259,
+      "lon": -119.2093,
+      "label": "Mc Farland #2",
+      "city": "Mc Farland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-415",
+      "lat": 35.55899,
+      "lon": -121.08517,
+      "label": "Cambria #1",
+      "city": "Cambria",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-416",
+      "lat": 35.55467,
+      "lon": -120.70731,
+      "label": "Templeton #1",
+      "city": "Templeton",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-417",
+      "lat": 35.51521,
+      "lon": -119.28856,
+      "label": "Shafter #1",
+      "city": "Shafter",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-418",
+      "lat": 35.49342,
+      "lon": -120.67254,
+      "label": "Atascadero #1",
+      "city": "Atascadero",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-419",
+      "lat": 35.46695,
+      "lon": -119.27524,
+      "label": "Shafter #2",
+      "city": "Shafter",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-420",
+      "lat": 35.44242,
+      "lon": -120.64035,
+      "label": "Atascadero #2",
+      "city": "Atascadero",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-421",
+      "lat": 35.41394,
+      "lon": -119.05759,
+      "label": "Bakersfield #1",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-422",
+      "lat": 35.41244,
+      "lon": -118.99078,
+      "label": "Bakersfield #2",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-423",
+      "lat": 35.39305,
+      "lon": -119.47038,
+      "label": "Buttonwillow #1",
+      "city": "Buttonwillow",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-424",
+      "lat": 35.38998,
+      "lon": -119.12402,
+      "label": "Bakersfield #3",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-425",
+      "lat": 35.37038,
+      "lon": -118.91915,
+      "label": "Bakersfield #4",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-426",
+      "lat": 35.34046,
+      "lon": -119.01,
+      "label": "Bakersfield #5",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-427",
+      "lat": 35.32415,
+      "lon": -119.08942,
+      "label": "Bakersfield #6",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-428",
+      "lat": 35.29929,
+      "lon": -118.9405,
+      "label": "Bakersfield #7",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-429",
+      "lat": 35.26058,
+      "lon": -120.68486,
+      "label": "San Luis Obispo #1",
+      "city": "San Luis Obispo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-430",
+      "lat": 35.26039,
+      "lon": -119.1066,
+      "label": "Bakersfield #8",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-431",
+      "lat": 35.25486,
+      "lon": -119.01088,
+      "label": "Bakersfield #9",
+      "city": "Bakersfield",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-432",
+      "lat": 35.24299,
+      "lon": -118.90351,
+      "label": "Lamont #1",
+      "city": "Lamont",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-433",
+      "lat": 35.24092,
+      "lon": -120.63345,
+      "label": "San Luis Obispo #2",
+      "city": "San Luis Obispo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-434",
+      "lat": 35.19664,
+      "lon": -118.83173,
+      "label": "Arvin #1",
+      "city": "Arvin",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-435",
+      "lat": 35.15529,
+      "lon": -119.47048,
+      "label": "Taft #1",
+      "city": "Taft",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-436",
+      "lat": 35.11905,
+      "lon": -120.60009,
+      "label": "Arroyo Grande #1",
+      "city": "Arroyo Grande",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-437",
+      "lat": 35.11754,
+      "lon": -119.44256,
+      "label": "Taft #2",
+      "city": "Taft",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-438",
+      "lat": 35.08958,
+      "lon": -120.64038,
+      "label": "Oceano #1",
+      "city": "Oceano",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-439",
+      "lat": 35.06187,
+      "lon": -118.17199,
+      "label": "Mojave #1",
+      "city": "Mojave",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-440",
+      "lat": 34.9657,
+      "lon": -120.43944,
+      "label": "Santa Maria #1",
+      "city": "Santa Maria",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-441",
+      "lat": 34.91891,
+      "lon": -120.43906,
+      "label": "Santa Maria #2",
+      "city": "Santa Maria",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-442",
+      "lat": 34.89805,
+      "lon": -116.82128,
+      "label": "Yermo #1",
+      "city": "Yermo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-443",
+      "lat": 34.88889,
+      "lon": -117.01298,
+      "label": "Barstow #1",
+      "city": "Barstow",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-444",
+      "lat": 34.87247,
+      "lon": -117.10206,
+      "label": "Barstow #2",
+      "city": "Barstow",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-445",
+      "lat": 34.8127,
+      "lon": -116.65743,
+      "label": "Newberry Springs #1",
+      "city": "Newberry Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-446",
+      "lat": 34.81242,
+      "lon": -118.88615,
+      "label": "Lebec #1",
+      "city": "Lebec",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-447",
+      "lat": 34.68053,
+      "lon": -118.13904,
+      "label": "Lancaster #1",
+      "city": "Lancaster",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-448",
+      "lat": 34.66202,
+      "lon": -120.4528,
+      "label": "Lompoc #1",
+      "city": "Lompoc",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-449",
+      "lat": 34.64357,
+      "lon": -118.21392,
+      "label": "Palmdale #1",
+      "city": "Palmdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-450",
+      "lat": 34.62019,
+      "lon": -120.47038,
+      "label": "Lompoc #2",
+      "city": "Lompoc",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-451",
+      "lat": 34.5967,
+      "lon": -117.33642,
+      "label": "Oro Grande #1",
+      "city": "Oro Grande",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-452",
+      "lat": 34.59222,
+      "lon": -117.82407,
+      "label": "Palmdale #2",
+      "city": "Palmdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-453",
+      "lat": 34.59205,
+      "lon": -118.14099,
+      "label": "Palmdale #3",
+      "city": "Palmdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-454",
+      "lat": 34.56911,
+      "lon": -118.07244,
+      "label": "Palmdale #4",
+      "city": "Palmdale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-455",
+      "lat": 34.52927,
+      "lon": -117.3136,
+      "label": "Victorville #1",
+      "city": "Victorville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-456",
+      "lat": 34.52504,
+      "lon": -117.21419,
+      "label": "Apple Valley #1",
+      "city": "Apple Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-457",
+      "lat": 34.51507,
+      "lon": -117.99302,
+      "label": "Littlerock #1",
+      "city": "Littlerock",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-458",
+      "lat": 34.46673,
+      "lon": -117.36439,
+      "label": "Victorville #2",
+      "city": "Victorville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-459",
+      "lat": 34.46514,
+      "lon": -117.26932,
+      "label": "Victorville #3",
+      "city": "Victorville",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-460",
+      "lat": 34.46359,
+      "lon": -117.18653,
+      "label": "Apple Valley #2",
+      "city": "Apple Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-461",
+      "lat": 34.4451,
+      "lon": -119.28109,
+      "label": "Ojai #1",
+      "city": "Ojai",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-462",
+      "lat": 34.4361,
+      "lon": -116.94953,
+      "label": "Lucerne Valley #1",
+      "city": "Lucerne Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-463",
+      "lat": 34.42864,
+      "lon": -119.13553,
+      "label": "Ventura #1",
+      "city": "Ventura",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-464",
+      "lat": 34.42075,
+      "lon": -117.57236,
+      "label": "Phelan #1",
+      "city": "Phelan",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-465",
+      "lat": 34.41861,
+      "lon": -118.53411,
+      "label": "Valencia #1",
+      "city": "Valencia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-466",
+      "lat": 34.41633,
+      "lon": -119.68199,
+      "label": "Santa Barbara #1",
+      "city": "Santa Barbara",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-467",
+      "lat": 34.41073,
+      "lon": -117.31052,
+      "label": "Hesperia #1",
+      "city": "Hesperia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-468",
+      "lat": 34.40689,
+      "lon": -118.45609,
+      "label": "Canyon Country #1",
+      "city": "Canyon Country",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-469",
+      "lat": 34.39028,
+      "lon": -119.30326,
+      "label": "Oak View #1",
+      "city": "Oak View",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-470",
+      "lat": 34.38835,
+      "lon": -118.9163,
+      "label": "Fillmore #1",
+      "city": "Fillmore",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-471",
+      "lat": 34.38261,
+      "lon": -119.06353,
+      "label": "Santa Paula #1",
+      "city": "Santa Paula",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-472",
+      "lat": 34.36336,
+      "lon": -118.546,
+      "label": "Newhall #1",
+      "city": "Newhall",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-473",
+      "lat": 34.32942,
+      "lon": -119.07563,
+      "label": "Santa Paula #2",
+      "city": "Santa Paula",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-474",
+      "lat": 34.30292,
+      "lon": -118.42071,
+      "label": "Sylmar #1",
+      "city": "Sylmar",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-475",
+      "lat": 34.28318,
+      "lon": -118.49592,
+      "label": "Granada Hills #1",
+      "city": "Granada Hills",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-476",
+      "lat": 34.27709,
+      "lon": -119.30711,
+      "label": "Ventura #2",
+      "city": "Ventura",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-477",
+      "lat": 34.27242,
+      "lon": -118.69115,
+      "label": "Brandeis #1",
+      "city": "Brandeis",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-478",
+      "lat": 34.26458,
+      "lon": -118.76833,
+      "label": "Simi Valley #1",
+      "city": "Simi Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-479",
+      "lat": 34.25449,
+      "lon": -119.24244,
+      "label": "Ventura #3",
+      "city": "Ventura",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-480",
+      "lat": 34.25126,
+      "lon": -118.59997,
+      "label": "Chatsworth #1",
+      "city": "Chatsworth",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-481",
+      "lat": 34.24556,
+      "lon": -116.88282,
+      "label": "Big Bear Lake #1",
+      "city": "Big Bear Lake",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-482",
+      "lat": 34.24283,
+      "lon": -118.35964,
+      "label": "Sun Valley #1",
+      "city": "Sun Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-483",
+      "lat": 34.24164,
+      "lon": -119.1656,
+      "label": "Oxnard #1",
+      "city": "Oxnard",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-484",
+      "lat": 34.2379,
+      "lon": -118.28143,
+      "label": "Tujunga #1",
+      "city": "Tujunga",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-485",
+      "lat": 34.23769,
+      "lon": -117.28252,
+      "label": "Crestline #1",
+      "city": "Crestline",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-486",
+      "lat": 34.22554,
+      "lon": -118.4335,
+      "label": "Panorama City #1",
+      "city": "Panorama City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-487",
+      "lat": 34.21819,
+      "lon": -118.52297,
+      "label": "Northridge #1",
+      "city": "Northridge",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-488",
+      "lat": 34.21335,
+      "lon": -116.0454,
+      "label": "Twentynine Palms #1",
+      "city": "Twentynine Palms",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-489",
+      "lat": 34.20987,
+      "lon": -119.01174,
+      "label": "Camarillo #1",
+      "city": "Camarillo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-490",
+      "lat": 34.20909,
+      "lon": -119.10093,
+      "label": "Camarillo #2",
+      "city": "Camarillo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-491",
+      "lat": 34.19601,
+      "lon": -118.66203,
+      "label": "West Hills #1",
+      "city": "West Hills",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-492",
+      "lat": 34.19287,
+      "lon": -119.20384,
+      "label": "Oxnard #2",
+      "city": "Oxnard",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-493",
+      "lat": 34.1885,
+      "lon": -117.35673,
+      "label": "San Bernardino #1",
+      "city": "San Bernardino",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-494",
+      "lat": 34.1869,
+      "lon": -116.36839,
+      "label": "Yucca Valley #1",
+      "city": "Yucca Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-495",
+      "lat": 34.18268,
+      "lon": -118.90946,
+      "label": "Newbury Park #1",
+      "city": "Newbury Park",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-496",
+      "lat": 34.16807,
+      "lon": -118.3296,
+      "label": "Burbank #1",
+      "city": "Burbank",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-497",
+      "lat": 34.16683,
+      "lon": -117.27109,
+      "label": "San Bernardino #2",
+      "city": "San Bernardino",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-498",
+      "lat": 34.16437,
+      "lon": -118.60183,
+      "label": "Woodland Hills #1",
+      "city": "Woodland Hills",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-499",
+      "lat": 34.16023,
+      "lon": -118.42679,
+      "label": "Sherman Oaks #1",
+      "city": "Sherman Oaks",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-500",
+      "lat": 34.15724,
+      "lon": -118.00203,
+      "label": "Monrovia #1",
+      "city": "Monrovia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-501",
+      "lat": 34.1535,
+      "lon": -118.51922,
+      "label": "Encino #1",
+      "city": "Encino",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-502",
+      "lat": 34.14765,
+      "lon": -118.82425,
+      "label": "Westlake Village #1",
+      "city": "Westlake Village",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-503",
+      "lat": 34.14659,
+      "lon": -116.04376,
+      "label": "Twentynine Palms #2",
+      "city": "Twentynine Palms",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-504",
+      "lat": 34.14439,
+      "lon": -118.24142,
+      "label": "Glendale #1",
+      "city": "Glendale",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-505",
+      "lat": 34.13903,
+      "lon": -119.17847,
+      "label": "Port Hueneme #1",
+      "city": "Port Hueneme",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-506",
+      "lat": 34.13664,
+      "lon": -117.91189,
+      "label": "Azusa #1",
+      "city": "Azusa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-507",
+      "lat": 34.13406,
+      "lon": -117.56258,
+      "label": "Rancho Cucamonga #1",
+      "city": "Rancho Cucamonga",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-508",
+      "lat": 34.12647,
+      "lon": -118.06872,
+      "label": "Arcadia #1",
+      "city": "Arcadia",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-509",
+      "lat": 34.12446,
+      "lon": -117.38661,
+      "label": "Rialto #1",
+      "city": "Rialto",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-510",
+      "lat": 34.12412,
+      "lon": -117.1921,
+      "label": "Highland #1",
+      "city": "Highland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-511",
+      "lat": 34.12378,
+      "lon": -116.10151,
+      "label": "Twentynine Palms #3",
+      "city": "Twentynine Palms",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-512",
+      "lat": 34.12272,
+      "lon": -117.46857,
+      "label": "Fontana #1",
+      "city": "Fontana",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-513",
+      "lat": 34.11944,
+      "lon": -117.82292,
+      "label": "San Dimas #1",
+      "city": "San Dimas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-514",
+      "lat": 34.11826,
+      "lon": -117.64534,
+      "label": "Upland #1",
+      "city": "Upland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-515",
+      "lat": 34.11277,
+      "lon": -116.44325,
+      "label": "Yucca Valley #2",
+      "city": "Yucca Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-516",
+      "lat": 34.11119,
+      "lon": -117.30076,
+      "label": "San Bernardino #3",
+      "city": "San Bernardino",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-517",
+      "lat": 34.09692,
+      "lon": -118.16755,
+      "label": "Los Angeles #1",
+      "city": "Los Angeles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-518",
+      "lat": 34.09334,
+      "lon": -118.36534,
+      "label": "West Hollywood #1",
+      "city": "West Hollywood",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-519",
+      "lat": 34.08818,
+      "lon": -117.99002,
+      "label": "Baldwin Park #1",
+      "city": "Baldwin Park",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-520",
+      "lat": 34.08573,
+      "lon": -118.27347,
+      "label": "Los Angeles #2",
+      "city": "Los Angeles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-521",
+      "lat": 34.08526,
+      "lon": -117.74436,
+      "label": "Pomona #1",
+      "city": "Pomona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-522",
+      "lat": 34.0647,
+      "lon": -117.56446,
+      "label": "Guasti #1",
+      "city": "Guasti",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-523",
+      "lat": 34.06314,
+      "lon": -117.90069,
+      "label": "West Covina #1",
+      "city": "West Covina",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-524",
+      "lat": 34.05992,
+      "lon": -118.08963,
+      "label": "Rosemead #1",
+      "city": "Rosemead",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-525",
+      "lat": 34.05728,
+      "lon": -117.22268,
+      "label": "Bryn Mawr #1",
+      "city": "Bryn Mawr",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-526",
+      "lat": 34.0557,
+      "lon": -117.6644,
+      "label": "Ontario #1",
+      "city": "Ontario",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-527",
+      "lat": 34.05385,
+      "lon": -118.44909,
+      "label": "Los Angeles #3",
+      "city": "Los Angeles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-528",
+      "lat": 34.04912,
+      "lon": -117.39222,
+      "label": "Bloomington #1",
+      "city": "Bloomington",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-529",
+      "lat": 34.04834,
+      "lon": -117.30451,
+      "label": "Grand Terrace #1",
+      "city": "Grand Terrace",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-530",
+      "lat": 34.04771,
+      "lon": -117.47773,
+      "label": "Fontana #2",
+      "city": "Fontana",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-531",
+      "lat": 34.0323,
+      "lon": -117.14218,
+      "label": "Redlands #1",
+      "city": "Redlands",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-532",
+      "lat": 34.03043,
+      "lon": -118.20011,
+      "label": "Los Angeles #4",
+      "city": "Los Angeles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-533",
+      "lat": 34.0284,
+      "lon": -117.06233,
+      "label": "Yucaipa #1",
+      "city": "Yucaipa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-534",
+      "lat": 34.02601,
+      "lon": -117.82245,
+      "label": "Diamond Bar #1",
+      "city": "Diamond Bar",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-535",
+      "lat": 34.0254,
+      "lon": -118.31544,
+      "label": "Los Angeles #5",
+      "city": "Los Angeles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-536",
+      "lat": 34.02153,
+      "lon": -117.99847,
+      "label": "La Puente #1",
+      "city": "La Puente",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-537",
+      "lat": 33.99998,
+      "lon": -117.73122,
+      "label": "Chino Hills #1",
+      "city": "Chino Hills",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-538",
+      "lat": 33.99854,
+      "lon": -117.62895,
+      "label": "Ontario #2",
+      "city": "Ontario",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-539",
+      "lat": 33.9984,
+      "lon": -118.39128,
+      "label": "Culver City #1",
+      "city": "Culver City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-540",
+      "lat": 33.99798,
+      "lon": -116.98315,
+      "label": "Beaumont #1",
+      "city": "Beaumont",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-541",
+      "lat": 33.99639,
+      "lon": -118.10717,
+      "label": "Pico Rivera #1",
+      "city": "Pico Rivera",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-542",
+      "lat": 33.98787,
+      "lon": -117.53325,
+      "label": "Mira Loma #1",
+      "city": "Mira Loma",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-543",
+      "lat": 33.98772,
+      "lon": -117.32766,
+      "label": "Riverside #1",
+      "city": "Riverside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-544",
+      "lat": 33.98568,
+      "lon": -117.91003,
+      "label": "Rowland Heights #1",
+      "city": "Rowland Heights",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-545",
+      "lat": 33.97666,
+      "lon": -118.47842,
+      "label": "Venice #1",
+      "city": "Venice",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-546",
+      "lat": 33.97634,
+      "lon": -117.43602,
+      "label": "Riverside #2",
+      "city": "Riverside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-547",
+      "lat": 33.97214,
+      "lon": -118.25314,
+      "label": "Los Angeles #6",
+      "city": "Los Angeles",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-548",
+      "lat": 33.95561,
+      "lon": -118.02103,
+      "label": "Whittier #1",
+      "city": "Whittier",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-549",
+      "lat": 33.95111,
+      "lon": -116.50092,
+      "label": "Desert Hot Springs #1",
+      "city": "Desert Hot Springs",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-550",
+      "lat": 33.9441,
+      "lon": -118.18056,
+      "label": "South Gate #1",
+      "city": "South Gate",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-551",
+      "lat": 33.93918,
+      "lon": -117.24284,
+      "label": "Moreno Valley #1",
+      "city": "Moreno Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-552",
+      "lat": 33.93707,
+      "lon": -118.31945,
+      "label": "Inglewood #1",
+      "city": "Inglewood",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-553",
+      "lat": 33.93425,
+      "lon": -117.59736,
+      "label": "Corona #1",
+      "city": "Corona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-554",
+      "lat": 33.93288,
+      "lon": -117.68331,
+      "label": "Chino #1",
+      "city": "Chino",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-555",
+      "lat": 33.9321,
+      "lon": -117.35252,
+      "label": "Riverside #3",
+      "city": "Riverside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-556",
+      "lat": 33.92472,
+      "lon": -116.96865,
+      "label": "Beaumont #2",
+      "city": "Beaumont",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-557",
+      "lat": 33.92356,
+      "lon": -118.38707,
+      "label": "El Segundo #1",
+      "city": "El Segundo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-558",
+      "lat": 33.92307,
+      "lon": -118.09773,
+      "label": "Norwalk #1",
+      "city": "Norwalk",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-559",
+      "lat": 33.91585,
+      "lon": -116.88521,
+      "label": "Banning #1",
+      "city": "Banning",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-560",
+      "lat": 33.9129,
+      "lon": -117.5203,
+      "label": "Norco #1",
+      "city": "Norco",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-561",
+      "lat": 33.91227,
+      "lon": -117.96154,
+      "label": "La Habra #1",
+      "city": "La Habra",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-562",
+      "lat": 33.91043,
+      "lon": -117.88315,
+      "label": "Brea #1",
+      "city": "Brea",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-563",
+      "lat": 33.9011,
+      "lon": -117.4419,
+      "label": "Riverside #4",
+      "city": "Riverside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-564",
+      "lat": 33.88406,
+      "lon": -117.80312,
+      "label": "Yorba Linda #1",
+      "city": "Yorba Linda",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-565",
+      "lat": 33.88235,
+      "lon": -118.26033,
+      "label": "Carson #1",
+      "city": "Carson",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-566",
+      "lat": 33.88007,
+      "lon": -117.28238,
+      "label": "Riverside #5",
+      "city": "Riverside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-567",
+      "lat": 33.8688,
+      "lon": -117.36291,
+      "label": "Riverside #6",
+      "city": "Riverside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-568",
+      "lat": 33.86702,
+      "lon": -118.15531,
+      "label": "Lakewood #1",
+      "city": "Lakewood",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-569",
+      "lat": 33.86681,
+      "lon": -117.6158,
+      "label": "Corona #2",
+      "city": "Corona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-570",
+      "lat": 33.86408,
+      "lon": -118.05265,
+      "label": "Cerritos #1",
+      "city": "Cerritos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-571",
+      "lat": 33.86335,
+      "lon": -117.71692,
+      "label": "Yorba Linda #2",
+      "city": "Yorba Linda",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-572",
+      "lat": 33.86303,
+      "lon": -117.20698,
+      "label": "Moreno Valley #2",
+      "city": "Moreno Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-573",
+      "lat": 33.84996,
+      "lon": -118.37517,
+      "label": "Torrance #1",
+      "city": "Torrance",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-574",
+      "lat": 33.84318,
+      "lon": -117.88531,
+      "label": "Anaheim #1",
+      "city": "Anaheim",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-575",
+      "lat": 33.84291,
+      "lon": -117.97036,
+      "label": "Anaheim #2",
+      "city": "Anaheim",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-576",
+      "lat": 33.83876,
+      "lon": -117.52649,
+      "label": "Corona #3",
+      "city": "Corona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-577",
+      "lat": 33.81595,
+      "lon": -118.208,
+      "label": "Long Beach #1",
+      "city": "Long Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-578",
+      "lat": 33.81328,
+      "lon": -116.45357,
+      "label": "Cathedral City #1",
+      "city": "Cathedral City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-579",
+      "lat": 33.8102,
+      "lon": -117.80623,
+      "label": "Villa Park #1",
+      "city": "Villa Park",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-580",
+      "lat": 33.80281,
+      "lon": -118.3064,
+      "label": "Harbor City #1",
+      "city": "Harbor City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-581",
+      "lat": 33.79654,
+      "lon": -118.09229,
+      "label": "Los Alamitos #1",
+      "city": "Los Alamitos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-582",
+      "lat": 33.78621,
+      "lon": -117.22777,
+      "label": "Perris #1",
+      "city": "Perris",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-583",
+      "lat": 33.78143,
+      "lon": -117.99483,
+      "label": "Garden Grove #1",
+      "city": "Garden Grove",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-584",
+      "lat": 33.77614,
+      "lon": -116.97208,
+      "label": "San Jacinto #1",
+      "city": "San Jacinto",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-585",
+      "lat": 33.77462,
+      "lon": -117.89965,
+      "label": "Santa Ana #1",
+      "city": "Santa Ana",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-586",
+      "lat": 33.77091,
+      "lon": -118.39522,
+      "label": "Palos Verdes Peninsula #1",
+      "city": "Palos Verdes Peninsula",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-587",
+      "lat": 33.7657,
+      "lon": -116.46982,
+      "label": "Cathedral City #2",
+      "city": "Cathedral City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-588",
+      "lat": 33.75038,
+      "lon": -118.24088,
+      "label": "Wilmington #1",
+      "city": "Wilmington",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-589",
+      "lat": 33.74948,
+      "lon": -118.15547,
+      "label": "Long Beach #2",
+      "city": "Long Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-590",
+      "lat": 33.73954,
+      "lon": -117.45225,
+      "label": "Corona #4",
+      "city": "Corona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-591",
+      "lat": 33.73813,
+      "lon": -117.10642,
+      "label": "Homeland #1",
+      "city": "Homeland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-592",
+      "lat": 33.73789,
+      "lon": -116.71083,
+      "label": "Idyllwild #1",
+      "city": "Idyllwild",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-593",
+      "lat": 33.73768,
+      "lon": -117.82408,
+      "label": "Tustin #1",
+      "city": "Tustin",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-594",
+      "lat": 33.7364,
+      "lon": -116.2007,
+      "label": "Indio #1",
+      "city": "Indio",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-595",
+      "lat": 33.73391,
+      "lon": -116.28998,
+      "label": "Indio #2",
+      "city": "Indio",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-596",
+      "lat": 33.73251,
+      "lon": -116.93235,
+      "label": "Hemet #1",
+      "city": "Hemet",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-597",
+      "lat": 33.72231,
+      "lon": -118.02948,
+      "label": "Huntington Beach #1",
+      "city": "Huntington Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-598",
+      "lat": 33.71319,
+      "lon": -118.30067,
+      "label": "San Pedro #1",
+      "city": "San Pedro",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-599",
+      "lat": 33.71059,
+      "lon": -116.36614,
+      "label": "Palm Desert #1",
+      "city": "Palm Desert",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-600",
+      "lat": 33.71014,
+      "lon": -117.94217,
+      "label": "Fountain Valley #1",
+      "city": "Fountain Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-601",
+      "lat": 33.70971,
+      "lon": -117.19538,
+      "label": "Sun City #1",
+      "city": "Sun City",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-602",
+      "lat": 33.69458,
+      "lon": -117.37401,
+      "label": "Lake Elsinore #1",
+      "city": "Lake Elsinore",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-603",
+      "lat": 33.69399,
+      "lon": -117.07684,
+      "label": "Homeland #2",
+      "city": "Homeland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-604",
+      "lat": 33.67852,
+      "lon": -117.27413,
+      "label": "Lake Elsinore #2",
+      "city": "Lake Elsinore",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-605",
+      "lat": 33.67602,
+      "lon": -116.19393,
+      "label": "Coachella #1",
+      "city": "Coachella",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-606",
+      "lat": 33.67521,
+      "lon": -117.87546,
+      "label": "Costa Mesa #1",
+      "city": "Costa Mesa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-607",
+      "lat": 33.65137,
+      "lon": -117.99739,
+      "label": "Huntington Beach #2",
+      "city": "Huntington Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-608",
+      "lat": 33.63967,
+      "lon": -117.36632,
+      "label": "Lake Elsinore #3",
+      "city": "Lake Elsinore",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-609",
+      "lat": 33.63845,
+      "lon": -117.68425,
+      "label": "Lake Forest #1",
+      "city": "Lake Forest",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-610",
+      "lat": 33.60961,
+      "lon": -117.93078,
+      "label": "Newport Beach #1",
+      "city": "Newport Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-611",
+      "lat": 33.60543,
+      "lon": -117.28137,
+      "label": "Wildomar #1",
+      "city": "Wildomar",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-612",
+      "lat": 33.60341,
+      "lon": -114.58319,
+      "label": "Blythe #1",
+      "city": "Blythe",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-613",
+      "lat": 33.59032,
+      "lon": -117.20101,
+      "label": "Murrieta #1",
+      "city": "Murrieta",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-614",
+      "lat": 33.57935,
+      "lon": -117.70151,
+      "label": "Aliso Viejo #1",
+      "city": "Aliso Viejo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-615",
+      "lat": 33.57685,
+      "lon": -117.62691,
+      "label": "Ladera Ranch #1",
+      "city": "Ladera Ranch",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-616",
+      "lat": 33.5467,
+      "lon": -116.67585,
+      "label": "Anza #1",
+      "city": "Anza",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-617",
+      "lat": 33.54197,
+      "lon": -117.23163,
+      "label": "Murrieta #2",
+      "city": "Murrieta",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-618",
+      "lat": 33.54167,
+      "lon": -117.14385,
+      "label": "Temecula #1",
+      "city": "Temecula",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-619",
+      "lat": 33.5298,
+      "lon": -115.93698,
+      "label": "Mecca #1",
+      "city": "Mecca",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-620",
+      "lat": 33.50153,
+      "lon": -117.65905,
+      "label": "San Juan Capistrano #1",
+      "city": "San Juan Capistrano",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-621",
+      "lat": 33.49586,
+      "lon": -117.75219,
+      "label": "Laguna Niguel #1",
+      "city": "Laguna Niguel",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-622",
+      "lat": 33.4793,
+      "lon": -117.15928,
+      "label": "Temecula #2",
+      "city": "Temecula",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-623",
+      "lat": 33.47904,
+      "lon": -117.0781,
+      "label": "Temecula #3",
+      "city": "Temecula",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-624",
+      "lat": 33.45399,
+      "lon": -116.09001,
+      "label": "Mecca #2",
+      "city": "Mecca",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-625",
+      "lat": 33.44144,
+      "lon": -117.69802,
+      "label": "Dana Point #1",
+      "city": "Dana Point",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-626",
+      "lat": 33.41816,
+      "lon": -117.61434,
+      "label": "San Clemente #1",
+      "city": "San Clemente",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-627",
+      "lat": 33.40568,
+      "lon": -117.15217,
+      "label": "Pala #1",
+      "city": "Pala",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-628",
+      "lat": 33.37437,
+      "lon": -117.2473,
+      "label": "Fallbrook #1",
+      "city": "Fallbrook",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-629",
+      "lat": 33.28734,
+      "lon": -117.22936,
+      "label": "Bonsall #1",
+      "city": "Bonsall",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-630",
+      "lat": 33.27232,
+      "lon": -116.95744,
+      "label": "Pauma Valley #1",
+      "city": "Pauma Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-631",
+      "lat": 33.2391,
+      "lon": -117.30765,
+      "label": "Oceanside #1",
+      "city": "Oceanside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-632",
+      "lat": 33.20784,
+      "lon": -117.20076,
+      "label": "Vista #1",
+      "city": "Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-633",
+      "lat": 33.20657,
+      "lon": -117.0333,
+      "label": "Valley Center #1",
+      "city": "Valley Center",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-634",
+      "lat": 33.20133,
+      "lon": -117.39616,
+      "label": "Oceanside #2",
+      "city": "Oceanside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-635",
+      "lat": 33.16566,
+      "lon": -117.26837,
+      "label": "Vista #2",
+      "city": "Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-636",
+      "lat": 33.1503,
+      "lon": -117.35421,
+      "label": "Carlsbad #1",
+      "city": "Carlsbad",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-637",
+      "lat": 33.14527,
+      "lon": -117.13586,
+      "label": "San Marcos #1",
+      "city": "San Marcos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-638",
+      "lat": 33.11722,
+      "lon": -117.05498,
+      "label": "Escondido #1",
+      "city": "Escondido",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-639",
+      "lat": 33.10467,
+      "lon": -117.22152,
+      "label": "San Marcos #2",
+      "city": "San Marcos",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-640",
+      "lat": 33.04425,
+      "lon": -116.86932,
+      "label": "Ramona #1",
+      "city": "Ramona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-641",
+      "lat": 33.04086,
+      "lon": -117.30907,
+      "label": "Encinitas #1",
+      "city": "Encinitas",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-642",
+      "lat": 33.03558,
+      "lon": -117.0744,
+      "label": "San Diego #1",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-643",
+      "lat": 33.03058,
+      "lon": -115.61707,
+      "label": "Westmorland #1",
+      "city": "Westmorland",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-644",
+      "lat": 33.02017,
+      "lon": -117.24337,
+      "label": "Cardiff By The Sea #1",
+      "city": "Cardiff By The Sea",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-645",
+      "lat": 32.99676,
+      "lon": -116.92877,
+      "label": "Ramona #2",
+      "city": "Ramona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-646",
+      "lat": 32.98931,
+      "lon": -116.83577,
+      "label": "Ramona #3",
+      "city": "Ramona",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-647",
+      "lat": 32.97302,
+      "lon": -115.53339,
+      "label": "Brawley #1",
+      "city": "Brawley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-648",
+      "lat": 32.95864,
+      "lon": -117.03191,
+      "label": "Poway #1",
+      "city": "Poway",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-649",
+      "lat": 32.95249,
+      "lon": -117.28001,
+      "label": "Del Mar #1",
+      "city": "Del Mar",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-650",
+      "lat": 32.93497,
+      "lon": -117.20229,
+      "label": "San Diego #2",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-651",
+      "lat": 32.93372,
+      "lon": -117.10519,
+      "label": "San Diego #3",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-652",
+      "lat": 32.86649,
+      "lon": -117.20178,
+      "label": "San Diego #4",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-653",
+      "lat": 32.86039,
+      "lon": -117.11766,
+      "label": "San Diego #5",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-654",
+      "lat": 32.85557,
+      "lon": -116.90109,
+      "label": "Lakeside #1",
+      "city": "Lakeside",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-655",
+      "lat": 32.85518,
+      "lon": -117.28162,
+      "label": "La Jolla #1",
+      "city": "La Jolla",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-656",
+      "lat": 32.84666,
+      "lon": -116.97243,
+      "label": "Santee #1",
+      "city": "Santee",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-657",
+      "lat": 32.83651,
+      "lon": -115.56577,
+      "label": "Imperial #1",
+      "city": "Imperial",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-658",
+      "lat": 32.83325,
+      "lon": -116.61082,
+      "label": "Descanso #1",
+      "city": "Descanso",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-659",
+      "lat": 32.82771,
+      "lon": -116.76455,
+      "label": "Alpine #1",
+      "city": "Alpine",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-660",
+      "lat": 32.8274,
+      "lon": -117.04057,
+      "label": "San Diego #6",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-661",
+      "lat": 32.80965,
+      "lon": -116.84513,
+      "label": "El Cajon #1",
+      "city": "El Cajon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-662",
+      "lat": 32.79609,
+      "lon": -117.26833,
+      "label": "San Diego #7",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-663",
+      "lat": 32.7886,
+      "lon": -117.18149,
+      "label": "San Diego #8",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-664",
+      "lat": 32.78196,
+      "lon": -117.09413,
+      "label": "San Diego #9",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-665",
+      "lat": 32.77829,
+      "lon": -116.91691,
+      "label": "El Cajon #2",
+      "city": "El Cajon",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-666",
+      "lat": 32.77421,
+      "lon": -115.58918,
+      "label": "El Centro #1",
+      "city": "El Centro",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-667",
+      "lat": 32.76283,
+      "lon": -117.00475,
+      "label": "La Mesa #1",
+      "city": "La Mesa",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-668",
+      "lat": 32.75559,
+      "lon": -115.52394,
+      "label": "El Centro #2",
+      "city": "El Centro",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-669",
+      "lat": 32.73144,
+      "lon": -117.25349,
+      "label": "San Diego #10",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-670",
+      "lat": 32.72618,
+      "lon": -117.1343,
+      "label": "San Diego #11",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-671",
+      "lat": 32.71302,
+      "lon": -116.93893,
+      "label": "Spring Valley #1",
+      "city": "Spring Valley",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-672",
+      "lat": 32.69978,
+      "lon": -117.04666,
+      "label": "San Diego #12",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-673",
+      "lat": 32.68429,
+      "lon": -117.20838,
+      "label": "Coronado #1",
+      "city": "Coronado",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-674",
+      "lat": 32.68313,
+      "lon": -115.49151,
+      "label": "Calexico #1",
+      "city": "Calexico",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-675",
+      "lat": 32.67186,
+      "lon": -116.51107,
+      "label": "Campo #1",
+      "city": "Campo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-676",
+      "lat": 32.65961,
+      "lon": -116.29347,
+      "label": "Boulevard #1",
+      "city": "Boulevard",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-677",
+      "lat": 32.65935,
+      "lon": -117.13737,
+      "label": "San Diego #13",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-678",
+      "lat": 32.64923,
+      "lon": -116.98584,
+      "label": "Chula Vista #1",
+      "city": "Chula Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-679",
+      "lat": 32.62595,
+      "lon": -117.07243,
+      "label": "Chula Vista #2",
+      "city": "Chula Vista",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-680",
+      "lat": 32.60761,
+      "lon": -116.18953,
+      "label": "Jacumba #1",
+      "city": "Jacumba",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-681",
+      "lat": 32.60129,
+      "lon": -116.47153,
+      "label": "Campo #2",
+      "city": "Campo",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-682",
+      "lat": 32.60099,
+      "lon": -116.6012,
+      "label": "Tecate #1",
+      "city": "Tecate",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-683",
+      "lat": 32.5895,
+      "lon": -117.00462,
+      "label": "San Ysidro #1",
+      "city": "San Ysidro",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-684",
+      "lat": 32.57585,
+      "lon": -116.63441,
+      "label": "Tecate #2",
+      "city": "Tecate",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-685",
+      "lat": 32.57564,
+      "lon": -117.14622,
+      "label": "Imperial Beach #1",
+      "city": "Imperial Beach",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-686",
+      "lat": 32.5536,
+      "lon": -117.08318,
+      "label": "San Diego #14",
+      "city": "San Diego",
+      "type": "retail_screen"
+    },
+    {
+      "id": "NRS-687",
+      "lat": 32.54613,
+      "lon": -117.02185,
+      "label": "San Ysidro #2",
+      "city": "San Ysidro",
+      "type": "retail_screen"
+    }
+  ]
+}
