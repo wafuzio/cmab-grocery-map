@@ -1464,11 +1464,11 @@
     // at zoom ≥ 5 so city names appear when the user zooms in but
     // don't crowd the country-wide view. minZoom on the labels layer
     // is the gate — Leaflet automatically hides the layer below it.
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?key=cb1_3pva_1_e2cc9b9d68436cafbc8f6ddb', {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
       subdomains: 'abcd', maxZoom: 20
     }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png?key=cb1_3pva_1_e2cc9b9d68436cafbc8f6ddb', {
       subdomains: 'abcd', minZoom: 5, maxZoom: 20, pane: 'overlayPane'
     }).addTo(map);
 
